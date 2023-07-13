@@ -1,8 +1,6 @@
 package com.siukatech.poc.react.backend.parent.security.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.siukatech.poc.react.backend.parent.security.converter.KeycloakJwtAuthentication;
 import com.siukatech.poc.react.backend.parent.security.converter.KeycloakJwtAuthenticationConverter;
 import com.siukatech.poc.react.backend.parent.security.handler.KeycloakLogoutHandler;
 import com.siukatech.poc.react.backend.parent.security.interceptor.OAuth2ClientHttpRequestInterceptor;
@@ -14,20 +12,13 @@ import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2Res
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpRequest;
-import org.springframework.http.client.ClientHttpRequestExecution;
-import org.springframework.http.client.ClientHttpRequestInterceptor;
-import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.http.converter.FormHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.session.SessionRegistryImpl;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
 import org.springframework.security.oauth2.core.OAuth2TokenValidator;
 import org.springframework.security.oauth2.jwt.*;
@@ -41,8 +32,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.io.IOException;
 import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -93,19 +84,30 @@ public class WebSecurityConfig {
 //            }
 //        });
 //        RestTemplate restTemplate = restTemplateBuilder.build();
-        // This is not working
         RestTemplate restTemplate = new RestTemplate();
+        AtomicInteger formHttpMessageConverterCount = new AtomicInteger();
+        // This is not working
 //        restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter(this.objectMapper));
         restTemplate.getMessageConverters().stream().forEach(httpMessageConverter -> {
-            if (httpMessageConverter instanceof MappingJackson2HttpMessageConverter) {
-                ((MappingJackson2HttpMessageConverter) httpMessageConverter).getObjectMapper()
+            if (httpMessageConverter instanceof MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter) {
+//                ((MappingJackson2HttpMessageConverter) httpMessageConverter)
+                mappingJackson2HttpMessageConverter
+                        .getObjectMapper()
                         .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
                 ;
             }
+            if (httpMessageConverter instanceof FormHttpMessageConverter) {
+                formHttpMessageConverterCount.getAndIncrement();
+            }
         });
-        restTemplate.getMessageConverters().add(new FormHttpMessageConverter());
+        if (formHttpMessageConverterCount.get() == 0) {
+            restTemplate.getMessageConverters().add(new FormHttpMessageConverter());
+        }
         restTemplate.getInterceptors().add(new OAuth2ClientHttpRequestInterceptor());
-        logger.debug("oauth2ClientRestTemplate - restTemplate.toString: [" + restTemplate.toString() + "]");
+        logger.debug("oauth2ClientRestTemplate - formHttpMessageConverterCount.get: [{}]"
+                + ", restTemplate.toString: [{}]"
+                , formHttpMessageConverterCount.get(), restTemplate.toString()
+        );
         return restTemplate;
     }
 

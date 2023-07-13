@@ -53,15 +53,14 @@ public class WebMvcConfigSupport extends WebMvcConfigurationSupport {
      */
     @Override
     protected void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
-        logger.debug("extendMessageConverters - getMessageConverters.size: [" + this.getMessageConverters().size()
-                + "]");
+        logger.debug("extendMessageConverters - getMessageConverters.size: [{}]", this.getMessageConverters().size());
         converters.stream().forEach(httpMessageConverter -> {
-            logger.debug("extendMessageConverters - httpMessageConverter.getClass.getName: [" + httpMessageConverter.getClass().getName()
-                    + "]");
-            if (httpMessageConverter instanceof MappingJackson2HttpMessageConverter) {
-                MappingJackson2HttpMessageConverter jacksonMessageConverter = (MappingJackson2HttpMessageConverter) httpMessageConverter;
-                ObjectMapper objectMapper = jacksonMessageConverter.getObjectMapper();
-                logger.debug("extendMessageConverters - MappingJackson2HttpMessageConverter.getObjectMapper: [" + jacksonMessageConverter.getObjectMapper() + "]");
+            logger.debug("extendMessageConverters - httpMessageConverter.getClass.getName: [{}]", httpMessageConverter.getClass().getName());
+            if (httpMessageConverter instanceof MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter) {
+//                MappingJackson2HttpMessageConverter jacksonMessageConverter = (MappingJackson2HttpMessageConverter) httpMessageConverter;
+                ObjectMapper objectMapper = mappingJackson2HttpMessageConverter.getObjectMapper();
+                logger.debug("extendMessageConverters - MappingJackson2HttpMessageConverter.getObjectMapper: [{}]"
+                        , mappingJackson2HttpMessageConverter.getObjectMapper());
                 // here is configured for non-encrypted data, general response body
                 objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
             }

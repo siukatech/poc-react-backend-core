@@ -24,8 +24,8 @@ public class OAuth2ClientHttpRequestInterceptor implements ClientHttpRequestInte
         // https://stackoverflow.com/a/47046477
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String tokenValue = null;
-        if (authentication instanceof OAuth2AuthenticationToken) {
-            OAuth2AuthenticationToken oAuth2AuthenticationToken = (OAuth2AuthenticationToken) authentication;
+        if (authentication instanceof OAuth2AuthenticationToken oAuth2AuthenticationToken) {
+//            OAuth2AuthenticationToken oAuth2AuthenticationToken = (OAuth2AuthenticationToken) authentication;
             tokenValue = oAuth2AuthenticationToken.getPrincipal().getAttribute(KeycloakJwtAuthenticationConverter.ATTR_TOKEN_VALUE);
         }
         logger.debug("intercept - request.URI: [{}]"
