@@ -2,10 +2,10 @@ package com.siukatech.poc.react.backend.parent.global.config;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 @Slf4j
@@ -23,14 +23,21 @@ public class ParentAppConfig {
 //    }
 
     private String hostName;
-//    private App app;
+    //    private App app;
     private Api api;
 
-    public String getMyInfoUrl() {
-        logger.debug("getMyInfoUrl - getHostName: [{}], myInfo: [{}]"
-                , this.getHostName(), this.getApi().getMyInfo()
+    public String getMyUserInfoUrl() {
+        String myInfoUrl = null;
+        if ( StringUtils.isNotEmpty(this.getHostName())
+                && (this.getApi() != null && StringUtils.isNotEmpty(this.getApi().getMyUserInfo())) ) {
+            myInfoUrl = this.getHostName() + this.getApi().getMyUserInfo();
+        }
+        logger.debug("getMyUserInfoUrl - getHostName: [{}], getMyUserInfo: [{}], myInfoUrl: [{}]"
+                , this.getHostName()
+                , (this.getApi() == null ? "NULL" : this.getApi().getMyUserInfo())
+                , myInfoUrl
         );
-        return this.getHostName() + this.getApi().getMyInfo();
+        return myInfoUrl;
 //        return null;
     }
 
@@ -42,6 +49,6 @@ public class ParentAppConfig {
 
     @Data
     public static class Api {
-        private String myInfo;
+        private String myUserInfo;
     }
 }

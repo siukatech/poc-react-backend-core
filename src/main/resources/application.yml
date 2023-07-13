@@ -48,7 +48,7 @@ spring:
 app:
   host-name: --
   api:
-    my-info: /v1/protected/users/my-info
+    my-user-info: /v1/protected/my/user-info
 
 
 logging:

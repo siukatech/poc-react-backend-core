@@ -9,6 +9,7 @@ import com.siukatech.poc.react.backend.parent.web.model.EncryptedDetail;
 import com.siukatech.poc.react.backend.parent.web.model.EncryptedInfo;
 import com.siukatech.poc.react.backend.parent.web.model.EncryptedReq;
 import jakarta.persistence.EntityNotFoundException;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.MethodParameter;
@@ -217,19 +218,26 @@ public class EncryptedBodyAdviceHelper {
     }
 
     public UserDto resolveMyInfo(String userId) {
-//        String userInfoUrl = "http://localhost:28080/v1/protected/users/my-info";
-        String userInfoUrl = this.parentAppConfig.getMyInfoUrl();
-        HttpEntity<String> httpEntity = new HttpEntity<>("");
-        ResponseEntity<UserDto> responseEntity = this.oauth2ClientRestTemplate.exchange(userInfoUrl
-                , HttpMethod.POST, httpEntity, UserDto.class);
-        UserDto userDto = responseEntity.getBody();
-        logger.debug("beforeBodyRead - userId: [{}], userInfoUrl: [{}]"
+        String myUserInfoUrl = this.parentAppConfig.getMyUserInfoUrl();
+        UserDto userDto = null;
+        if (StringUtils.isNotEmpty(myUserInfoUrl)) {
+            ResponseEntity<UserDto> responseEntity = this.oauth2ClientRestTemplate.exchange(myUserInfoUrl
+                    , HttpMethod.POST, HttpEntity.EMPTY, UserDto.class);
+            userDto = responseEntity.getBody();
+            logger.debug("resolveMyInfo - userId: [{}], myUserInfoUrl: [{}], userDto.getUserId: [{}]"
 //                + ", responseEntity.getBody.toString: [{}]"
-                , userId, userInfoUrl, userDto.getUserId()
+                    , userId, myUserInfoUrl, userDto.getUserId()
 //                , responseEntity.getBody().toString()
-        );
-        if (!userId.equals(userDto.getUserId())) {
-            throw new EntityNotFoundException("User does not match userId: [%s], userDto.getUserId: [%s]".formatted(userId, userDto.getUserId()));
+            );
+            if (!userId.equals(userDto.getUserId())) {
+                throw new EntityNotFoundException("User does not match userId: [%s], userDto.getUserId: [%s]".formatted(userId, userDto.getUserId()));
+            }
+        }
+        else {
+            logger.debug("resolveMyInfo - userId: [{}], myUserInfoUrl: [{}]"
+                    , userId, myUserInfoUrl
+            );
+            throw new RuntimeException("User with userId: [%s] cannot be resolved because of the empty my-user-info".formatted(userId));
         }
         return userDto;
     }

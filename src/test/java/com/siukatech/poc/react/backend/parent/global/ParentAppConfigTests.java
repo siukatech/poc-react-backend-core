@@ -38,7 +38,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @TestPropertySource("classpath:global/parent-app-config-test.properties")
 //@TestPropertySource(properties = {"spring.config.location = classpath:global/parent-app-config-test.properties"})
 //@TestPropertySource(locations= {"classpath:global/parent-app-config-test.yml"})
-public class ParentAppConfigUnitTests extends AbstractUnitTests {
+public class ParentAppConfigTests extends AbstractUnitTests {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -58,13 +58,13 @@ public class ParentAppConfigUnitTests extends AbstractUnitTests {
         logger.debug("parentAppConfig_basic - hostName: [{}]"
                 + ", myInfo: [{}]"
                 , parentAppConfig.getHostName()
-                , parentAppConfig.getApi().getMyInfo()
+                , parentAppConfig.getApi().getMyUserInfo()
         );
         assertThat(parentAppConfig.getHostName()).isEqualTo("http://localhost:28080");
-        assertThat(parentAppConfig.getApi().getMyInfo()).contains(ProtectedApiV1Controller.REQUEST_MAPPING_URI_PREFIX);
-        assertThat(parentAppConfig.getApi().getMyInfo()).contains("/users/my-info");
+        assertThat(parentAppConfig.getApi().getMyUserInfo()).contains(ProtectedApiV1Controller.REQUEST_MAPPING_URI_PREFIX);
+        assertThat(parentAppConfig.getApi().getMyUserInfo()).contains("/my/user-info");
 //        assertThat(parentAppConfig.getApp().getHostName()).isEqualTo("http://localhost:28080");
-//        assertThat(parentAppConfig.getApi().getMyInfo()).contains(ProtectedApiV1Controller.REQUEST_MAPPING_URI_PREFIX);
-//        assertThat(parentAppConfig.getApi().getMyInfo()).contains("/users/my-info");
+//        assertThat(parentAppConfig.getApi().getMyUserInfo()).contains(ProtectedApiV1Controller.REQUEST_MAPPING_URI_PREFIX);
+//        assertThat(parentAppConfig.getApi().getMyUserInfo()).contains("/my/user-info");
     }
 }

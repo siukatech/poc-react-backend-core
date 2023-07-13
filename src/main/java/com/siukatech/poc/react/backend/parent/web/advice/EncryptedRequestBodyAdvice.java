@@ -1,7 +1,6 @@
 package com.siukatech.poc.react.backend.parent.web.advice;
 
 import com.siukatech.poc.react.backend.parent.business.dto.UserDto;
-import com.siukatech.poc.react.backend.parent.web.annotation.v1.EncryptedApiV1Controller;
 import com.siukatech.poc.react.backend.parent.web.context.EncryptedBodyContext;
 import com.siukatech.poc.react.backend.parent.web.helper.EncryptedBodyAdviceHelper;
 import com.siukatech.poc.react.backend.parent.web.model.EncryptedDetail;
@@ -24,7 +23,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
-import java.util.Arrays;
 
 /**
  * Reference
@@ -38,7 +36,7 @@ public class EncryptedRequestBodyAdvice extends RequestBodyAdviceAdapter {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final EncryptedBodyContext encryptedBodyContext;
-//    private final UserRepository userRepository;
+    //    private final UserRepository userRepository;
 //    private final ObjectMapper objectMapper;
     private final EncryptedBodyAdviceHelper encryptedBodyAdviceHelper;
 
@@ -101,7 +99,7 @@ public class EncryptedRequestBodyAdvice extends RequestBodyAdviceAdapter {
                 + "], methodParameter.getParameterType.getName: [" + methodParameter.getParameterType().getName()
                 + "], userId: [" + userId
 //                + "], userEntity.getUserId: [" + userEntity.getUserId()
-                + "], userDto.getUserId: [" + userDto.getUserId()
+                + "], userDto.getUserId: [" + (userDto == null ? "NULL" : userDto.getUserId())
                 + "], authentication.getName: [" + (authentication == null ? "NULL" : authentication.getName())
                 + "], authentication.isAuthenticated: [" + (authentication == null ? "NULL" : authentication.isAuthenticated())
                 + "]");

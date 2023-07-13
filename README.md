@@ -294,14 +294,16 @@ Two encryption algorithms are used for the solution.
 ## Prerequisite
 The ms-project `user-service` is required to turn on as the user info provider.  
 To facilitate the development, this lib-project has a simple `MyController` implementation.  
-Those ms-projects can extend this `MyController` to expose the `my-info` api with `UserDto` as return.  
+Those ms-projects can extend this `MyController` to expose the `my-user-info` api with `UserDto` as return.  
 This `UserDto` object provides the user-private-key for application to perform the `aes-key` decryption.  
 ```yaml
 app:
   host-name: [host-name of user-service]
   api:
-    my-info: [my-info api on user-service, e.g. /v1/protected/users/my-info]
+    my-user-info: [my-user-info api on user-service, e.g. /v1/protected/my/user-info]
 ```
+
+A RuntimeException will be thrown if the my-user-info api is not available when there is an `/encrypted` api call.  
 
 
 
