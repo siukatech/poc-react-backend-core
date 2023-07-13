@@ -5,10 +5,9 @@ OAuth2 is integrated for the SSO with Keycloak as the development identity provi
 End-to-End-Encryption (E2EE) is also introduced in this project.  
 
 
+
 # Setup
-
 ## Gradle
-
 Gradle is the dependency manager for these poc projects.  
 The `java-library` is the plugins in build.gradle file, NOT the `java-platform`.
 
@@ -62,9 +61,9 @@ dependencies {
 
 //	implementation 'org.projectlombok:lombok:1.18.26'
 	annotationProcessor 'org.projectlombok:lombok:1.18.26'
-//
+
 	runtimeOnly 'org.postgresql:postgresql:42.6.0'
-//
+
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 	testImplementation 'com.h2database:h2:2.1.214'
@@ -91,9 +90,9 @@ dependencyManagement {
 ```
 
 
+
 ## Sonatype Nexus (private maven repository) Setup
 ### Docker
-
 Since I am using Macbook Pro M2 (ARM) with docker desktop as my development environment.  
 Therefore this sonatype nexus version is not compatible with other x64 machine.  
 
@@ -101,8 +100,8 @@ Therefore this sonatype nexus version is not compatible with other x64 machine.
 - ARM: [klo2k/nexus3:3.43.0](https://hub.docker.com/r/klo2k/nexus3/tags)  
 
 
-### Nexus (ARM) installation steps
 
+### Nexus (ARM) installation steps
 Before pulling the docker image, I will create a local folder (persistence storage) as the volume for the image to mount.  
 ```shell
 echo 'export NEXUS_HOME="~/Documents/development/artifact/nexus"' >> ~/.zshrc
@@ -126,9 +125,7 @@ Or perform a `curl http://localhost:38081/nexus/service/local/status` to check s
 
 
 
-
 ### Gradle
-
 ```groovy
 plugins {
     ...
@@ -177,7 +174,7 @@ publishing {
 }
 ```
 
-The `platformSnapshot` here is a name that can lookup the login and password from ~/.gradle/gradle.properties.  
+The `[repository-name]` here is a name that can lookup the login and password from ~/.gradle/gradle.properties.  
 Here is the reference from gradle official website.  
 https://docs.gradle.org/current/samples/sample_publishing_credentials.html  
 
@@ -192,16 +189,15 @@ Snippet of ~/.gradle/gradle.properties
 
 After the setup of above configuration, our gradle task list will be updated.  
 New folder `publishing` is added. Tasks `publishXXX` are used to publish the artifacts to maven repository.  
-The [repository-name] on screen-capture is `platformSnapshot`.  
+The `[repository-name]` on screen-capture is `platformSnapshot`.  
 ![Gradle Publishing 01](./assets/gradle-01-publishing-01.png)
 
 Once `publishToMavenLocal` is clicked, the artifact will be published to your maven local. (~/.m2/repository/)  
 
 
+
 # Design
-
 ## Dependencies
-
 *api*
 - OAuth2 is required because our ms-projects are linked to an IdP.  
 As a result, the spring-boot-starter oauth2-client and oauth2-resource-server are selected.  
@@ -217,9 +213,10 @@ Maybe will add Mybatis later to do some poc.
 - h2database is used to work as database during testing the repository components.  
 
 
+
 ## Package
 - main/java
-  - business: Business services
+  - business: Business services and dto
   - data: Data layer, repositories and entities
   - global: Global configuration for application
   - security: Security configuration and related classes
@@ -240,6 +237,7 @@ Maybe will add Mybatis later to do some poc.
   - web
   - AbstractJpaTests: Abstract class with Jpa testing specific properties
   - AbstractUnitTests: Abstract class with some common unit test configuration
+
 
 
 ## Annotation
@@ -269,11 +267,14 @@ The annotations in `base` are defined as baseline, common usage which are generi
 Some embedded interceptors are planning to develop to cross-check the `base` annotations for security control.  
 
 
+
 # End-to-End-Encryption (E2EE)
 Besides the annotation control, I am trying the end-to-end-encryption (E2EE) in this project by using the `EncryptedController` annotation.  
 Two encryption algorithms are used for the solution.  
 - RSA with key-size 2048 bytes
 - AES (AES/CBC/PKCS5Padding) with secret-size 512 bytes
+
+
 
 ## Sequence flow after login
 1. frontend gets `user-public-key` from backend (/v1/protected/my/public-key)
@@ -287,6 +288,22 @@ Two encryption algorithms are used for the solution.
 9. frontend receives ~~`aes-ecb-str`~~ `aes-cbc-str` from response
 10. frontend decrypts ~~`aes-ecb-str`~~ `aes-cbc-str` by `crypto-js` (~~AES/ECB/PKCS7Padding~~ AES/CBC/PKCS7Padding) to `response-entity-str`
 11. frontend parses `response-entity-str` to `response-entity`
+
+
+
+## Prerequisite
+The ms-project `user-service` is required to turn on as the user info provider.  
+To facilitate the development, this lib-project has a simple `MyController` implementation.  
+Those ms-projects can extend this `MyController` to expose the `my-info` api with `UserDto` as return.  
+This `UserDto` object provides the user-private-key for application to perform the `aes-key` decryption.  
+```yaml
+app:
+  host-name: [host-name of user-service]
+  api:
+    my-info: [my-info api on user-service, e.g. /v1/protected/users/my-info]
+```
+
+
 
 ## Findings
 The `jsencrypt` does not support using user-public-key to decrypt.  
@@ -325,10 +342,14 @@ Besides, there is a RSA key length limitation.
 The RSA key cannot encrypt content that exceeds the defined length (key-size minuses some factors).  
 As a result, RSA is designed to encrypt small content, such as `aes-key`.  
 The proper way should be similar to reference below.  
-1. Generate a 256-bit random `key-str`  
-2. Encrypt data with `AES/CBC` as `aes-data` with `key-str`
-3. Encrypt `key-str` with RSA key-pair, either `public-key` or `private-key`
-4. Send encrypted `key-str` and `aes-data` to the other side  
+
+**Reference**  
+https://mbed-tls.readthedocs.io/en/latest/kb/cryptography/rsa-encryption-maximum-data-size/
+
+> 1. Generate a 256-bit random `key-str`  
+> 2. Encrypt data with `AES/CBC` as `aes-data` with `key-str`  
+> 3. Encrypt `key-str` with RSA key-pair, either `public-key` or `private-key`  
+> 4. Send encrypted `key-str` and `aes-data` to the other side  
 
 Since the length of `aes-key` is fixed, currently is `344` for this setup.  
 Then I composed the `aes-key` and `aes-data` together.  
@@ -340,6 +361,4 @@ The `aes-key` is also attached to `http-header` for `ResponseBodyAdvice.beforeBo
 I also tried the AES/GCM on backend but failed on frontend.  
 So the AES/CBC is default encryption algorithm.  
 
-**Reference**  
-https://mbed-tls.readthedocs.io/en/latest/kb/cryptography/rsa-encryption-maximum-data-size/
 
