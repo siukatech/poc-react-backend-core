@@ -1,7 +1,6 @@
 package com.siukatech.poc.react.backend.parent.web.advice;
 
 import com.siukatech.poc.react.backend.parent.business.dto.UserDto;
-import com.siukatech.poc.react.backend.parent.web.annotation.v1.EncryptedApiV1Controller;
 import com.siukatech.poc.react.backend.parent.web.context.EncryptedBodyContext;
 import com.siukatech.poc.react.backend.parent.web.helper.EncryptedBodyAdviceHelper;
 import com.siukatech.poc.react.backend.parent.web.model.EncryptedInfo;
@@ -18,8 +17,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
-
-import java.util.Arrays;
 
 /**
  * Reference:
@@ -109,7 +106,7 @@ public class EncryptedResponseBodyAdvice implements ResponseBodyAdvice {
 //                    .orElseThrow(() -> new EntityNotFoundException("No such user [" + finalUserId + "]"));
 //        }
         if (userDto == null) {
-            userDto = this.encryptedBodyAdviceHelper.resolveMyInfo(userId);
+            userDto = this.encryptedBodyAdviceHelper.resolveMyUserInfo(userId);
         }
         if (encryptedDetail == null) {
 //            // should obtain from SecurityContext again

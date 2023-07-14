@@ -32,6 +32,13 @@ public class EncryptionUtil {
     private EncryptionUtil() {
     }
 
+    /**
+     * Reference:
+     * https://stackoverflow.com/a/50381020
+     *
+     * @param length
+     * @return
+     */
     public static String generateRandomToken(int length) {
         SecureRandom secureRandom = new SecureRandom();
         byte[] bytes = new byte[length];

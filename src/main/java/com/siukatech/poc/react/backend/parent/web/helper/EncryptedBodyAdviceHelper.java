@@ -217,14 +217,14 @@ public class EncryptedBodyAdviceHelper {
         return encryptedDetail;
     }
 
-    public UserDto resolveMyInfo(String userId) {
+    public UserDto resolveMyUserInfo(String userId) {
         String myUserInfoUrl = this.parentAppConfig.getMyUserInfoUrl();
         UserDto userDto = null;
         if (StringUtils.isNotEmpty(myUserInfoUrl)) {
-            ResponseEntity<UserDto> responseEntity = this.oauth2ClientRestTemplate.exchange(myUserInfoUrl
-                    , HttpMethod.POST, HttpEntity.EMPTY, UserDto.class);
+            ResponseEntity<UserDto> responseEntity = this.oauth2ClientRestTemplate.exchange(
+                    myUserInfoUrl, HttpMethod.POST, HttpEntity.EMPTY, UserDto.class);
             userDto = responseEntity.getBody();
-            logger.debug("resolveMyInfo - userId: [{}], myUserInfoUrl: [{}], userDto.getUserId: [{}]"
+            logger.debug("resolveMyUserInfo - userId: [{}], myUserInfoUrl: [{}], userDto.getUserId: [{}]"
 //                + ", responseEntity.getBody.toString: [{}]"
                     , userId, myUserInfoUrl, userDto.getUserId()
 //                , responseEntity.getBody().toString()
@@ -234,7 +234,7 @@ public class EncryptedBodyAdviceHelper {
             }
         }
         else {
-            logger.debug("resolveMyInfo - userId: [{}], myUserInfoUrl: [{}]"
+            logger.debug("resolveMyUserInfo - userId: [{}], myUserInfoUrl: [{}]"
                     , userId, myUserInfoUrl
             );
             throw new RuntimeException("User with userId: [%s] cannot be resolved because of the empty my-user-info".formatted(userId));
