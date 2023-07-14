@@ -1,13 +1,11 @@
 package com.siukatech.poc.react.backend.parent.web;
 
-import com.siukatech.poc.react.backend.parent.AbstractUnitTests;
+import com.siukatech.poc.react.backend.parent.AbstractWebTests;
 import com.siukatech.poc.react.backend.parent.business.dto.UserDto;
 import com.siukatech.poc.react.backend.parent.business.service.UserService;
-import com.siukatech.poc.react.backend.parent.data.repository.UserRepository;
 import com.siukatech.poc.react.backend.parent.web.annotation.v1.ProtectedApiV1Controller;
 import com.siukatech.poc.react.backend.parent.web.context.EncryptedBodyContext;
 import com.siukatech.poc.react.backend.parent.web.controller.MyController;
-import com.siukatech.poc.react.backend.parent.web.controller.UserController;
 import com.siukatech.poc.react.backend.parent.web.helper.EncryptedBodyAdviceHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,7 +24,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
@@ -40,6 +37,7 @@ import java.util.List;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -48,20 +46,28 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(controllers = {MyController.class})
 @AutoConfigureMockMvc(addFilters = false)
-public class MyControllerTests extends AbstractUnitTests {
+public class MyControllerTests extends AbstractWebTests {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 //    @Autowired
 
+    /**
+     * Reference:
+     * https://stackoverflow.com/a/72086318
+     * https://docs.spring.io/spring-security/reference/servlet/test/mockmvc/setup.html#test-mockmvc-setup
+     * https://docs.spring.io/spring-security/reference/servlet/test/mockmvc/authentication.html
+     *
+     * When we inject authentication or other security related bean to our controller methods.
+     * The spring-security must be set up during the MockMvc creation.
+     * We need to inject the WebApplicationContext for the custom MockMvc creation.
+     * Therefore, the @Autowired annotation for MockMvc cannot be used in these situations.
+     */
+//    @Autowired
+    private MockMvc mockMvc;
     @Autowired
     private WebApplicationContext webApplicationContext;
-    private MockMvc mockMvc;
     @MockBean
     private UserService userService;
-    @SpyBean
-    private EncryptedBodyContext encryptedBodyContext;
-    @MockBean
-    private EncryptedBodyAdviceHelper encryptedBodyAdviceHelper;
 
 
     private UserDto prepareUserDto_basic() {
@@ -93,14 +99,22 @@ public class MyControllerTests extends AbstractUnitTests {
             default:
         }
         //
-        UsernamePasswordAuthenticationToken authenticationToken = prepareAuthenticationToken_basic();
-        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+        // We dont need to setup the authentication in @BeforeEach method.
+        // After applying .with(authentication([mock-authentication-object]))
+        // This will also add the mock-authentication-object to the SecurityContext
+//        UsernamePasswordAuthenticationToken authenticationToken = prepareAuthenticationToken_basic();
+//        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         //
-        mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
-                .apply(springSecurity())
-                .build();
+        // Refer to the explanation of MockMvc above.
+        if (mockMvc == null) {
+            mockMvc = MockMvcBuilders
+                    .webAppContextSetup(webApplicationContext)
+                    .apply(springSecurity())
+                    .build();
+        }
         //
-        logger.debug("setup - SecurityContextHolder.getContext.getAuthentication: [" + SecurityContextHolder.getContext().getAuthentication() + "]");
+        logger.debug("setup - SecurityContextHolder.getContext.getAuthentication: [{}]"
+                , SecurityContextHolder.getContext().getAuthentication());
     }
 
     @Test
@@ -117,6 +131,7 @@ public class MyControllerTests extends AbstractUnitTests {
         RequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post(ProtectedApiV1Controller.REQUEST_MAPPING_URI_PREFIX
                         + "/my/public-key")
+                .with(authentication(prepareAuthenticationToken_basic()))
                 .with(csrf())
                 //.with(SecurityMockMvcRequestPostProcessors.user((UserDetails) authentication.getPrincipal()))
                 .accept(MediaType.APPLICATION_JSON);
@@ -143,6 +158,7 @@ public class MyControllerTests extends AbstractUnitTests {
         RequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post(ProtectedApiV1Controller.REQUEST_MAPPING_URI_PREFIX
                         + "/my/user-info")
+                .with(authentication(prepareAuthenticationToken_basic()))
                 .with(csrf())
                 .accept(MediaType.APPLICATION_JSON);
 

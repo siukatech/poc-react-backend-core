@@ -38,6 +38,7 @@ import java.util.List;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -50,8 +51,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         "client-id=XXX"
         , "client-secret=XXX"
         , "client-realm=react-backend-realm"
-//		, "oauth2-client-keycloak=http://localhost:38180"
-        , "oauth2-client-keycloak=XXX"
+        , "oauth2-client-keycloak=http://keycloak-host-name"
+        , "oauth2-client-redirect-uri=http://redirect-host-name/redirect"
         , "spring.profiles.active=dev"
         , "logging.level.com.siukatech.poc.react.backend.parent: TRACE"
     }
@@ -63,9 +64,9 @@ public class UserControllerTests {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 //    @Autowired
 
+    private MockMvc mockMvc;
     @Autowired
     private WebApplicationContext webApplicationContext;
-    private MockMvc mockMvc;
     @MockBean
     private UserService userService;
 //    @MockBean
@@ -74,8 +75,8 @@ public class UserControllerTests {
     private EncryptedBodyContext encryptedBodyContext;
     @MockBean
     private EncryptedBodyAdviceHelper encryptedBodyAdviceHelper;
-    @MockBean
-    private InMemoryClientRegistrationRepository clientRegistrationRepository;
+//    @MockBean
+//    private InMemoryClientRegistrationRepository clientRegistrationRepository;
 
 
 //    private UserEntity prepareUserEntity_basic() {
@@ -116,12 +117,14 @@ public class UserControllerTests {
             default:
         }
         //
-        UsernamePasswordAuthenticationToken authenticationToken = prepareAuthenticationToken_basic();
-        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+//        UsernamePasswordAuthenticationToken authenticationToken = prepareAuthenticationToken_basic();
+//        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         //
-        mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
-                .apply(springSecurity())
-                .build();
+        if (mockMvc == null) {
+            mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
+                    .apply(springSecurity())
+                    .build();
+        }
         //
         logger.debug("setup - SecurityContextHolder.getContext.getAuthentication: [" + SecurityContextHolder.getContext().getAuthentication() + "]");
     }
@@ -142,6 +145,7 @@ public class UserControllerTests {
         RequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post(ProtectedApiV1Controller.REQUEST_MAPPING_URI_PREFIX
                         + "/users/{targetUserId}/public-key", userDto.getUserId())
+                .with(authentication(prepareAuthenticationToken_basic()))
                 .with(csrf())
                 //.with(SecurityMockMvcRequestPostProcessors.user((UserDetails) authentication.getPrincipal()))
                 .accept(MediaType.APPLICATION_JSON);
@@ -168,6 +172,7 @@ public class UserControllerTests {
         RequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post(ProtectedApiV1Controller.REQUEST_MAPPING_URI_PREFIX
                         + "/users/{targetUserId}/user-info", userDto.getUserId())
+                .with(authentication(prepareAuthenticationToken_basic()))
                 .with(csrf())
                 .accept(MediaType.APPLICATION_JSON);
 
