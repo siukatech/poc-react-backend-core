@@ -17,7 +17,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Reference
+ * Reference:
  * https://stackoverflow.com/a/26840503
  *
  * @Test only supports ".properties" files only.

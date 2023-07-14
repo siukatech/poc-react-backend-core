@@ -72,7 +72,7 @@ dependencies {
 
 Besides, this is a library, not a bootable jar.  
 Therefore, the configuration of plugin has been updated as below.  
-**Reference**  
+**Reference:**  
 https://stackoverflow.com/a/55731664
 ```groovy
 plugins {
@@ -316,7 +316,7 @@ On frontend, the `crypto-js` (AES/CBC) can decrypt the java `aes-str` (AES/CBC) 
 The `iv` is required the byte array format which means the decoding should be happened before.  
 The `CryptoJS.enc.Base64.parse([base64-str])` decodes `base64-str` to `byte-array`.  
 
-**Reference**  
+**Reference:**  
 https://github.com/kyungw00k/encrypt-something-in-java-and-decrypt-it-in-javascript-by-example  
 
 ```javascript
@@ -345,7 +345,7 @@ The RSA key cannot encrypt content that exceeds the defined length (key-size min
 As a result, RSA is designed to encrypt small content, such as `aes-key`.  
 The proper way should be similar to reference below.  
 
-**Reference**  
+**Reference:**  
 https://mbed-tls.readthedocs.io/en/latest/kb/cryptography/rsa-encryption-maximum-data-size/
 
 > 1. Generate a 256-bit random `key-str`  

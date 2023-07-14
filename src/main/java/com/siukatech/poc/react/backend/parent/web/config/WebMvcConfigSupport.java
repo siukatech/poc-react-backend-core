@@ -46,7 +46,8 @@ public class WebMvcConfigSupport extends WebMvcConfigurationSupport {
 //    }
 
     /**
-     * Reference: https://stackoverflow.com/q/36906877
+     * Reference:
+     * https://stackoverflow.com/q/36906877
      * disable feature WRITE_DATES_AS_TIMESTAMPS
      *
      * @param converters the list of configured converters to extend

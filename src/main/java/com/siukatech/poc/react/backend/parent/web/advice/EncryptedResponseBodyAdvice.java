@@ -22,7 +22,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 import java.util.Arrays;
 
 /**
- * Reference
+ * Reference:
  * http://www.javabyexamples.com/quick-guide-to-responsebodyadvice-in-spring-mvc
  */
 @Slf4j

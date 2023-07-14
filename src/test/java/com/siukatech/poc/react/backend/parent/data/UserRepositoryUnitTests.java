@@ -41,7 +41,7 @@ public class UserRepositoryUnitTests extends AbstractJpaTests {
     }
 
     /**
-     * Reference
+     * Reference:
      * https://stackoverflow.com/a/58623532
      */
     @BeforeEach()

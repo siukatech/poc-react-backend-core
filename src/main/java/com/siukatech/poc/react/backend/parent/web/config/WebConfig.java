@@ -31,7 +31,7 @@ import org.springframework.web.client.RestTemplate;
 public class WebConfig {
 
     /**
-     * Reference
+     * Reference:
      * https://stackoverflow.com/a/67973800
      * https://github.com/FasterXML/jackson-databind/issues/3262#issuecomment-909008472
      *
