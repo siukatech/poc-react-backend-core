@@ -1,4 +1,4 @@
-package com.siukatech.poc.react.backend.parent.business;
+package com.siukatech.poc.react.backend.parent.business.service;
 
 import com.siukatech.poc.react.backend.parent.AbstractUnitTests;
 import com.siukatech.poc.react.backend.parent.business.dto.UserDto;
@@ -23,7 +23,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 //@ContextConfiguration(classes = {WebConfig.class})
-public class UserServiceUnitTests extends AbstractUnitTests {
+public class UserServiceTests extends AbstractUnitTests {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
