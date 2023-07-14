@@ -1,4 +1,4 @@
-package com.siukatech.poc.react.backend.parent.global;
+package com.siukatech.poc.react.backend.parent.global.config;
 
 import com.siukatech.poc.react.backend.parent.AbstractUnitTests;
 import com.siukatech.poc.react.backend.parent.global.config.ParentAppConfig;
@@ -34,10 +34,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 @EnableConfigurationProperties
 @ContextConfiguration(classes = ParentAppConfig.class)
 //@ContextConfiguration(classes = ParentAppConfig.class, initializers = ConfigDataApplicationContextInitializer.class)
-//@TestPropertySource("classpath:global/parent-app-config-test.yml")
-@TestPropertySource("classpath:global/parent-app-config-test.properties")
-//@TestPropertySource(properties = {"spring.config.location = classpath:global/parent-app-config-test.properties"})
-//@TestPropertySource(locations= {"classpath:global/parent-app-config-test.yml"})
+//@TestPropertySource("classpath:global/parent-app-config-tests.yml")
+@TestPropertySource("classpath:global/parent-app-config-tests.properties")
+//@TestPropertySource(properties = {"spring.config.location = classpath:global/parent-app-config-tests.properties"})
+//@TestPropertySource(locations= {"classpath:global/parent-app-config-tests.yml"})
 public class ParentAppConfigTests extends AbstractUnitTests {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());

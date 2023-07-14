@@ -8,16 +8,19 @@ import org.slf4j.LoggerFactory;
 import org.springframework.test.context.TestPropertySource;
 
 
-@TestPropertySource(properties = {
-        "client-id=XXX"
-        , "client-secret=XXX"
-        , "client-realm=react-backend-realm"
-        , "oauth2-client-keycloak=http://keycloak-host-name"
-        , "oauth2-client-redirect-uri=http://redirect-host-name/redirect"
-        , "spring.profiles.active=dev"
-        , "logging.level.org.springframework.web: TRACE"
-        , "logging.level.com.siukatech.poc.react.backend.parent: DEBUG"
-})
+@TestPropertySource(
+//        properties = {
+//        "client-id=XXX"
+//        , "client-secret=XXX"
+//        , "client-realm=react-backend-realm"
+//        , "oauth2-client-keycloak=http://keycloak-host-name"
+//        , "oauth2-client-redirect-uri=http://redirect-host-name/redirect"
+//        , "spring.profiles.active=dev"
+//        , "logging.level.org.springframework.web: TRACE"
+//        , "logging.level.com.siukatech.poc.react.backend.parent: DEBUG"
+//}
+        locations = {"classpath:abstract-unit-tests.properties"}
+)
 public abstract class AbstractUnitTests {
 
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger(AbstractUnitTests.class);
