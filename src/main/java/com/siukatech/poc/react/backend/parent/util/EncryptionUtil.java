@@ -32,6 +32,15 @@ public class EncryptionUtil {
     private EncryptionUtil() {
     }
 
+    public static String generateRandomToken(int length) {
+        SecureRandom secureRandom = new SecureRandom();
+        byte[] bytes = new byte[length];
+        secureRandom.nextBytes(bytes);
+        Base64.Encoder encoder = Base64.getEncoder().withoutPadding();
+        String tokenStr = encoder.encodeToString(bytes);
+        return tokenStr;
+    }
+
     public static KeyPair generateRsaKeyPair() throws NoSuchAlgorithmException {
         KeyPairGenerator keyGen = KeyPairGenerator.getInstance(ALGORITHM_RSA);
         SecureRandom secureRandom = new SecureRandom();
