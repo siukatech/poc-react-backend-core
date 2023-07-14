@@ -1,8 +1,9 @@
-package com.siukatech.poc.react.backend.parent.web;
+package com.siukatech.poc.react.backend.parent.web.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.siukatech.poc.react.backend.parent.AbstractUnitTests;
 import com.siukatech.poc.react.backend.parent.AbstractWebTests;
+import com.siukatech.poc.react.backend.parent.business.service.AuthService;
 import com.siukatech.poc.react.backend.parent.web.controller.AuthController;
 import com.siukatech.poc.react.backend.parent.web.model.TokenRes;
 import org.junit.jupiter.api.BeforeAll;
@@ -41,20 +42,23 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(controllers = {AuthController.class})
 @AutoConfigureMockMvc(addFilters = false)
-@TestPropertySource(properties = {
-        "spring.security.oauth2.client.registration.keycloak.client-id: ${client-id}"
-        , "spring.security.oauth2.client.registration.keycloak.client-secret: ${client-secret}"
-        , "spring.security.oauth2.client.registration.keycloak.authorization-grant-type: authorization_code"
-        , "spring.security.oauth2.client.registration.keycloak.scope: openid"
-        , "spring.security.oauth2.client.registration.keycloak.redirect-uri: ${oauth2-client-redirect-uri}"
-        //
-        , "spring.security.oauth2.client.provider.keycloak.authorization-uri: ${oauth2-client-keycloak}/realms/${client-realm}/protocol/openid-connect/auth"
-        , "spring.security.oauth2.client.provider.keycloak.token-uri: ${oauth2-client-keycloak}/realms/${client-realm}/protocol/openid-connect/token"
-        , "spring.security.oauth2.client.provider.keycloak.user-info-uri: ${oauth2-client-keycloak}/realms/${client-realm}/protocol/openid-connect/userinfo"
-        , "spring.security.oauth2.client.provider.keycloak.issuer-uri: ${oauth2-client-keycloak}/realms/${client-realm}"
-        , "spring.security.oauth2.client.provider.keycloak.jwk-set-uri: ${oauth2-client-keycloak}/realms/${client-realm}/protocol/openid-connect/certs"
-        , "spring.security.oauth2.client.provider.keycloak.user-name-attribute: preferred_username"
-})
+@TestPropertySource(
+//        properties = {
+//        "spring.security.oauth2.client.registration.keycloak.client-id: ${client-id}"
+//        , "spring.security.oauth2.client.registration.keycloak.client-secret: ${client-secret}"
+//        , "spring.security.oauth2.client.registration.keycloak.authorization-grant-type: authorization_code"
+//        , "spring.security.oauth2.client.registration.keycloak.scope: openid"
+//        , "spring.security.oauth2.client.registration.keycloak.redirect-uri: ${oauth2-client-redirect-uri}"
+//        //
+//        , "spring.security.oauth2.client.provider.keycloak.authorization-uri: ${oauth2-client-keycloak}/realms/${client-realm}/protocol/openid-connect/auth"
+//        , "spring.security.oauth2.client.provider.keycloak.token-uri: ${oauth2-client-keycloak}/realms/${client-realm}/protocol/openid-connect/token"
+//        , "spring.security.oauth2.client.provider.keycloak.user-info-uri: ${oauth2-client-keycloak}/realms/${client-realm}/protocol/openid-connect/userinfo"
+//        , "spring.security.oauth2.client.provider.keycloak.issuer-uri: ${oauth2-client-keycloak}/realms/${client-realm}"
+//        , "spring.security.oauth2.client.provider.keycloak.jwk-set-uri: ${oauth2-client-keycloak}/realms/${client-realm}/protocol/openid-connect/certs"
+//        , "spring.security.oauth2.client.provider.keycloak.user-name-attribute: preferred_username"
+//}
+        locations = {"classpath:abstract-oauth2-tests.properties"}
+)
 public class AuthControllerTests extends AbstractWebTests {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -65,30 +69,34 @@ public class AuthControllerTests extends AbstractWebTests {
     @Autowired
     private MockMvc mockMvc;
 
-    /**
-     * @Autowired is defined because the OAuth2ClientProperties will be created based on the properties.
-     * Those oauth2 properties are provided by @TestPropertiesSource
-     */
-//    @MockBean
-    @Autowired
-    private OAuth2ClientProperties oAuth2ClientProperties;
-
-    /**
-     * @MockBean is defined because we dont need real rest call in our test.
-     * Mock the oauth2ClientRestTemplate.exchange will be fine.
-     */
     @MockBean
-    private RestTemplate oauth2ClientRestTemplate;
+    private AuthService authService;
 
-    /**
-     * ~~@SpyBean is defined because the objectMapper has been used in 'auth' and 'token' methods.~~
-     * ~~There are some object type conversions happened in above-mentioned methods.~~
-     * ~~So we need a semi-real bean here for our action.~~
-     * @Autowired is defined because we need the real objectMapper to perform object conversion.
-     */
+//    /**
+//     * @Autowired is defined because the OAuth2ClientProperties will be created based on the properties.
+//     * Those oauth2 properties are provided by @TestPropertiesSource
+//     */
+////    @MockBean
+////    @Autowired
 //    @SpyBean
-    @Autowired
-    private ObjectMapper objectMapper;
+//    private OAuth2ClientProperties oAuth2ClientProperties;
+//
+//    /**
+//     * @MockBean is defined because we dont need real rest call in our test.
+//     * Mock the oauth2ClientRestTemplate.exchange will be fine.
+//     */
+//    @MockBean
+//    private RestTemplate oauth2ClientRestTemplate;
+//
+//    /**
+//     * ~~@SpyBean is defined because the objectMapper has been used in 'auth' and 'token' methods.~~
+//     * ~~There are some object type conversions happened in above-mentioned methods.~~
+//     * ~~So we need a semi-real bean here for our action.~~
+//     * @Autowired is defined because we need the real objectMapper to perform object conversion.
+//     */
+////    @SpyBean
+//    @Autowired
+//    private ObjectMapper objectMapper;
 
     /**
      * @MockBean is defined for InMemoryClientRegistrationRepository.
@@ -128,6 +136,15 @@ public class AuthControllerTests extends AbstractWebTests {
 
     private final String CLIENT_NAME = "keycloak";
 
+
+    private TokenRes prepareTokenRes() {
+        TokenRes tokenRes = new TokenRes("accessToken"
+                , "refreshToken", "expiresIn"
+                , "refreshExpiresIn", "tokenType"
+                , 1, "sessionState", "scope");
+        return tokenRes;
+    }
+
     @BeforeEach
     public void setup(TestInfo testInfo) {
 //        OAuth2ClientProperties.Registration registration = new OAuth2ClientProperties.Registration();
@@ -155,11 +172,12 @@ public class AuthControllerTests extends AbstractWebTests {
     @Test
     public void auth_basic() throws Exception {
         // given
+        String clientName = CLIENT_NAME;
 
 
         // when
         RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/v1/public" + "/auth/login/{clientName}", CLIENT_NAME)
+                .get("/v1/public" + "/auth/login/{clientName}", clientName)
                 .with(csrf())
                 ;
 
@@ -176,18 +194,16 @@ public class AuthControllerTests extends AbstractWebTests {
     @Test
     public void token_basic() throws Exception {
         // given
+        String clientName = CLIENT_NAME;
         String code = "this-is-an-unit-test-code";
-        TokenRes tokenRes = new TokenRes("accessToken"
-                , "refreshToken", "expiresIn"
-                , "refreshExpiresIn", "tokenType"
-                , 1, "sessionState", "scope");
-        when(oauth2ClientRestTemplate.exchange(anyString()
-                , eq(HttpMethod.POST), any(HttpEntity.class), eq(TokenRes.class)))
-                .thenReturn(ResponseEntity.ok(tokenRes));
+//        when(oauth2ClientRestTemplate.exchange(anyString()
+//                , eq(HttpMethod.POST), any(HttpEntity.class), eq(TokenRes.class)))
+//                .thenReturn(ResponseEntity.ok(prepareTokenRes()));
+        when(authService.resolveTokenRes(clientName, code)).thenReturn(prepareTokenRes());
 
         // when
         RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .post("/v1/public" + "/auth/token/{clientName}/{code}", CLIENT_NAME, code)
+                .post("/v1/public" + "/auth/token/{clientName}/{code}", clientName, code)
                 .with(csrf())
                 ;
 
@@ -196,7 +212,7 @@ public class AuthControllerTests extends AbstractWebTests {
                 .perform(requestBuilder)
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("access_token")))
+                .andExpect(content().string(containsString("accessToken")))
                 .andReturn()
                 ;
     }
