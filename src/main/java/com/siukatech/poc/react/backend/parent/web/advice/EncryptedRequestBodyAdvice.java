@@ -1,6 +1,6 @@
 package com.siukatech.poc.react.backend.parent.web.advice;
 
-import com.siukatech.poc.react.backend.parent.business.dto.UserDto;
+import com.siukatech.poc.react.backend.parent.business.dto.MyKeyDto;
 import com.siukatech.poc.react.backend.parent.web.context.EncryptedBodyContext;
 import com.siukatech.poc.react.backend.parent.web.helper.EncryptedBodyAdviceHelper;
 import com.siukatech.poc.react.backend.parent.web.model.EncryptedDetail;
@@ -93,13 +93,13 @@ public class EncryptedRequestBodyAdvice extends RequestBodyAdviceAdapter {
 //        String finalUserId = userId;
 //        UserEntity userEntity = this.userRepository.findByUserId(userId)
 //                .orElseThrow(() -> new EntityNotFoundException("No such user [" + finalUserId + "]"));
-        UserDto userDto = this.encryptedBodyAdviceHelper.resolveMyUserInfo(userId);
+        MyKeyDto myKeyDto = this.encryptedBodyAdviceHelper.resolveMyKeyInfo(userId);
 
         logger.debug("beforeBodyRead - methodParameter.getMethod.getName: [" + methodParameter.getMethod().getName()
                 + "], methodParameter.getParameterType.getName: [" + methodParameter.getParameterType().getName()
                 + "], userId: [" + userId
 //                + "], userEntity.getUserId: [" + userEntity.getUserId()
-                + "], userDto.getUserId: [" + (userDto == null ? "NULL" : userDto.getUserId())
+                + "], myKeyDto.getUserId: [" + (myKeyDto == null ? "NULL" : myKeyDto.getUserId())
                 + "], authentication.getName: [" + (authentication == null ? "NULL" : authentication.getName())
                 + "], authentication.isAuthenticated: [" + (authentication == null ? "NULL" : authentication.isAuthenticated())
                 + "]");
@@ -148,7 +148,7 @@ public class EncryptedRequestBodyAdvice extends RequestBodyAdviceAdapter {
             EncryptedDetail encryptedDetail = this.encryptedBodyAdviceHelper
                     .decryptDataBase64ToBodyDetail(encryptedRequestBody
 //                            , userEntity
-                            , userDto
+                            , myKeyDto
                     );
 
             EncryptedInfo encryptedInfo = encryptedDetail.encryptedInfo();
@@ -164,7 +164,7 @@ public class EncryptedRequestBodyAdvice extends RequestBodyAdviceAdapter {
                     + "]");
 
 //            this.encryptedBodyContext.setUserEntity(userEntity);
-            this.encryptedBodyContext.setUserDto(userDto);
+            this.encryptedBodyContext.setMyKeyDto(myKeyDto);
             this.encryptedBodyContext.setEncryptedDetail(encryptedDetail);
 
 //            byte[] decryptedData = body;

@@ -1,6 +1,7 @@
 package com.siukatech.poc.react.backend.parent.web.controller;
 
 import com.siukatech.poc.react.backend.parent.business.dto.UserDto;
+import com.siukatech.poc.react.backend.parent.business.dto.MyKeyDto;
 import com.siukatech.poc.react.backend.parent.business.service.UserService;
 import com.siukatech.poc.react.backend.parent.web.annotation.v1.ProtectedApiV1Controller;
 import lombok.extern.slf4j.Slf4j;
@@ -27,10 +28,21 @@ public class MyController {
         logger.debug("getPublicKey - authentication: [{}], authenticationInSc: [{}]"
                 , authentication, authenticationInSc);
         String userId = authentication.getName();
-        UserDto userDto = this.userService.findByUserId(userId);
+        MyKeyDto myKeyDto = this.userService.findKeyByUserId(userId);
 
-        String publicKeyBase64 = userDto.getPublicKey();
+        String publicKeyBase64 = myKeyDto.getPublicKey();
         return ResponseEntity.ok(publicKeyBase64);
+    }
+
+    @PostMapping("/my/key-info")
+    public ResponseEntity<?> getKeyInfo(Authentication authentication) {
+        Authentication authenticationInSc = SecurityContextHolder.getContext().getAuthentication();
+        logger.debug("getKeyInfo - authentication: [{}], authenticationInSc: [{}]"
+                , authentication, authenticationInSc);
+        String userId = authentication.getName();
+        MyKeyDto myKeyDto = this.userService.findKeyByUserId(userId);
+
+        return ResponseEntity.ok(myKeyDto);
     }
 
     @PostMapping("/my/user-info")

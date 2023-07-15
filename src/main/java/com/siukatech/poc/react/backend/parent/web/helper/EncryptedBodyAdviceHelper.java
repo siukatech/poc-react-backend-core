@@ -1,7 +1,7 @@
 package com.siukatech.poc.react.backend.parent.web.helper;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.siukatech.poc.react.backend.parent.business.dto.UserDto;
+import com.siukatech.poc.react.backend.parent.business.dto.MyKeyDto;
 import com.siukatech.poc.react.backend.parent.global.config.ParentAppConfig;
 import com.siukatech.poc.react.backend.parent.util.EncryptionUtil;
 import com.siukatech.poc.react.backend.parent.web.annotation.base.EncryptedController;
@@ -53,16 +53,16 @@ public class EncryptedBodyAdviceHelper {
     public EncryptedDetail decryptRsaDataBase64ToBodyDetail(
             String encryptedRsaDataBase64
 //            , UserEntity userEntity
-            , UserDto userDto
+            , MyKeyDto myKeyDto
     ) throws Exception {
 //        String userId = userEntity.getUserId();
-        String userId = userDto.getUserId();
+        String userId = myKeyDto.getUserId();
         logger.debug("decryptRsaDataBase64ToBodyDetail - userId: [" + userId
                 + "], start");
         byte[] decryptedBodyData = EncryptionUtil.decryptWithRsaPrivateKey(
                 Base64.getDecoder().decode(encryptedRsaDataBase64)
 //                , userEntity.getPrivateKey()
-                , userDto.getPrivateKey()
+                , myKeyDto.getPrivateKey()
         );
         String decryptedBodyStr = new String(decryptedBodyData);
         logger.debug("decryptRsaDataBase64ToBodyDetail - encryptedRsaDataBase64: [" + encryptedRsaDataBase64
@@ -168,10 +168,10 @@ public class EncryptedBodyAdviceHelper {
     public EncryptedDetail decryptDataBase64ToBodyDetail(
             String encryptedDataBase64
 //            , UserEntity userEntity
-            , UserDto userDto
+            , MyKeyDto myKeyDto
     ) throws Exception {
 //        String userId = userEntity.getUserId();
-        String userId = userDto.getUserId();
+        String userId = myKeyDto.getUserId();
         logger.debug("decryptDataBase64ToBodyDetail - userId: [" + userId
                 + "], start");
         byte[] encryptedData = Base64.getDecoder().decode(encryptedDataBase64.getBytes(StandardCharsets.UTF_8));
@@ -190,7 +190,7 @@ public class EncryptedBodyAdviceHelper {
         byte[] decryptedRsaInfoData = EncryptionUtil.decryptWithRsaPrivateKey(
                 Base64.getDecoder().decode(encryptedRsaInfo)
 //                , userEntity.getPrivateKey()
-                , userDto.getPrivateKey()
+                , myKeyDto.getPrivateKey()
         );
         String decryptedRsaInfoStr = new String(decryptedRsaInfoData);
         logger.debug("decryptDataBase64ToBodyDetail - userId: [" + userId
@@ -217,29 +217,33 @@ public class EncryptedBodyAdviceHelper {
         return encryptedDetail;
     }
 
-    public UserDto resolveMyUserInfo(String userId) {
-        String myUserInfoUrl = this.parentAppConfig.getMyUserInfoUrl();
-        UserDto userDto = null;
-        if (StringUtils.isNotEmpty(myUserInfoUrl)) {
-            ResponseEntity<UserDto> responseEntity = this.oauth2ClientRestTemplate.exchange(
-                    myUserInfoUrl, HttpMethod.POST, HttpEntity.EMPTY, UserDto.class);
-            userDto = responseEntity.getBody();
-            logger.debug("resolveMyUserInfo - userId: [{}], myUserInfoUrl: [{}], userDto.getUserId: [{}]"
+    public MyKeyDto resolveMyKeyInfo(String userId) {
+        String myKeyInfoUrl = this.parentAppConfig.getMyKeyInfoUrl();
+        MyKeyDto myKeyDto = null;
+        if (StringUtils.isNotEmpty(myKeyInfoUrl)) {
+            ResponseEntity<MyKeyDto> responseEntity = this.oauth2ClientRestTemplate.exchange(
+                    myKeyInfoUrl, HttpMethod.POST, HttpEntity.EMPTY, MyKeyDto.class);
+            myKeyDto = responseEntity.getBody();
+            logger.debug("resolveMyKeyInfo - userId: [{}], myKeyInfoUrl: [{}], myKeyDto.getUserId: [{}]"
 //                + ", responseEntity.getBody.toString: [{}]"
-                    , userId, myUserInfoUrl, userDto.getUserId()
+                    , userId, myKeyInfoUrl, myKeyDto.getUserId()
 //                , responseEntity.getBody().toString()
             );
-            if (!userId.equals(userDto.getUserId())) {
-                throw new EntityNotFoundException("User does not match userId: [%s], userDto.getUserId: [%s]".formatted(userId, userDto.getUserId()));
+            if (!userId.equals(myKeyDto.getUserId())) {
+                throw new EntityNotFoundException(
+                        "User does not match userId: [%s], myKeyDto.getUserId: [%s]"
+                                .formatted(userId, myKeyDto.getUserId()));
             }
         }
         else {
-            logger.debug("resolveMyUserInfo - userId: [{}], myUserInfoUrl: [{}]"
-                    , userId, myUserInfoUrl
+            logger.debug("resolveMyKeyInfo - userId: [{}], myKeyInfoUrl: [{}]"
+                    , userId, myKeyInfoUrl
             );
-            throw new RuntimeException("User with userId: [%s] cannot be resolved because of the empty my-user-info".formatted(userId));
+            throw new RuntimeException(
+                    "User with userId: [%s] cannot be resolved because of the empty my-user-info"
+                            .formatted(userId));
         }
-        return userDto;
+        return myKeyDto;
     }
 
     public boolean isEncryptedApiController(MethodParameter methodParameter) {

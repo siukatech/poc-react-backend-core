@@ -56,9 +56,11 @@ public class ParentAppConfigTests extends AbstractUnitTests {
     @Test
     public void parentAppConfig_basic() {
         logger.debug("parentAppConfig_basic - hostName: [{}]"
-                + ", myInfo: [{}]"
+                        + ", myUserInfo: [{}]"
+                        + ", myKeyInfo: [{}]"
                 , parentAppConfig.getHostName()
                 , parentAppConfig.getApi().getMyUserInfo()
+                , parentAppConfig.getApi().getMyKeyInfo()
         );
         assertThat(parentAppConfig.getHostName()).isEqualTo("http://localhost:28080");
         assertThat(parentAppConfig.getApi().getMyUserInfo()).contains(ProtectedApiV1Controller.REQUEST_MAPPING_URI_PREFIX);
@@ -66,5 +68,8 @@ public class ParentAppConfigTests extends AbstractUnitTests {
 //        assertThat(parentAppConfig.getApp().getHostName()).isEqualTo("http://localhost:28080");
 //        assertThat(parentAppConfig.getApi().getMyUserInfo()).contains(ProtectedApiV1Controller.REQUEST_MAPPING_URI_PREFIX);
 //        assertThat(parentAppConfig.getApi().getMyUserInfo()).contains("/my/user-info");
+        assertThat(parentAppConfig.getApi().getMyKeyInfo()).contains(ProtectedApiV1Controller.REQUEST_MAPPING_URI_PREFIX);
+        assertThat(parentAppConfig.getApi().getMyKeyInfo()).contains("/my/key-info");
     }
+
 }

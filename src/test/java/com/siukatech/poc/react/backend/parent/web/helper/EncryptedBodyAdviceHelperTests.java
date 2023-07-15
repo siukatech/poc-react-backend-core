@@ -2,7 +2,7 @@ package com.siukatech.poc.react.backend.parent.web.helper;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.siukatech.poc.react.backend.parent.AbstractUnitTests;
-import com.siukatech.poc.react.backend.parent.business.dto.UserDto;
+import com.siukatech.poc.react.backend.parent.business.dto.MyKeyDto;
 import com.siukatech.poc.react.backend.parent.global.config.ParentAppConfig;
 import com.siukatech.poc.react.backend.parent.util.EncryptionUtil;
 import com.siukatech.poc.react.backend.parent.web.model.EncryptedDetail;
@@ -73,18 +73,18 @@ public class EncryptedBodyAdviceHelperTests extends AbstractUnitTests {
     private ParentAppConfig parentAppConfig;
 
 
-    private UserDto prepareUserDto_basic() throws NoSuchAlgorithmException {
+    private MyKeyDto prepareMyKeyDto_basic() throws NoSuchAlgorithmException {
         KeyPair keyPair = EncryptionUtil.generateRsaKeyPair();
-        UserDto userDto = new UserDto();
-        userDto.setUserId("app-user-01");
-        userDto.setName("App User 01");
-//        userDto.setPublicKey("public-key");
-//        userDto.setPrivateKey("private-key");
+        MyKeyDto myKeyDto = new MyKeyDto();
+        myKeyDto.setUserId("app-user-01");
+//        myKeyDto.setName("App User 01");
+//        myKeyDto.setPublicKey("public-key");
+//        myKeyDto.setPrivateKey("private-key");
         String privateKeyBase64 = Base64.getEncoder().encodeToString(keyPair.getPrivate().getEncoded());
         String publicKeyBase64 = Base64.getEncoder().encodeToString(keyPair.getPublic().getEncoded());
-        userDto.setPrivateKey(privateKeyBase64);
-        userDto.setPublicKey(publicKeyBase64);
-        return userDto;
+        myKeyDto.setPrivateKey(privateKeyBase64);
+        myKeyDto.setPublicKey(publicKeyBase64);
+        return myKeyDto;
     }
 
     private EncryptedInfo prepareEncryptedInfo_basic() {
@@ -103,7 +103,7 @@ public class EncryptedBodyAdviceHelperTests extends AbstractUnitTests {
     @Test
     public void encryptBodyToDataBase64_basic() throws Exception {
         // given
-        UserDto body = this.prepareUserDto_basic();
+        MyKeyDto body = this.prepareMyKeyDto_basic();
         String bodyStr = this.objectMapper.writeValueAsString(body);
         EncryptedInfo encryptedInfo = this.prepareEncryptedInfo_basic();
         byte[] aesKey = EncryptionUtil.encryptWithRsaPublicKey(encryptedInfo.key(), body.getPublicKey());
@@ -133,7 +133,7 @@ public class EncryptedBodyAdviceHelperTests extends AbstractUnitTests {
 //    @Test
 //    public void resolveRsaInfoAesContent_basic() throws Exception {
 //        // given
-//        UserDto body = this.prepareUserDto_basic();
+//        MyKeyDto body = this.prepareMyKeyDto_basic();
 //        String bodyStr = this.objectMapper.writeValueAsString(body);
 //        EncryptedInfo encryptedInfo = this.prepareEncryptedInfo_basic();
 //        byte[] aesKey = EncryptionUtil.encryptWithRsaPublicKey(encryptedInfo.key(), body.getPublicKey());
@@ -149,7 +149,7 @@ public class EncryptedBodyAdviceHelperTests extends AbstractUnitTests {
     @Test
     public void decryptDataBase64ToBodyDetail_basic() throws Exception {
         // given
-        UserDto userDto = this.prepareUserDto_basic();
+        MyKeyDto userDto = this.prepareMyKeyDto_basic();
         String userDtoStr = this.objectMapper.writeValueAsString(userDto);
         EncryptedInfo encryptedInfo = this.prepareEncryptedInfo_basic();
         String encryptedInfoStr = this.objectMapper.writeValueAsString(encryptedInfo);
@@ -182,33 +182,37 @@ public class EncryptedBodyAdviceHelperTests extends AbstractUnitTests {
     }
 
     @Test
-    public void resolveMyUserInfo_basic() throws NoSuchAlgorithmException {
-        logger.debug("resolveMyUserInfo_basic - parentAppConfigForTests.myUserInfoUrl: [{}]"
+    public void resolveMyKeyInfo_basic() throws NoSuchAlgorithmException {
+        logger.debug("resolveMyKeyInfo_basic - parentAppConfigForTests.myUserInfoUrl: [{}]"
                         + ", parentAppConfig.myUserInfoUrl: [{}]"
+                        + ", parentAppConfig.getMyKeyInfoUrl: [{}]"
+                        + ", parentAppConfig.getMyKeyInfoUrl: [{}]"
                 , this.parentAppConfigForTests.getMyUserInfoUrl()
                 , this.parentAppConfig.getMyUserInfoUrl()
+                , this.parentAppConfigForTests.getMyKeyInfoUrl()
+                , this.parentAppConfig.getMyKeyInfoUrl()
         );
 
         // given
-        UserDto userDtoRet = prepareUserDto_basic();
-        String userId = userDtoRet.getUserId();
-        when(this.parentAppConfig.getMyUserInfoUrl())
-                .thenReturn(this.parentAppConfigForTests.getMyUserInfoUrl());
+        MyKeyDto myKeyDto = prepareMyKeyDto_basic();
+        String userId = myKeyDto.getUserId();
+        when(this.parentAppConfig.getMyKeyInfoUrl())
+                .thenReturn(this.parentAppConfigForTests.getMyKeyInfoUrl());
 //        when(oauth2ClientRestTemplate.exchange(anyString()
-//                , eq(HttpMethod.POST), eq(HttpEntity.EMPTY), eq(UserDto.class)))
-//                .thenReturn(ResponseEntity.ok(prepareUserDto_basic()));
-        doReturn(ResponseEntity.ok(userDtoRet))
+//                , eq(HttpMethod.POST), eq(HttpEntity.EMPTY), eq(MyKeyDto.class)))
+//                .thenReturn(ResponseEntity.ok(prepareMyKeyDto_basic()));
+        doReturn(ResponseEntity.ok(myKeyDto))
                 .when(this.oauth2ClientRestTemplate).exchange(anyString(), eq(HttpMethod.POST)
-                        , ArgumentMatchers.any(HttpEntity.class), eq(UserDto.class))
+                        , ArgumentMatchers.any(HttpEntity.class), eq(MyKeyDto.class))
         ;
 
         // when
-        UserDto userDto = this.encryptedBodyAdviceHelper.resolveMyUserInfo(userId);
+        MyKeyDto myKeyRet = this.encryptedBodyAdviceHelper.resolveMyKeyInfo(userId);
 
         // then
-        logger.debug("resolveMyUserInfo_basic - userDto: [{}]", userDto);
-        assertThat(userDto).hasFieldOrProperty("privateKey")
-                .has(new Condition<>(u -> u.getPrivateKey().contains(userDtoRet.getPrivateKey())
+        logger.debug("resolveMyKeyInfo_basic - myKeyRet: [{}]", myKeyRet);
+        assertThat(myKeyRet).hasFieldOrProperty("privateKey")
+                .has(new Condition<>(u -> u.getPrivateKey().contains(myKeyDto.getPrivateKey())
                         , "Has %s", "private-key"))
         ;
 

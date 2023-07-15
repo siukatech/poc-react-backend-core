@@ -21,14 +21,6 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping("/users/{targetUserId}/public-key")
-    public ResponseEntity<?> getPublicKey(@PathVariable String targetUserId) {
-        UserDto userDto = this.userService.findByUserId(targetUserId);
-
-        String publicKeyBase64 = userDto.getPublicKey();
-        return ResponseEntity.ok(publicKeyBase64);
-    }
-
     @PostMapping("/users/{targetUserId}/user-info")
     public ResponseEntity<?> getUserInfo(@PathVariable String targetUserId) {
         UserDto userDto = this.userService.findByUserId(targetUserId);

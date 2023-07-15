@@ -1,6 +1,6 @@
 package com.siukatech.poc.react.backend.parent.web.advice;
 
-import com.siukatech.poc.react.backend.parent.business.dto.UserDto;
+import com.siukatech.poc.react.backend.parent.business.dto.MyKeyDto;
 import com.siukatech.poc.react.backend.parent.web.context.EncryptedBodyContext;
 import com.siukatech.poc.react.backend.parent.web.helper.EncryptedBodyAdviceHelper;
 import com.siukatech.poc.react.backend.parent.web.model.EncryptedInfo;
@@ -90,13 +90,13 @@ public class EncryptedResponseBodyAdvice implements ResponseBodyAdvice {
                 + "]");
 
 //        UserEntity userEntity = this.encryptedBodyContext.getUserEntity();
-        UserDto userDto = this.encryptedBodyContext.getUserDto();
+        MyKeyDto myKeyDto = this.encryptedBodyContext.getMyKeyDto();
         EncryptedDetail encryptedDetail = this.encryptedBodyContext.getEncryptedDetail();
         String encryptedRsaDataBase64 = request.getHeaders().getFirst(HEADER_X_DATA_ENC_INFO);
         EncryptedInfo encryptedInfo = null;
         logger.debug("beforeBodyWrite - returnType.getMethod.getName: [" + returnType.getMethod().getName()
 //                + "], userEntity.getId: [" + (userEntity == null ? "NULL" : userEntity.getId())
-                + "], userDto.getUserId: [" + (userDto == null ? "NULL" : userDto.getUserId())
+                + "], myKeyDto.getUserId: [" + (myKeyDto == null ? "NULL" : myKeyDto.getUserId())
                 + "], encryptedBodyDetail.encryptedInfoModel.key: [" + (encryptedDetail == null ? "NULL" : encryptedDetail.encryptedInfo().key())
                 + "], encryptedRsaDataBase64: [" + encryptedRsaDataBase64
                 + "]");
@@ -105,8 +105,8 @@ public class EncryptedResponseBodyAdvice implements ResponseBodyAdvice {
 //            userEntity = this.userRepository.findByUserId(userId)
 //                    .orElseThrow(() -> new EntityNotFoundException("No such user [" + finalUserId + "]"));
 //        }
-        if (userDto == null) {
-            userDto = this.encryptedBodyAdviceHelper.resolveMyUserInfo(userId);
+        if (myKeyDto == null) {
+            myKeyDto = this.encryptedBodyAdviceHelper.resolveMyKeyInfo(userId);
         }
         if (encryptedDetail == null) {
 //            // should obtain from SecurityContext again
@@ -117,7 +117,7 @@ public class EncryptedResponseBodyAdvice implements ResponseBodyAdvice {
                 encryptedDetail = this.encryptedBodyAdviceHelper.decryptDataBase64ToBodyDetail(
                         encryptedRsaDataBase64
 //                        , userEntity
-                        , userDto
+                        , myKeyDto
                 );
                 encryptedInfo = encryptedDetail.encryptedInfo();
             } catch (Exception e) {

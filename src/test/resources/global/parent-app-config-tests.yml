@@ -3,3 +3,4 @@ app:
   host-name: http://localhost:28080
   api:
     my-user-info: /v1/protected/my/user-info
+    my-key-info: /v1/protected/my/key-info

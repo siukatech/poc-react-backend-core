@@ -92,8 +92,8 @@ public class UserControllerTests {
         UserDto userDto = new UserDto();
         userDto.setUserId("app-user-01");
         userDto.setName("App-User-01");
-        userDto.setPublicKey("public-key");
-        userDto.setPrivateKey("private-key");
+//        userDto.setPublicKey("public-key");
+//        userDto.setPrivateKey("private-key");
         return userDto;
     }
 
@@ -128,39 +128,39 @@ public class UserControllerTests {
         //
         logger.debug("setup - SecurityContextHolder.getContext.getAuthentication: [" + SecurityContextHolder.getContext().getAuthentication() + "]");
     }
-
-    @Test
-//    @WithMockUser("app-user-01")
-    public void getPublicKey_basic() throws Exception {
-        // given
-//        UserEntity userEntity = this.prepareUserEntity_basic();
-//        when(userRepository.findByUserId(anyString())).thenReturn(Optional.of(userEntity));
-        UserDto userDto = this.prepareUserDto_basic();
-        when(userService.findByUserId(anyString())).thenReturn(userDto);
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        logger.debug("getPublicKey_basic - authentication: [" + authentication + "]");
-
-        // when
-        RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .post(ProtectedApiV1Controller.REQUEST_MAPPING_URI_PREFIX
-                        + "/users/{targetUserId}/public-key", userDto.getUserId())
-                .with(authentication(prepareAuthenticationToken_basic()))
-                .with(csrf())
-                //.with(SecurityMockMvcRequestPostProcessors.user((UserDetails) authentication.getPrincipal()))
-                .accept(MediaType.APPLICATION_JSON);
-
-        // then / verify
-        MvcResult mvcResult = this.mockMvc.perform(requestBuilder)
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().string("public-key"))
-                .andReturn();
-
-        // result
-        logger.debug("getPublicKey_basic - end - mvcResult.getResponse.getContentAsString: [" + mvcResult.getResponse().getContentAsString() + "]");
-
-    }
+//
+//    @Test
+////    @WithMockUser("app-user-01")
+//    public void getPublicKey_basic() throws Exception {
+//        // given
+////        UserEntity userEntity = this.prepareUserEntity_basic();
+////        when(userRepository.findByUserId(anyString())).thenReturn(Optional.of(userEntity));
+//        UserDto userDto = this.prepareUserDto_basic();
+//        when(userService.findByUserId(anyString())).thenReturn(userDto);
+//
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        logger.debug("getPublicKey_basic - authentication: [" + authentication + "]");
+//
+//        // when
+//        RequestBuilder requestBuilder = MockMvcRequestBuilders
+//                .post(ProtectedApiV1Controller.REQUEST_MAPPING_URI_PREFIX
+//                        + "/users/{targetUserId}/public-key", userDto.getUserId())
+//                .with(authentication(prepareAuthenticationToken_basic()))
+//                .with(csrf())
+//                //.with(SecurityMockMvcRequestPostProcessors.user((UserDetails) authentication.getPrincipal()))
+//                .accept(MediaType.APPLICATION_JSON);
+//
+//        // then / verify
+//        MvcResult mvcResult = this.mockMvc.perform(requestBuilder)
+//                .andDo(print())
+//                .andExpect(status().isOk())
+//                .andExpect(content().string("public-key"))
+//                .andReturn();
+//
+//        // result
+//        logger.debug("getPublicKey_basic - end - mvcResult.getResponse.getContentAsString: [" + mvcResult.getResponse().getContentAsString() + "]");
+//
+//    }
 
     @Test
     public void getUserInfo_basic() throws Exception {

@@ -1,5 +1,6 @@
 package com.siukatech.poc.react.backend.parent.business.service;
 
+import com.siukatech.poc.react.backend.parent.business.dto.MyKeyDto;
 import com.siukatech.poc.react.backend.parent.data.entity.UserEntity;
 import com.siukatech.poc.react.backend.parent.data.repository.UserRepository;
 import com.siukatech.poc.react.backend.parent.business.dto.UserDto;
@@ -27,6 +28,14 @@ public class UserService {
         logger.debug("findByUserId - modelMapper: [" + this.modelMapper + "]");
         UserDto userDto = this.modelMapper.map(userEntity, UserDto.class);
         return userDto;
+    }
+
+    public MyKeyDto findKeyByUserId(String targetUserId) {
+        UserEntity userEntity = this.userRepository.findByUserId(targetUserId)
+                .orElseThrow(() -> new EntityNotFoundException("No such user [%s]".formatted(targetUserId)));
+        logger.debug("findKeyByUserId - modelMapper: [" + this.modelMapper + "]");
+        MyKeyDto myKeyDto = this.modelMapper.map(userEntity, MyKeyDto.class);
+        return myKeyDto;
     }
 
 }

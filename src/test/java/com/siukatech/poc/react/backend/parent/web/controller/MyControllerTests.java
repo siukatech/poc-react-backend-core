@@ -1,12 +1,10 @@
 package com.siukatech.poc.react.backend.parent.web.controller;
 
 import com.siukatech.poc.react.backend.parent.AbstractWebTests;
+import com.siukatech.poc.react.backend.parent.business.dto.MyKeyDto;
 import com.siukatech.poc.react.backend.parent.business.dto.UserDto;
 import com.siukatech.poc.react.backend.parent.business.service.UserService;
 import com.siukatech.poc.react.backend.parent.web.annotation.v1.ProtectedApiV1Controller;
-import com.siukatech.poc.react.backend.parent.web.context.EncryptedBodyContext;
-import com.siukatech.poc.react.backend.parent.web.controller.MyController;
-import com.siukatech.poc.react.backend.parent.web.helper.EncryptedBodyAdviceHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
@@ -16,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -74,9 +71,17 @@ public class MyControllerTests extends AbstractWebTests {
         UserDto userDto = new UserDto();
         userDto.setUserId("app-user-01");
         userDto.setName("App-User-01");
-        userDto.setPublicKey("public-key");
-        userDto.setPrivateKey("private-key");
+//        userDto.setPublicKey("public-key");
+//        userDto.setPrivateKey("private-key");
         return userDto;
+    }
+
+    private MyKeyDto prepareMyKeyDto_basic() {
+        MyKeyDto myKeyDto = new MyKeyDto();
+        myKeyDto.setUserId("app-user-01");
+        myKeyDto.setPublicKey("public-key");
+        myKeyDto.setPrivateKey("private-key");
+        return myKeyDto;
     }
 
     private UsernamePasswordAuthenticationToken prepareAuthenticationToken_basic() {
@@ -124,8 +129,8 @@ public class MyControllerTests extends AbstractWebTests {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         logger.debug("getPublicKey_basic - authentication: [" + authentication + "]");
 
-        UserDto userDto = this.prepareUserDto_basic();
-        when(userService.findByUserId(anyString())).thenReturn(userDto);
+        MyKeyDto myKeyDto = this.prepareMyKeyDto_basic();
+        when(userService.findKeyByUserId(anyString())).thenReturn(myKeyDto);
 
         // when
         RequestBuilder requestBuilder = MockMvcRequestBuilders
@@ -145,6 +150,31 @@ public class MyControllerTests extends AbstractWebTests {
 
         // result
         logger.debug("getPublicKey_basic - end - mvcResult.getResponse.getContentAsString: [" + mvcResult.getResponse().getContentAsString() + "]");
+
+    }
+
+    @Test
+    public void getKeyInfo_basic() throws Exception {
+        // given
+        MyKeyDto myKeyDto = this.prepareMyKeyDto_basic();
+        when(userService.findKeyByUserId(anyString())).thenReturn(myKeyDto);
+
+        // when
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                .post(ProtectedApiV1Controller.REQUEST_MAPPING_URI_PREFIX
+                        + "/my/key-info")
+                .with(authentication(prepareAuthenticationToken_basic()))
+                .with(csrf())
+                .accept(MediaType.APPLICATION_JSON);
+
+        // then / verify
+        MvcResult mvcResult = this.mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andExpect(content().json("{userId: \"app-user-01\"}"))
+                .andReturn();
+
+        // result
+        logger.debug("getKeyInfo_basic - end - mvcResult.getResponse.getContentAsString: [" + mvcResult.getResponse().getContentAsString() + "]");
 
     }
 

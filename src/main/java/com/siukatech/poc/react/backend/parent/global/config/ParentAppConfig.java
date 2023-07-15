@@ -27,18 +27,32 @@ public class ParentAppConfig {
     private Api api;
 
     public String getMyUserInfoUrl() {
-        String myInfoUrl = null;
+        String myUserInfoUrl = null;
         if ( StringUtils.isNotEmpty(this.getHostName())
                 && (this.getApi() != null && StringUtils.isNotEmpty(this.getApi().getMyUserInfo())) ) {
-            myInfoUrl = this.getHostName() + this.getApi().getMyUserInfo();
+            myUserInfoUrl = this.getHostName() + this.getApi().getMyUserInfo();
         }
-        logger.debug("getMyUserInfoUrl - getHostName: [{}], getMyUserInfo: [{}], myInfoUrl: [{}]"
+        logger.debug("getMyUserInfoUrl - getHostName: [{}], getMyUserInfo: [{}], myUserInfoUrl: [{}]"
                 , this.getHostName()
                 , (this.getApi() == null ? "NULL" : this.getApi().getMyUserInfo())
-                , myInfoUrl
+                , myUserInfoUrl
         );
-        return myInfoUrl;
+        return myUserInfoUrl;
 //        return null;
+    }
+
+    public String getMyKeyInfoUrl() {
+        String myKeyInfoUrl = null;
+        if ( StringUtils.isNotEmpty(this.getHostName())
+                && (this.getApi() != null && StringUtils.isNotEmpty(this.getApi().getMyKeyInfo())) ) {
+            myKeyInfoUrl = this.getHostName() + this.getApi().getMyKeyInfo();
+        }
+        logger.debug("getMyKeyInfoUrl - getHostName: [{}], getMyUserInfo: [{}], myKeyInfoUrl: [{}]"
+                , this.getHostName()
+                , (this.getApi() == null ? "NULL" : this.getApi().getMyKeyInfo())
+                , myKeyInfoUrl
+        );
+        return myKeyInfoUrl;
     }
 
 //    @Data
@@ -50,5 +64,6 @@ public class ParentAppConfig {
     @Data
     public static class Api {
         private String myUserInfo;
+        private String myKeyInfo;
     }
 }
