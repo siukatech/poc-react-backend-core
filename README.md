@@ -389,3 +389,37 @@ I also tried the AES/GCM on backend but failed on frontend.
 So the AES/CBC is default encryption algorithm.  
 
 
+
+# Unit Test (wip)
+After doing some study, I still dont understand the unit test.  
+Some beans will be loaded but some may not.  
+By using the Mockito library, there are @Mock and @Spy.  
+What is the different between these two usage?  
+I did some research and provide me the following idea.  
+But I still got errors when I tried to apply the findings.  
+**Reference:**  
+https://juejin.cn/post/6881981078735699976  
+https://stackoverflow.com/a/44000775  
+https://jianshu.com/p/673f93f9e675  
+https://dev.to/moaxcp/mocking-private-static-final-log-1fh9  
+https://practicingprogrammer.hashnode.dev/understanding-injectmocks-for-private-field-mocking  
+https://akolata.wordpress.com/2018/08/25/how-to-mock-non-public-fields-using-junit-mockito-and-spring/
+
+https://javadoc.io/doc/org.mockito/mockito-core/latest/org/mockito/ArgumentMatchers.html  
+
+https://baeldung.com/spring-mock-rest-template  
+
+
+
+
+I dropped some notes in MyControllerTests for my understanding of MockMvc for Spring Security.  
+
+
+## Error
+### InvalidUseOfMatchersException
+https://stackoverflow.com/a/14845734  
+https://stackoverflow.com/a/39613789  
+
+
+
+
