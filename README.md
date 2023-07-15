@@ -241,6 +241,7 @@ Maybe will add Mybatis later to do some poc.
 
 
 ## Annotation
+### **Controller
 There are several annotations created for rest controller.
 - base
   - PublicController
@@ -265,6 +266,29 @@ The corresponding annotations are required to created in this project.
 Since annotation has a limitation that does not support inheritance (Reference: https://stackoverflow.com/a/7761568).  
 The annotations in `base` are defined as baseline, common usage which are generic approach and required to attach to `[XXX]ApiV[X]Controller` series annotations.  
 Some embedded interceptors are planning to develop to cross-check the `base` annotations for security control.  
+
+
+
+### EnableReactBackendParent
+Enable ms-projects to contain the features in this library project.  
+The concept is doing `@Import` with those `@Configuration` classes.  
+```java
+@Import({
+        GlobalConfigImport.class
+        , WebConfigImport.class
+        , SecurityConfigImport.class
+})
+```
+
+- EnableReactBackendParent.class
+  - GlobalConfigImport.class
+    - ParentAppConfig.class
+  - WebConfigImport.class
+    - DataConfig.class
+    - WebConfig.class
+    - WebMvcConfigSupport.class
+  - SecurityConfigImport.class
+    - WebSecurityConfig.class
 
 
 
@@ -294,16 +318,17 @@ Two encryption algorithms are used for the solution.
 ## Prerequisite
 The ms-project `user-service` is required to turn on as the user info provider.  
 To facilitate the development, this lib-project has a simple `MyController` implementation.  
-Those ms-projects can extend this `MyController` to expose the `my-user-info` api with `UserDto` as return.  
+Those ms-projects can extend this `MyController` to expose the `my-key-info` api with `UserDto` as return.  
 This `UserDto` object provides the user-private-key for application to perform the `aes-key` decryption.  
 ```yaml
 app:
   host-name: [host-name of user-service]
   api:
     my-user-info: [my-user-info api on user-service, e.g. /v1/protected/my/user-info]
+    my-key-info: [my-key-info api on user-service, e.g. /v1/protected/my/key-info]
 ```
 
-A RuntimeException will be thrown if the my-user-info api is not available when there is an `/encrypted` api call.  
+A RuntimeException will be thrown if the `my-key-info` api is not available when there is an `/encrypted` api call.  
 
 
 
