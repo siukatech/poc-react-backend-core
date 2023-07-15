@@ -58,6 +58,7 @@ public class AuthService {
                 .map(entry -> new BasicNameValuePair(entry.getKey(), entry.getValue()))
                 .collect(Collectors.toList());
         // https://stackoverflow.com/a/2810434
+        // https://stackoverflow.com/a/16066990
         String queryString = URLEncodedUtils.format(nameValuePairList, Charset.forName(StandardCharsets.UTF_8.name()));
         String authUrl = new StringBuffer()
                 .append(provider.getAuthorizationUri())
