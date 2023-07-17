@@ -1,39 +1,28 @@
 package com.siukatech.poc.react.backend.parent.web.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.siukatech.poc.react.backend.parent.AbstractUnitTests;
 import com.siukatech.poc.react.backend.parent.AbstractWebTests;
 import com.siukatech.poc.react.backend.parent.business.service.AuthService;
-import com.siukatech.poc.react.backend.parent.web.controller.AuthController;
+import com.siukatech.poc.react.backend.parent.web.model.LoginForm;
 import com.siukatech.poc.react.backend.parent.web.model.TokenRes;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.mockito.Mock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.oauth2.client.OAuth2ClientProperties;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.mock.mockito.SpyBean;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.MediaType;
 import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.web.client.RestTemplate;
-
-import java.util.Set;
 
 import static org.hamcrest.Matchers.containsString;
-import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -62,6 +51,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class AuthControllerTests extends AbstractWebTests {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    @Autowired
+    private ObjectMapper objectMapperForTests;
 
     /**
      * Provided by WebMvcTest, therefore we can use @Autowired.
@@ -170,7 +162,7 @@ public class AuthControllerTests extends AbstractWebTests {
     }
 
     @Test
-    public void auth_basic() throws Exception {
+    public void doAuthCodeLogin_basic() throws Exception {
         // given
         String clientName = CLIENT_NAME;
 
@@ -192,18 +184,49 @@ public class AuthControllerTests extends AbstractWebTests {
     }
 
     @Test
-    public void token_basic() throws Exception {
+    public void doAuthCodeToken_basic() throws Exception {
         // given
         String clientName = CLIENT_NAME;
         String code = "this-is-an-unit-test-code";
 //        when(oauth2ClientRestTemplate.exchange(anyString()
 //                , eq(HttpMethod.POST), any(HttpEntity.class), eq(TokenRes.class)))
 //                .thenReturn(ResponseEntity.ok(prepareTokenRes()));
-        when(authService.resolveTokenRes(clientName, code)).thenReturn(prepareTokenRes());
+        when(authService.resolveAuthCodeTokenRes(clientName, code)).thenReturn(prepareTokenRes());
 
         // when
         RequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post("/v1/public" + "/auth/token/{clientName}/{code}", clientName, code)
+                .with(csrf())
+                ;
+
+        // then
+        MvcResult mvcResult = this.mockMvc
+                .perform(requestBuilder)
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("accessToken")))
+                .andReturn()
+                ;
+    }
+
+    @Test
+    public void doPasswordLogin_basic() throws Exception {
+        // given
+        String clientName = CLIENT_NAME;
+        LoginForm loginForm = new LoginForm();
+        loginForm.setUsername("username");
+        loginForm.setPassword("password");
+        String loginFormStr = this.objectMapperForTests.writeValueAsString(loginForm);
+//        when(oauth2ClientRestTemplate.exchange(anyString()
+//                , eq(HttpMethod.POST), any(HttpEntity.class), eq(TokenRes.class)))
+//                .thenReturn(ResponseEntity.ok(prepareTokenRes()));
+        when(authService.resolvePasswordTokenRes(clientName, loginForm)).thenReturn(prepareTokenRes());
+
+        // when
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                .post("/v1/public" + "/auth/login/{clientName}", clientName)
+                .content(loginFormStr)
+                .contentType(MediaType.APPLICATION_JSON)
                 .with(csrf())
                 ;
 

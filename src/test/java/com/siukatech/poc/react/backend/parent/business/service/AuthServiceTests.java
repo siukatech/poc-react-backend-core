@@ -2,28 +2,20 @@ package com.siukatech.poc.react.backend.parent.business.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.siukatech.poc.react.backend.parent.AbstractUnitTests;
-import com.siukatech.poc.react.backend.parent.business.config.ProviderConfig;
-import com.siukatech.poc.react.backend.parent.business.config.RegistrationConfig;
-import com.siukatech.poc.react.backend.parent.business.service.AuthService;
-import com.siukatech.poc.react.backend.parent.global.config.ParentAppConfig;
+import com.siukatech.poc.react.backend.parent.web.model.LoginForm;
 import com.siukatech.poc.react.backend.parent.web.model.TokenRes;
-import lombok.Data;
 import org.assertj.core.api.Condition;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.oauth2.client.OAuth2ClientProperties;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -32,16 +24,12 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.when;
 
 @ExtendWith({MockitoExtension.class
         , SpringExtension.class
@@ -157,7 +145,7 @@ public class AuthServiceTests extends AbstractUnitTests {
     }
 
     @Test
-    public void getAuthUrl_basic() {
+    public void getAuthCodeLoginUrl_basic() {
         // given
         String clientName = CLIENT_NAME;
 ////        when(this.oAuth2ClientProperties.getRegistration())
@@ -172,19 +160,19 @@ public class AuthServiceTests extends AbstractUnitTests {
                 .when(this.oAuth2ClientProperties).getRegistration();
         doReturn(this.oAuth2ClientPropertiesForTests.getProvider())
                 .when(this.oAuth2ClientProperties).getProvider();
-        logger.debug("getAuthUrl_basic - oAuth2ClientPropertiesForTests.getRegistration.size: [{}]"
+        logger.debug("getAuthCodeLoginUrl_basic - oAuth2ClientPropertiesForTests.getRegistration.size: [{}]"
                 , this.oAuth2ClientPropertiesForTests.getRegistration().size()
         );
 
         // when
-        String authUrl = this.authService.getAuthUrl(clientName);
+        String authCodeLoginUrl = this.authService.getAuthCodeLoginUrl(clientName);
 
         // then
-        assertThat(authUrl).contains("response_type");
+        assertThat(authCodeLoginUrl).contains("response_type");
     }
 
     @Test
-    public void resolveTokenRes_basic() {
+    public void resolveAuthCodeTokenRes_basic() {
         // given
         String clientName = CLIENT_NAME;
         String code = "this-is-an-unit-test-code";
@@ -205,7 +193,35 @@ public class AuthServiceTests extends AbstractUnitTests {
                 ;
 
         // when
-        TokenRes tokenRes = this.authService.resolveTokenRes(clientName, code);
+        TokenRes tokenRes = this.authService.resolveAuthCodeTokenRes(clientName, code);
+
+        // then
+        assertThat(tokenRes)
+                .hasFieldOrProperty("accessToken")
+                .has(new Condition<>(x -> {
+                    return "accessToken".equals(x.accessToken());
+                }, "Has value:%s", List.of("accessToken")))
+        ;
+    }
+
+    @Test
+    public void resolvePasswordTokenRes_basic() {
+        // given
+        String clientName = CLIENT_NAME;
+        LoginForm loginForm = new LoginForm();
+        loginForm.setUsername("username");
+        loginForm.setPassword("password");
+        doReturn(oAuth2ClientPropertiesForTests.getRegistration())
+                .when(oAuth2ClientProperties).getRegistration();
+        doReturn(oAuth2ClientPropertiesForTests.getProvider())
+                .when(oAuth2ClientProperties).getProvider();
+        doReturn(ResponseEntity.ok(prepareTokenRes()))
+                .when(this.oauth2ClientRestTemplate).exchange(anyString()
+                        , eq(HttpMethod.POST), any(HttpEntity.class), eq(TokenRes.class))
+        ;
+
+        // when
+        TokenRes tokenRes = this.authService.resolvePasswordTokenRes(clientName, loginForm);
 
         // then
         assertThat(tokenRes)
