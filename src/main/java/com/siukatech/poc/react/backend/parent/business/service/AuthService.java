@@ -2,7 +2,11 @@ package com.siukatech.poc.react.backend.parent.business.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.oauth2.sdk.GrantType;
-import com.siukatech.poc.react.backend.parent.web.model.*;
+import com.siukatech.poc.react.backend.parent.business.dto.MyKeyDto;
+import com.siukatech.poc.react.backend.parent.global.config.ParentAppConfig;
+import com.siukatech.poc.react.backend.parent.web.model.auth.*;
+import jakarta.persistence.EntityNotFoundException;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.hc.core5.http.NameValuePair;
 import org.apache.hc.core5.http.message.BasicNameValuePair;
 import org.apache.hc.core5.net.URLEncodedUtils;
@@ -13,6 +17,8 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -30,13 +36,48 @@ public class AuthService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final OAuth2ClientProperties oAuth2ClientProperties;
     private final RestTemplate oauth2ClientRestTemplate;
+//    private final ParentAppConfig parentAppConfig;
     private final ObjectMapper objectMapper;
 
-    public AuthService(OAuth2ClientProperties oAuth2ClientProperties, RestTemplate oauth2ClientRestTemplate, ObjectMapper objectMapper) {
+    public AuthService(OAuth2ClientProperties oAuth2ClientProperties
+            , RestTemplate oauth2ClientRestTemplate
+//            , ParentAppConfig parentAppConfig
+            , ObjectMapper objectMapper
+    ) {
         this.oAuth2ClientProperties = oAuth2ClientProperties;
         this.oauth2ClientRestTemplate = oauth2ClientRestTemplate;
+//        this.parentAppConfig = parentAppConfig;
         this.objectMapper = objectMapper;
     }
+
+//    public MyKeyDto resolveMyKeyInfo(String userId) {
+//        String myKeyInfoUrl = this.parentAppConfig.getMyKeyInfoUrl();
+//        MyKeyDto myKeyDto = null;
+//        if (StringUtils.isNotEmpty(myKeyInfoUrl)) {
+//            ResponseEntity<MyKeyDto> responseEntity = this.oauth2ClientRestTemplate.exchange(
+//                    myKeyInfoUrl, HttpMethod.POST, HttpEntity.EMPTY, MyKeyDto.class);
+//            myKeyDto = responseEntity.getBody();
+//            logger.debug("resolveMyKeyInfo - userId: [{}], myKeyInfoUrl: [{}], myKeyDto.getUserId: [{}]"
+////                + ", responseEntity.getBody.toString: [{}]"
+//                    , userId, myKeyInfoUrl, myKeyDto.getUserId()
+////                , responseEntity.getBody().toString()
+//            );
+//            if (!userId.equals(myKeyDto.getUserId())) {
+//                throw new EntityNotFoundException(
+//                        "User does not match userId: [%s], myKeyDto.getUserId: [%s]"
+//                                .formatted(userId, myKeyDto.getUserId()));
+//            }
+//        }
+//        else {
+//            logger.debug("resolveMyKeyInfo - userId: [{}], myKeyInfoUrl: [{}]"
+//                    , userId, myKeyInfoUrl
+//            );
+//            throw new RuntimeException(
+//                    "User with userId: [%s] cannot be resolved because of the empty my-user-info"
+//                            .formatted(userId));
+//        }
+//        return myKeyDto;
+//    }
 
     public String getAuthCodeLoginUrl(String clientName) {
         OAuth2ClientProperties.Registration registration = this.oAuth2ClientProperties.getRegistration().get(clientName);
@@ -197,6 +238,20 @@ public class AuthService {
                 .password(loginForm.getPassword())
                 .build();
         TokenRes tokenRes = this.resolveOAuth2TokenRes(clientName, tokenPasswordReq, httpHeaders);
+        return tokenRes;
+    }
+
+    public TokenRes resolveRefreshTokenTokenRes(String clientName, RefreshTokenForm refreshTokenForm) {
+        OAuth2ClientProperties.Registration registration = this.oAuth2ClientProperties.getRegistration().get(clientName);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        TokenReq tokenRefreshTokenReq = TokenRefreshTokenReq.builder()
+                .clientId(registration.getClientId())
+                .clientSecret(registration.getClientSecret())
+                .grantType(GrantType.REFRESH_TOKEN.getValue())
+                .refreshToken(refreshTokenForm.getRefreshToken())
+//                .accessToken(refreshTokenForm.getAccessToken())
+                .build();
+        TokenRes tokenRes = this.resolveOAuth2TokenRes(clientName, tokenRefreshTokenReq, httpHeaders);
         return tokenRes;
     }
 

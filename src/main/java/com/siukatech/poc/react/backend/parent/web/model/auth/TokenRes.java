@@ -1,4 +1,4 @@
-package com.siukatech.poc.react.backend.parent.web.model;
+package com.siukatech.poc.react.backend.parent.web.model.auth;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -10,5 +10,6 @@ public record TokenRes(@JsonProperty("access_token") String accessToken
         , @JsonProperty("not-before-policy") Integer notBeforePolicy
         , @JsonProperty("session_state") String sessionState
         , @JsonProperty("scope") String scope
+//        , @JsonProperty("public_key") String publicKey
 ) {
 }

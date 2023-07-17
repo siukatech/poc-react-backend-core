@@ -1,4 +1,4 @@
-package com.siukatech.poc.react.backend.parent.web.model;
+package com.siukatech.poc.react.backend.parent.web.model.auth;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

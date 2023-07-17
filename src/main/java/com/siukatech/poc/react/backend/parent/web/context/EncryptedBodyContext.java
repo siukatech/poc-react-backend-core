@@ -1,7 +1,7 @@
 package com.siukatech.poc.react.backend.parent.web.context;
 
 import com.siukatech.poc.react.backend.parent.business.dto.MyKeyDto;
-import com.siukatech.poc.react.backend.parent.web.model.EncryptedDetail;
+import com.siukatech.poc.react.backend.parent.web.model.encrypted.EncryptedDetail;
 import lombok.Data;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.RequestScope;

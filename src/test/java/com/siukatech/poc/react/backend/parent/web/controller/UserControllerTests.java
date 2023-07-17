@@ -92,7 +92,7 @@ public class UserControllerTests {
         UserDto userDto = new UserDto();
         userDto.setUserId("app-user-01");
         userDto.setName("App-User-01");
-//        userDto.setPublicKey("public-key");
+        userDto.setPublicKey("public-key");
 //        userDto.setPrivateKey("private-key");
         return userDto;
     }

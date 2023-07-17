@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 public class UserDto {
     private String userId;
     private String name;
-//    private String publicKey;
+    private String publicKey;
 //    private String privateKey;
     private String createdBy;
     private LocalDateTime createdDatetime;

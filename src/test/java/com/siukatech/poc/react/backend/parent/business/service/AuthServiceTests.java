@@ -2,12 +2,17 @@ package com.siukatech.poc.react.backend.parent.business.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.siukatech.poc.react.backend.parent.AbstractUnitTests;
-import com.siukatech.poc.react.backend.parent.web.model.LoginForm;
-import com.siukatech.poc.react.backend.parent.web.model.TokenRes;
+import com.siukatech.poc.react.backend.parent.business.dto.MyKeyDto;
+import com.siukatech.poc.react.backend.parent.global.config.ParentAppConfig;
+import com.siukatech.poc.react.backend.parent.util.EncryptionUtil;
+import com.siukatech.poc.react.backend.parent.web.model.auth.LoginForm;
+import com.siukatech.poc.react.backend.parent.web.model.auth.RefreshTokenForm;
+import com.siukatech.poc.react.backend.parent.web.model.auth.TokenRes;
 import org.assertj.core.api.Condition;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -24,12 +29,16 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.client.RestTemplate;
 
+import java.security.KeyPair;
+import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.when;
 
 @ExtendWith({MockitoExtension.class
         , SpringExtension.class
@@ -39,8 +48,11 @@ import static org.mockito.Mockito.doReturn;
 //        RegistrationConfig.class, ProviderConfig.class
 //        ,
         OAuth2ClientProperties.class
+        , ParentAppConfig.class
 })
-@TestPropertySource("classpath:abstract-oauth2-tests.properties")
+@TestPropertySource({"classpath:abstract-oauth2-tests.properties"
+        , "classpath:global/parent-app-config-tests.properties"
+})
 public class AuthServiceTests extends AbstractUnitTests {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -68,6 +80,8 @@ public class AuthServiceTests extends AbstractUnitTests {
      */
     @Autowired
     private OAuth2ClientProperties oAuth2ClientPropertiesForTests;
+    @Autowired
+    private ParentAppConfig parentAppConfigForTests;
 
     @InjectMocks
     private AuthService authService;
@@ -92,6 +106,8 @@ public class AuthServiceTests extends AbstractUnitTests {
     private RestTemplate oauth2ClientRestTemplate;
     @Spy
     private ObjectMapper objectMapper;
+    @Spy
+    private ParentAppConfig parentAppConfig;
 
 
 //    private
@@ -143,6 +159,57 @@ public class AuthServiceTests extends AbstractUnitTests {
                 , this.oAuth2ClientPropertiesForTests.getRegistration().size()
         );
     }
+
+    private MyKeyDto prepareMyKeyDto_basic() throws NoSuchAlgorithmException {
+        KeyPair keyPair = EncryptionUtil.generateRsaKeyPair();
+        MyKeyDto myKeyDto = new MyKeyDto();
+        myKeyDto.setUserId("app-user-01");
+//        myKeyDto.setName("App User 01");
+//        myKeyDto.setPublicKey("public-key");
+//        myKeyDto.setPrivateKey("private-key");
+        String privateKeyBase64 = Base64.getEncoder().encodeToString(keyPair.getPrivate().getEncoded());
+        String publicKeyBase64 = Base64.getEncoder().encodeToString(keyPair.getPublic().getEncoded());
+        myKeyDto.setPrivateKey(privateKeyBase64);
+        myKeyDto.setPublicKey(publicKeyBase64);
+        return myKeyDto;
+    }
+
+//    @Test
+//    public void resolveMyKeyInfo_basic() throws NoSuchAlgorithmException {
+//        logger.debug("resolveMyKeyInfo_basic - parentAppConfigForTests.myUserInfoUrl: [{}]"
+//                        + ", parentAppConfig.myUserInfoUrl: [{}]"
+//                        + ", parentAppConfig.getMyKeyInfoUrl: [{}]"
+//                        + ", parentAppConfig.getMyKeyInfoUrl: [{}]"
+//                , this.parentAppConfigForTests.getMyUserInfoUrl()
+//                , this.parentAppConfig.getMyUserInfoUrl()
+//                , this.parentAppConfigForTests.getMyKeyInfoUrl()
+//                , this.parentAppConfig.getMyKeyInfoUrl()
+//        );
+//
+//        // given
+//        MyKeyDto myKeyDto = prepareMyKeyDto_basic();
+//        String userId = myKeyDto.getUserId();
+//        when(this.parentAppConfig.getMyKeyInfoUrl())
+//                .thenReturn(this.parentAppConfigForTests.getMyKeyInfoUrl());
+////        when(oauth2ClientRestTemplate.exchange(anyString()
+////                , eq(HttpMethod.POST), eq(HttpEntity.EMPTY), eq(MyKeyDto.class)))
+////                .thenReturn(ResponseEntity.ok(prepareMyKeyDto_basic()));
+//        doReturn(ResponseEntity.ok(myKeyDto))
+//                .when(this.oauth2ClientRestTemplate).exchange(anyString(), eq(HttpMethod.POST)
+//                        , ArgumentMatchers.any(HttpEntity.class), eq(MyKeyDto.class))
+//        ;
+//
+//        // when
+//        MyKeyDto myKeyRet = this.authService.resolveMyKeyInfo(userId);
+//
+//        // then
+//        logger.debug("resolveMyKeyInfo_basic - myKeyRet: [{}]", myKeyRet);
+//        assertThat(myKeyRet).hasFieldOrProperty("privateKey")
+//                .has(new Condition<>(u -> u.getPrivateKey().contains(myKeyDto.getPrivateKey())
+//                        , "Has %s", "private-key"))
+//        ;
+//
+//    }
 
     @Test
     public void getAuthCodeLoginUrl_basic() {
@@ -222,6 +289,34 @@ public class AuthServiceTests extends AbstractUnitTests {
 
         // when
         TokenRes tokenRes = this.authService.resolvePasswordTokenRes(clientName, loginForm);
+
+        // then
+        assertThat(tokenRes)
+                .hasFieldOrProperty("accessToken")
+                .has(new Condition<>(x -> {
+                    return "accessToken".equals(x.accessToken());
+                }, "Has value:%s", List.of("accessToken")))
+        ;
+    }
+
+    @Test
+    public void resolveRefreshTokenTokenRes_basic() {
+        // given
+        String clientName = CLIENT_NAME;
+        RefreshTokenForm refreshTokenForm = new RefreshTokenForm();
+        refreshTokenForm.setAccessToken("access_token");
+        refreshTokenForm.setRefreshToken("refresh_token");
+        doReturn(oAuth2ClientPropertiesForTests.getRegistration())
+                .when(oAuth2ClientProperties).getRegistration();
+        doReturn(oAuth2ClientPropertiesForTests.getProvider())
+                .when(oAuth2ClientProperties).getProvider();
+        doReturn(ResponseEntity.ok(prepareTokenRes()))
+                .when(this.oauth2ClientRestTemplate).exchange(anyString()
+                        , eq(HttpMethod.POST), any(HttpEntity.class), eq(TokenRes.class))
+        ;
+
+        // when
+        TokenRes tokenRes = this.authService.resolveRefreshTokenTokenRes(clientName, refreshTokenForm);
 
         // then
         assertThat(tokenRes)

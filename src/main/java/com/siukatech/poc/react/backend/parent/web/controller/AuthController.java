@@ -3,8 +3,9 @@ package com.siukatech.poc.react.backend.parent.web.controller;
 
 import com.siukatech.poc.react.backend.parent.business.service.AuthService;
 import com.siukatech.poc.react.backend.parent.web.annotation.v1.PublicApiV1Controller;
-import com.siukatech.poc.react.backend.parent.web.model.LoginForm;
-import com.siukatech.poc.react.backend.parent.web.model.TokenRes;
+import com.siukatech.poc.react.backend.parent.web.model.auth.LoginForm;
+import com.siukatech.poc.react.backend.parent.web.model.auth.RefreshTokenForm;
+import com.siukatech.poc.react.backend.parent.web.model.auth.TokenRes;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -64,10 +65,22 @@ public class AuthController {
     }
 
     @PostMapping(value = "/auth/login/{clientName}")
-    public ResponseEntity<?> doPasswordLogin(@PathVariable String clientName, @RequestBody @Valid LoginForm loginForm) {
+    public ResponseEntity<?> doPasswordLogin(@PathVariable String clientName
+            , @RequestBody @Valid LoginForm loginForm) {
         TokenRes tokenRes = this.authService.resolvePasswordTokenRes(clientName, loginForm);
         logger.debug("doPasswordLogin - clientName: [" + clientName
                 + "], loginForm.getUsername: [" + loginForm.getUsername()
+                + "], tokenRes: [" + tokenRes
+                + "]");
+        return ResponseEntity.ok(tokenRes);
+    }
+
+    @PostMapping(value = "/auth/refresh-token/{clientName}")
+    public ResponseEntity<?> doAuthTokenRefresh(@PathVariable String clientName
+            , @RequestBody @Valid RefreshTokenForm refreshTokenForm) {
+        TokenRes tokenRes = this.authService.resolveRefreshTokenTokenRes(clientName, refreshTokenForm);
+        logger.debug("doPasswordLogin - clientName: [" + clientName
+                + "], refreshTokenForm: [" + refreshTokenForm
                 + "], tokenRes: [" + tokenRes
                 + "]");
         return ResponseEntity.ok(tokenRes);

@@ -2,12 +2,13 @@ package com.siukatech.poc.react.backend.parent.web.helper;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.siukatech.poc.react.backend.parent.business.dto.MyKeyDto;
+import com.siukatech.poc.react.backend.parent.business.service.AuthService;
 import com.siukatech.poc.react.backend.parent.global.config.ParentAppConfig;
 import com.siukatech.poc.react.backend.parent.util.EncryptionUtil;
 import com.siukatech.poc.react.backend.parent.web.annotation.base.EncryptedController;
-import com.siukatech.poc.react.backend.parent.web.model.EncryptedDetail;
-import com.siukatech.poc.react.backend.parent.web.model.EncryptedInfo;
-import com.siukatech.poc.react.backend.parent.web.model.EncryptedReq;
+import com.siukatech.poc.react.backend.parent.web.model.encrypted.EncryptedDetail;
+import com.siukatech.poc.react.backend.parent.web.model.encrypted.EncryptedInfo;
+import com.siukatech.poc.react.backend.parent.web.model.encrypted.EncryptedReq;
 import jakarta.persistence.EntityNotFoundException;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -40,13 +41,18 @@ public class EncryptedBodyAdviceHelper {
     private final ObjectMapper objectMapper;
     private final RestTemplate oauth2ClientRestTemplate;
     private final ParentAppConfig parentAppConfig;
+//    private final AuthService authService;
 
 
-    private EncryptedBodyAdviceHelper(ObjectMapper objectMapper
-            , RestTemplate oauth2ClientRestTemplate, ParentAppConfig parentAppConfig) {
+    public EncryptedBodyAdviceHelper(ObjectMapper objectMapper
+            , RestTemplate oauth2ClientRestTemplate
+            , ParentAppConfig parentAppConfig
+//            , AuthService authService
+    ) {
         this.objectMapper = objectMapper;
         this.oauth2ClientRestTemplate = oauth2ClientRestTemplate;
         this.parentAppConfig = parentAppConfig;
+//        this.authService = authService;
     }
 
     @Deprecated
@@ -244,6 +250,7 @@ public class EncryptedBodyAdviceHelper {
                             .formatted(userId));
         }
         return myKeyDto;
+//        return this.authService.resolveMyKeyInfo(userId);
     }
 
     public boolean isEncryptedApiController(MethodParameter methodParameter) {

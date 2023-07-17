@@ -3,15 +3,17 @@ package com.siukatech.poc.react.backend.parent.web.helper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.siukatech.poc.react.backend.parent.AbstractUnitTests;
 import com.siukatech.poc.react.backend.parent.business.dto.MyKeyDto;
+import com.siukatech.poc.react.backend.parent.business.service.AuthService;
 import com.siukatech.poc.react.backend.parent.global.config.ParentAppConfig;
 import com.siukatech.poc.react.backend.parent.util.EncryptionUtil;
-import com.siukatech.poc.react.backend.parent.web.model.EncryptedDetail;
-import com.siukatech.poc.react.backend.parent.web.model.EncryptedInfo;
+import com.siukatech.poc.react.backend.parent.web.model.encrypted.EncryptedDetail;
+import com.siukatech.poc.react.backend.parent.web.model.encrypted.EncryptedInfo;
 import org.assertj.core.api.Condition;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
-import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.Logger;
@@ -61,7 +63,7 @@ public class EncryptedBodyAdviceHelperTests extends AbstractUnitTests {
     @Autowired
     private ParentAppConfig parentAppConfigForTests;
 
-    @InjectMocks
+    //    @InjectMocks
     private EncryptedBodyAdviceHelper encryptedBodyAdviceHelper;
 
     @Spy
@@ -71,7 +73,24 @@ public class EncryptedBodyAdviceHelperTests extends AbstractUnitTests {
     private RestTemplate oauth2ClientRestTemplate;
     @Spy
     private ParentAppConfig parentAppConfig;
+    @Mock
+    private AuthService authService;
 
+
+    @BeforeEach
+    public void setup() {
+        // Reference:
+        // https://stackoverflow.com/a/34878977
+        // If test-target's members are 'final', then we dont use @InjectMocks
+        // We create the test-target manually with constructor injection
+        if (encryptedBodyAdviceHelper == null) {
+            encryptedBodyAdviceHelper = new EncryptedBodyAdviceHelper(objectMapper
+                    , oauth2ClientRestTemplate
+                    , parentAppConfig
+//                    , authService
+            );
+        }
+    }
 
     private MyKeyDto prepareMyKeyDto_basic() throws NoSuchAlgorithmException {
         KeyPair keyPair = EncryptionUtil.generateRsaKeyPair();
@@ -205,6 +224,9 @@ public class EncryptedBodyAdviceHelperTests extends AbstractUnitTests {
                 .when(this.oauth2ClientRestTemplate).exchange(anyString(), eq(HttpMethod.POST)
                         , ArgumentMatchers.any(HttpEntity.class), eq(MyKeyDto.class))
         ;
+
+////        doReturn(myKeyDto).when(authService).resolveMyKeyInfo(userId);
+//        when(authService.resolveMyKeyInfo(anyString())).thenReturn(myKeyDto);
 
         // when
         MyKeyDto myKeyRet = this.encryptedBodyAdviceHelper.resolveMyKeyInfo(userId);
