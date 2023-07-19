@@ -264,7 +264,7 @@ And in the coming future, more will be added like.
 The idea here is that when there is a new api version coming out which means there are some breaking changes.  
 The corresponding annotations are required to created in this project.  
 Since annotation has a limitation that does not support inheritance (Reference: https://stackoverflow.com/a/7761568).  
-The annotations in `base` are defined as baseline, common usage which are generic approach and required to attach to `[XXX]ApiV[X]Controller` series annotations.  
+The annotations in the `base` are defined as baseline, common usages which are generic approach and required to attach to `[XXX]ApiV[X]Controller` series annotations.  
 Some embedded interceptors are planning to develop to cross-check the `base` annotations for security control.  
 
 
@@ -280,7 +280,7 @@ The concept is doing `@Import` with those `@Configuration` classes.
 })
 ```
 
-- EnableReactBackendParent.class
+- @EnableReactBackendParent.class
   - GlobalConfigImport.class
     - ParentAppConfig.class
   - WebConfigImport.class
@@ -296,22 +296,24 @@ The concept is doing `@Import` with those `@Configuration` classes.
 Besides the annotation control, I am trying the end-to-end-encryption (E2EE) in this project by using the `EncryptedController` annotation.  
 Two encryption algorithms are used for the solution.  
 - RSA with key-size 2048 bytes
-- AES (AES/CBC/PKCS5Padding) with secret-size 512 bytes
+- AES (AES/CBC/PKCS5Padding) with secret-size 32 bytes = 256 bits
 
 
 
 ## Sequence flow after login
 1. frontend gets `user-public-key` from backend (/v1/protected/my/public-key)
 2. frontend encrypts `original-payload-str` by `crypto-js` (AES/CBC/PKCS5Padding) to `aes-cbc-str`
-3. frontend encrypts `aes-cbc-str` and `aes-key` by `jsencrypt` with `user-public-key` to `request-body-str`
-4. backend decrypts `request-body-str` by `user-private-key` to `aes-cbc-str` in `RequestBodyAdviceAdapter.beforeBodyRead`
-5. backend decrypts `aes-cbc-str` by `aes-key` (AES/CBC/PKCS5Padding) to `original-payload-str`
-6. backend passes `original-payload-str` to controller through the return of `RequestBodyAdvice.beforeBodyRead`
-7. backend encrypts `original-response-entity` by `aes-key` to ~~`aes-ecb-str`~~ `aes-cbc-str` (~~AES/ECB/PKCS7Padding~~ AES/CBC/PKCS7Padding)
-8. backend returns ~~`aes-ecb-str`~~ `aes-cbc-str` as response through `ResponseBodyAdvice.beforeBodyWrite`
-9. frontend receives ~~`aes-ecb-str`~~ `aes-cbc-str` from response
-10. frontend decrypts ~~`aes-ecb-str`~~ `aes-cbc-str` by `crypto-js` (~~AES/ECB/PKCS7Padding~~ AES/CBC/PKCS7Padding) to `response-entity-str`
-11. frontend parses `response-entity-str` to `response-entity`
+3. frontend encrypts ~~`aes-cbc-str` and~~ `aes-key` by `jsencrypt` with `user-public-key` to `aes-key-rsa`  
+4. frontend combines `aes-cbc-str` and `aes-key-rsa` to `request-body-str`
+5. backend spits `request-body-str` into `aes-cbc-str` and `aes-key-rsa` in `RequestBodyAdviceAdapter.beforeBodyRead`
+6. backend decrypts `aes-key-rsa` by `user-private-key` to `aes-key`
+7. backend decrypts `aes-cbc-str` by `aes-key` (AES/CBC/PKCS5Padding) to `original-payload-str`
+8. backend passes `original-payload-str` to controller through the return of `RequestBodyAdviceAdapter.beforeBodyRead`
+9. backend encrypts `original-response-entity` by `aes-key` to ~~`aes-ecb-str`~~ `aes-cbc-str` (~~AES/ECB/PKCS7Padding~~ AES/CBC/PKCS7Padding)
+10. backend returns ~~`aes-ecb-str`~~ `aes-cbc-str` as response through `ResponseBodyAdvice.beforeBodyWrite`
+11. frontend receives ~~`aes-ecb-str`~~ `aes-cbc-str` from response
+12. frontend decrypts ~~`aes-ecb-str`~~ `aes-cbc-str` by `crypto-js` (~~AES/ECB/PKCS7Padding~~ AES/CBC/PKCS7Padding) to `response-entity-str`
+13. frontend parses `response-entity-str` to `response-entity` by `JSON.parse`
 
 
 
@@ -319,13 +321,13 @@ Two encryption algorithms are used for the solution.
 The ms-project `user-service` is required to turn on as the user info provider.  
 To facilitate the development, this lib-project has a simple `MyController` implementation.  
 Those ms-projects can extend this `MyController` to expose the `my-key-info` api with `UserDto` as return.  
-This `UserDto` object provides the user-private-key for application to perform the `aes-key` decryption.  
+This `MyKeyDto` object provides the user-private-key for application to perform the `aes-key` decryption.  
 ```yaml
 app:
   host-name: [host-name of user-service]
   api:
     my-user-info: [my-user-info api on user-service, e.g. /v1/protected/my/user-info]
-    my-key-info: [my-key-info api on user-service, e.g. /v1/protected/my/key-info]
+    my-key-info: [my-key-info api on user-service, e.g. /v1/protected/my/key-info]   <-----
 ```
 
 A RuntimeException will be thrown if the `my-key-info` api is not available when there is an `/encrypted` api call.  
@@ -333,16 +335,18 @@ A RuntimeException will be thrown if the `my-key-info` api is not available when
 
 
 ## Findings
-The `jsencrypt` does not support using user-public-key to decrypt.  
-The better approach should be using user-private-key to encrypt at backend and frontend uses the user-public-key to decrypt.  
-~~On frontend, the `crypto-js` (AES/CBC) is hard to decrypt the java `aes-str` (AES/CBC).~~  
-~~Finally only the `crypto-js` (AES/ECB) can decrypt java `aes-str` (AES/ECB).~~  
-On frontend, the `crypto-js` (AES/CBC) can decrypt the java `aes-str` (AES/CBC) with correct `iv`.  
+The `jsencrypt` does not support using `user-public-key` to decrypt.  
+The better approach should be using `user-private-key` to encrypt data at backend and frontend uses the `user-public-key` for decryption.  
+~~On frontend, the `crypto-js` (AES/CBC) is hard to decrypt the java `aes-cbc-str` (AES/CBC).~~  
+~~Finally only the `crypto-js` (AES/ECB) can decrypt java `aes-ecb-str` (AES/ECB).~~  
+On frontend, the `crypto-js` (AES/CBC) can decrypt the java `aes-cbc-str` (AES/CBC) with correct `iv`.  
 The `iv` is required the byte array format which means the decoding should be happened before.  
 The `CryptoJS.enc.Base64.parse([base64-str])` decodes `base64-str` to `byte-array`.  
 
 **Reference:**  
 https://github.com/kyungw00k/encrypt-something-in-java-and-decrypt-it-in-javascript-by-example  
+
+Here is a snippet from frontend project.  
 
 ```javascript
     ...
