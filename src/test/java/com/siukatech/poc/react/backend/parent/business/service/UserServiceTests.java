@@ -2,7 +2,6 @@ package com.siukatech.poc.react.backend.parent.business.service;
 
 import com.siukatech.poc.react.backend.parent.AbstractUnitTests;
 import com.siukatech.poc.react.backend.parent.business.dto.UserDto;
-import com.siukatech.poc.react.backend.parent.business.service.UserService;
 import com.siukatech.poc.react.backend.parent.data.entity.UserEntity;
 import com.siukatech.poc.react.backend.parent.data.repository.UserRepository;
 import org.junit.jupiter.api.*;
@@ -71,21 +70,21 @@ public class UserServiceTests extends AbstractUnitTests {
     }
 
     @Test
-    public void findByUserId_basic() {
+    public void findByLoginId_basic() {
         // given
         UserEntity userEntity = new UserEntity();
-        userEntity.setUserId("app-user-01");
+        userEntity.setLoginId("app-user-01");
         userEntity.setName("App-User-01");
         userEntity.setPublicKey("public-key");
         userEntity.setPrivateKey("private-key");
         userEntity.setVersionNo(1L);
-        when(this.userRepository.findByUserId(anyString())).thenReturn(Optional.of(userEntity));
+        when(this.userRepository.findByLoginId(anyString())).thenReturn(Optional.of(userEntity));
 
         // when
-        UserDto userDtoActual = this.userService.findByUserId("app-user-01");
+        UserDto userDtoActual = this.userService.findByLoginId("app-user-01");
 
         // then / verify
-        assertThat(userDtoActual.getUserId()).isEqualTo("app-user-01");
+        assertThat(userDtoActual.getLoginId()).isEqualTo("app-user-01");
     }
 
 }

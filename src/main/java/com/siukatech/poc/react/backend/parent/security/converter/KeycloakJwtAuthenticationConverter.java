@@ -29,7 +29,7 @@ public class KeycloakJwtAuthenticationConverter implements Converter<Jwt, Abstra
     @Override
     public AbstractAuthenticationToken convert(Jwt source) {
         // subject is the user-id
-        String userId = source.getClaimAsString(StandardClaimNames.PREFERRED_USERNAME);
+        String loginId = source.getClaimAsString(StandardClaimNames.PREFERRED_USERNAME);
         logger.debug("convert - source.getId: [" + source.getId()
                 + "], source.getClaims: [" + source.getClaims()
                 + "], source.getHeaders: [" + source.getHeaders()
@@ -39,18 +39,18 @@ public class KeycloakJwtAuthenticationConverter implements Converter<Jwt, Abstra
                 + "], source.getNotBefore: [" + source.getNotBefore()
                 + "], source.getSubject: [" + source.getSubject()
                 + "], source.getTokenValue: [" + source.getTokenValue()
-                + "], userId: [" + userId
+                + "], loginId: [" + loginId
                 + "]");
         List<GrantedAuthority> convertedAuthorities = new ArrayList<>();
 //        UserDetails userDetails = new User(
 //                //source.getSubject()
-//                userId
+//                loginId
 //                , "", convertedAuthorities);
 //        UsernamePasswordAuthenticationToken authenticationToken
 //                = new UsernamePasswordAuthenticationToken(userDetails
 //                , source.getTokenValue(), userDetails.getAuthorities());
         Map<String, Object> attributeMap = new HashMap<>();
-        attributeMap.put(StandardClaimNames.PREFERRED_USERNAME, userId);
+        attributeMap.put(StandardClaimNames.PREFERRED_USERNAME, loginId);
         attributeMap.put(ATTR_TOKEN_VALUE, source.getTokenValue());
         OAuth2User oAuth2User = new DefaultOAuth2User(convertedAuthorities, attributeMap, StandardClaimNames.PREFERRED_USERNAME);
         OAuth2AuthenticationToken authenticationToken = new OAuth2AuthenticationToken(oAuth2User, convertedAuthorities, "keycloak");

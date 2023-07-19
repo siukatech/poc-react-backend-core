@@ -2,10 +2,8 @@ package com.siukatech.poc.react.backend.parent.web.controller;
 
 import com.siukatech.poc.react.backend.parent.business.dto.UserDto;
 import com.siukatech.poc.react.backend.parent.business.service.UserService;
-import com.siukatech.poc.react.backend.parent.data.repository.UserRepository;
 import com.siukatech.poc.react.backend.parent.web.annotation.v1.ProtectedApiV1Controller;
 import com.siukatech.poc.react.backend.parent.web.context.EncryptedBodyContext;
-import com.siukatech.poc.react.backend.parent.web.controller.UserController;
 import com.siukatech.poc.react.backend.parent.web.helper.EncryptedBodyAdviceHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,12 +17,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
@@ -81,7 +77,7 @@ public class UserControllerTests {
 
 //    private UserEntity prepareUserEntity_basic() {
 //        UserEntity userEntity = new UserEntity();
-//        userEntity.setUserId("app-user-01");
+//        userEntity.setLoginId("app-user-01");
 //        userEntity.setName("App-User-01");
 //        userEntity.setPublicKey("public-key");
 //        userEntity.setPrivateKey("private-key");
@@ -90,7 +86,7 @@ public class UserControllerTests {
 
     private UserDto prepareUserDto_basic() {
         UserDto userDto = new UserDto();
-        userDto.setUserId("app-user-01");
+        userDto.setLoginId("app-user-01");
         userDto.setName("App-User-01");
         userDto.setPublicKey("public-key");
 //        userDto.setPrivateKey("private-key");
@@ -134,9 +130,9 @@ public class UserControllerTests {
 //    public void getPublicKey_basic() throws Exception {
 //        // given
 ////        UserEntity userEntity = this.prepareUserEntity_basic();
-////        when(userRepository.findByUserId(anyString())).thenReturn(Optional.of(userEntity));
+////        when(userRepository.findByLoginId(anyString())).thenReturn(Optional.of(userEntity));
 //        UserDto userDto = this.prepareUserDto_basic();
-//        when(userService.findByUserId(anyString())).thenReturn(userDto);
+//        when(userService.findByLoginId(anyString())).thenReturn(userDto);
 //
 //        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 //        logger.debug("getPublicKey_basic - authentication: [" + authentication + "]");
@@ -144,7 +140,7 @@ public class UserControllerTests {
 //        // when
 //        RequestBuilder requestBuilder = MockMvcRequestBuilders
 //                .post(ProtectedApiV1Controller.REQUEST_MAPPING_URI_PREFIX
-//                        + "/users/{targetUserId}/public-key", userDto.getUserId())
+//                        + "/users/{targetLoginId}/public-key", userDto.getLoginId())
 //                .with(authentication(prepareAuthenticationToken_basic()))
 //                .with(csrf())
 //                //.with(SecurityMockMvcRequestPostProcessors.user((UserDetails) authentication.getPrincipal()))
@@ -166,12 +162,12 @@ public class UserControllerTests {
     public void getUserInfo_basic() throws Exception {
         // given
         UserDto userDto = this.prepareUserDto_basic();
-        when(userService.findByUserId(anyString())).thenReturn(userDto);
+        when(userService.findByLoginId(anyString())).thenReturn(userDto);
 
         // when
         RequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post(ProtectedApiV1Controller.REQUEST_MAPPING_URI_PREFIX
-                        + "/users/{targetUserId}/user-info", userDto.getUserId())
+                        + "/users/{targetLoginId}/user-info", userDto.getLoginId())
                 .with(authentication(prepareAuthenticationToken_basic()))
                 .with(csrf())
                 .accept(MediaType.APPLICATION_JSON);
@@ -179,7 +175,7 @@ public class UserControllerTests {
         // then / verify
         MvcResult mvcResult = this.mockMvc.perform(requestBuilder)
                 .andExpect(status().isOk())
-                .andExpect(content().json("{userId: \"app-user-01\"}"))
+                .andExpect(content().json("{loginId: \"app-user-01\"}"))
                 .andReturn();
 
         // result

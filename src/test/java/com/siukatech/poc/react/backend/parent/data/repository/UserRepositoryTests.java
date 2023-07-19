@@ -2,7 +2,6 @@ package com.siukatech.poc.react.backend.parent.data.repository;
 
 import com.siukatech.poc.react.backend.parent.AbstractJpaTests;
 import com.siukatech.poc.react.backend.parent.data.entity.UserEntity;
-import com.siukatech.poc.react.backend.parent.data.repository.UserRepository;
 import org.junit.jupiter.api.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +29,7 @@ public class UserRepositoryTests extends AbstractJpaTests {
 
     private UserEntity prepareUserEntity_basic() {
         UserEntity userEntity = new UserEntity();
-        userEntity.setUserId("app-user-01");
+        userEntity.setLoginId("app-user-01");
         userEntity.setName("App-User-01");
         userEntity.setId(1L);
         userEntity.setVersionNo(1L);
@@ -51,7 +50,7 @@ public class UserRepositoryTests extends AbstractJpaTests {
                 + "]");
         UserEntity userEntity = null;
         switch (method.getName()) {
-            case "findByUserId_basic":
+            case "findByLoginId_basic":
                 userEntity = this.prepareUserEntity_basic();
             case "updateUser_version_updated":
                 userEntity = this.prepareUserEntity_basic();
@@ -69,10 +68,10 @@ public class UserRepositoryTests extends AbstractJpaTests {
         logger.debug("teardown - testInfo: [" + testInfo
                 + "], method: [" + method.getName()
                 + "]");
-        UserEntity userEntity = userEntity = this.userRepository.findByUserId("app-user-01")
+        UserEntity userEntity = userEntity = this.userRepository.findByLoginId("app-user-01")
                 .orElseThrow(() -> new RuntimeException());
         switch (method.getName()) {
-            case "findByUserId_basic":
+            case "findByLoginId_basic":
             case "updateUser_version_updated":
             case "updateUser_version_not_match":
         }
@@ -83,47 +82,47 @@ public class UserRepositoryTests extends AbstractJpaTests {
 
     @Test
     @Tag("basic")
-    public void findByUserId_basic() {
-        UserEntity userEntity = userRepository.findByUserId("app-user-01")
+    public void findByLoginId_basic() {
+        UserEntity userEntity = userRepository.findByLoginId("app-user-01")
                 .orElseThrow(() -> new RuntimeException());
-        Assertions.assertEquals(userEntity.getUserId(), "app-user-01");
+        Assertions.assertEquals(userEntity.getLoginId(), "app-user-01");
     }
 
     @Test
     @Tag("version_updated")
     public void updateUser_version_updated() {
-        UserEntity userEntity = userRepository.findByUserId("app-user-01")
+        UserEntity userEntity = userRepository.findByLoginId("app-user-01")
                 .orElseThrow(() -> new RuntimeException());
         userEntity.setName("App-User-01-version-updated");
         this.userRepository.save(userEntity);
-        UserEntity userEntityAfterUpdate = userRepository.findByUserId("app-user-01")
+        UserEntity userEntityAfterUpdate = userRepository.findByLoginId("app-user-01")
                 .orElseThrow(() -> new RuntimeException());
         logger.debug("updateUser_version_updated - userEntity.getVersionNo: [" + userEntity.getVersionNo()
                 + "], userEntityAfterUpdate.getVersionNo: [" + userEntityAfterUpdate.getVersionNo()
                 + "]");
         Assertions.assertEquals(userEntity.getVersionNo(), 2L);
         Assertions.assertEquals(userEntityAfterUpdate.getVersionNo(), 2L);
-        Assertions.assertEquals(userEntity.getUserId(), "app-user-01");
+        Assertions.assertEquals(userEntity.getLoginId(), "app-user-01");
     }
 
     @Test
     @Tag("version_not_match")
     public void updateUser_version_not_match() {
-        UserEntity userEntity = userRepository.findByUserId("app-user-01")
+        UserEntity userEntity = userRepository.findByLoginId("app-user-01")
                 .orElseThrow(() -> new RuntimeException());
         userEntity.setName("App-User-01-version_updated");
         this.userRepository.save(userEntity);
 
         UserEntity userEntityClone = new UserEntity();
         userEntityClone.setId(userEntity.getId());
-        userEntityClone.setUserId(userEntity.getUserId());
+        userEntityClone.setLoginId(userEntity.getLoginId());
         userEntityClone.setName(userEntity.getName());
         userEntityClone.setPublicKey(userEntity.getPublicKey());
         userEntityClone.setPrivateKey(userEntity.getPrivateKey());
         userEntityClone.setName("App-User-01-version_not_match");
         userEntityClone.setVersionNo(1L);
 
-        UserEntity userEntityAfterUpdate = userRepository.findByUserId("app-user-01")
+        UserEntity userEntityAfterUpdate = userRepository.findByLoginId("app-user-01")
                 .orElseThrow(() -> new RuntimeException());
         logger.debug("updateUser_version_not_match - 1 - userEntity.getId: [" + userEntity.getId()
                 + "], userEntity.getName: [" + userEntity.getName()

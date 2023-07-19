@@ -22,18 +22,18 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public UserDto findByUserId(String targetUserId) {
-        UserEntity userEntity = this.userRepository.findByUserId(targetUserId)
-                .orElseThrow(() -> new EntityNotFoundException("No such user [%s]".formatted(targetUserId)));
-        logger.debug("findByUserId - modelMapper: [" + this.modelMapper + "]");
+    public UserDto findByLoginId(String targetLoginId) {
+        UserEntity userEntity = this.userRepository.findByLoginId(targetLoginId)
+                .orElseThrow(() -> new EntityNotFoundException("No such user [%s]".formatted(targetLoginId)));
+        logger.debug("findByLoginId - modelMapper: [" + this.modelMapper + "]");
         UserDto userDto = this.modelMapper.map(userEntity, UserDto.class);
         return userDto;
     }
 
-    public MyKeyDto findKeyByUserId(String targetUserId) {
-        UserEntity userEntity = this.userRepository.findByUserId(targetUserId)
-                .orElseThrow(() -> new EntityNotFoundException("No such user [%s]".formatted(targetUserId)));
-        logger.debug("findKeyByUserId - modelMapper: [" + this.modelMapper + "]");
+    public MyKeyDto findKeyByLoginId(String targetLoginId) {
+        UserEntity userEntity = this.userRepository.findByLoginId(targetLoginId)
+                .orElseThrow(() -> new EntityNotFoundException("No such user [%s]".formatted(targetLoginId)));
+        logger.debug("findKeyByLoginId - modelMapper: [" + this.modelMapper + "]");
         MyKeyDto myKeyDto = this.modelMapper.map(userEntity, MyKeyDto.class);
         return myKeyDto;
     }

@@ -2,30 +2,25 @@ package com.siukatech.poc.react.backend.parent.business.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.oauth2.sdk.GrantType;
-import com.siukatech.poc.react.backend.parent.business.dto.MyKeyDto;
 import com.siukatech.poc.react.backend.parent.global.config.ParentAppConfig;
 import com.siukatech.poc.react.backend.parent.web.model.auth.*;
-import jakarta.persistence.EntityNotFoundException;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.hc.core5.http.NameValuePair;
 import org.apache.hc.core5.http.message.BasicNameValuePair;
 import org.apache.hc.core5.net.URLEncodedUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.security.oauth2.client.OAuth2ClientProperties;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -50,31 +45,31 @@ public class AuthService {
         this.objectMapper = objectMapper;
     }
 
-//    public MyKeyDto resolveMyKeyInfo(String userId) {
+//    public MyKeyDto resolveMyKeyInfo(String loginId) {
 //        String myKeyInfoUrl = this.parentAppConfig.getMyKeyInfoUrl();
 //        MyKeyDto myKeyDto = null;
 //        if (StringUtils.isNotEmpty(myKeyInfoUrl)) {
 //            ResponseEntity<MyKeyDto> responseEntity = this.oauth2ClientRestTemplate.exchange(
 //                    myKeyInfoUrl, HttpMethod.POST, HttpEntity.EMPTY, MyKeyDto.class);
 //            myKeyDto = responseEntity.getBody();
-//            logger.debug("resolveMyKeyInfo - userId: [{}], myKeyInfoUrl: [{}], myKeyDto.getUserId: [{}]"
+//            logger.debug("resolveMyKeyInfo - loginId: [{}], myKeyInfoUrl: [{}], myKeyDto.getLoginId: [{}]"
 ////                + ", responseEntity.getBody.toString: [{}]"
-//                    , userId, myKeyInfoUrl, myKeyDto.getUserId()
+//                    , loginId, myKeyInfoUrl, myKeyDto.getLoginId()
 ////                , responseEntity.getBody().toString()
 //            );
-//            if (!userId.equals(myKeyDto.getUserId())) {
+//            if (!loginId.equals(myKeyDto.getLoginId())) {
 //                throw new EntityNotFoundException(
-//                        "User does not match userId: [%s], myKeyDto.getUserId: [%s]"
-//                                .formatted(userId, myKeyDto.getUserId()));
+//                        "User does not match loginId: [%s], myKeyDto.getLoginId: [%s]"
+//                                .formatted(loginId, myKeyDto.getLoginId()));
 //            }
 //        }
 //        else {
-//            logger.debug("resolveMyKeyInfo - userId: [{}], myKeyInfoUrl: [{}]"
-//                    , userId, myKeyInfoUrl
+//            logger.debug("resolveMyKeyInfo - loginId: [{}], myKeyInfoUrl: [{}]"
+//                    , loginId, myKeyInfoUrl
 //            );
 //            throw new RuntimeException(
-//                    "User with userId: [%s] cannot be resolved because of the empty my-user-info"
-//                            .formatted(userId));
+//                    "User with loginId: [%s] cannot be resolved because of the empty my-user-info"
+//                            .formatted(loginId));
 //        }
 //        return myKeyDto;
 //    }

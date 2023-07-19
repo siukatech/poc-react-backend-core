@@ -69,7 +69,7 @@ public class MyControllerTests extends AbstractWebTests {
 
     private UserDto prepareUserDto_basic() {
         UserDto userDto = new UserDto();
-        userDto.setUserId("app-user-01");
+        userDto.setLoginId("app-user-01");
         userDto.setName("App-User-01");
         userDto.setPublicKey("public-key");
 //        userDto.setPrivateKey("private-key");
@@ -78,7 +78,7 @@ public class MyControllerTests extends AbstractWebTests {
 
     private MyKeyDto prepareMyKeyDto_basic() {
         MyKeyDto myKeyDto = new MyKeyDto();
-        myKeyDto.setUserId("app-user-01");
+        myKeyDto.setLoginId("app-user-01");
         myKeyDto.setPublicKey("public-key");
         myKeyDto.setPrivateKey("private-key");
         return myKeyDto;
@@ -130,7 +130,7 @@ public class MyControllerTests extends AbstractWebTests {
         logger.debug("getPublicKey_basic - authentication: [" + authentication + "]");
 
         MyKeyDto myKeyDto = this.prepareMyKeyDto_basic();
-        when(userService.findKeyByUserId(anyString())).thenReturn(myKeyDto);
+        when(userService.findKeyByLoginId(anyString())).thenReturn(myKeyDto);
 
         // when
         RequestBuilder requestBuilder = MockMvcRequestBuilders
@@ -157,7 +157,7 @@ public class MyControllerTests extends AbstractWebTests {
     public void getKeyInfo_basic() throws Exception {
         // given
         MyKeyDto myKeyDto = this.prepareMyKeyDto_basic();
-        when(userService.findKeyByUserId(anyString())).thenReturn(myKeyDto);
+        when(userService.findKeyByLoginId(anyString())).thenReturn(myKeyDto);
 
         // when
         RequestBuilder requestBuilder = MockMvcRequestBuilders
@@ -170,7 +170,7 @@ public class MyControllerTests extends AbstractWebTests {
         // then / verify
         MvcResult mvcResult = this.mockMvc.perform(requestBuilder)
                 .andExpect(status().isOk())
-                .andExpect(content().json("{userId: \"app-user-01\"}"))
+                .andExpect(content().json("{loginId: \"app-user-01\"}"))
                 .andReturn();
 
         // result
@@ -182,7 +182,7 @@ public class MyControllerTests extends AbstractWebTests {
     public void getUserInfo_basic() throws Exception {
         // given
         UserDto userDto = this.prepareUserDto_basic();
-        when(userService.findByUserId(anyString())).thenReturn(userDto);
+        when(userService.findByLoginId(anyString())).thenReturn(userDto);
 
         // when
         RequestBuilder requestBuilder = MockMvcRequestBuilders
@@ -195,7 +195,7 @@ public class MyControllerTests extends AbstractWebTests {
         // then / verify
         MvcResult mvcResult = this.mockMvc.perform(requestBuilder)
                 .andExpect(status().isOk())
-                .andExpect(content().json("{userId: \"app-user-01\"}"))
+                .andExpect(content().json("{loginId: \"app-user-01\"}"))
                 .andReturn();
 
         // result

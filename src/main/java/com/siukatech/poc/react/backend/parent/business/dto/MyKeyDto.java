@@ -6,7 +6,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper=false)
 public class MyKeyDto {
-    private String userId;
+    private String loginId;
     private String publicKey;
     private String privateKey;
 }

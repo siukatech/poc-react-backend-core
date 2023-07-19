@@ -27,8 +27,8 @@ public class MyController {
         Authentication authenticationInSc = SecurityContextHolder.getContext().getAuthentication();
         logger.debug("getPublicKey - authentication: [{}], authenticationInSc: [{}]"
                 , authentication, authenticationInSc);
-        String userId = authentication.getName();
-        MyKeyDto myKeyDto = this.userService.findKeyByUserId(userId);
+        String loginId = authentication.getName();
+        MyKeyDto myKeyDto = this.userService.findKeyByLoginId(loginId);
 
         String publicKeyBase64 = myKeyDto.getPublicKey();
         return ResponseEntity.ok(publicKeyBase64);
@@ -39,8 +39,8 @@ public class MyController {
         Authentication authenticationInSc = SecurityContextHolder.getContext().getAuthentication();
         logger.debug("getKeyInfo - authentication: [{}], authenticationInSc: [{}]"
                 , authentication, authenticationInSc);
-        String userId = authentication.getName();
-        MyKeyDto myKeyDto = this.userService.findKeyByUserId(userId);
+        String loginId = authentication.getName();
+        MyKeyDto myKeyDto = this.userService.findKeyByLoginId(loginId);
 
         return ResponseEntity.ok(myKeyDto);
     }
@@ -50,8 +50,8 @@ public class MyController {
         Authentication authenticationInSc = SecurityContextHolder.getContext().getAuthentication();
         logger.debug("getUserInfo - authentication: [{}], authenticationInSc: [{}]"
                 , authentication, authenticationInSc);
-        String userId = authentication.getName();
-        UserDto userDto = this.userService.findByUserId(userId);
+        String loginId = authentication.getName();
+        UserDto userDto = this.userService.findByLoginId(loginId);
 
         return ResponseEntity.ok(userDto);
     }

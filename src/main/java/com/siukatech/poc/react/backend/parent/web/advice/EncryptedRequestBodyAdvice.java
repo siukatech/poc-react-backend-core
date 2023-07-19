@@ -89,17 +89,17 @@ public class EncryptedRequestBodyAdvice extends RequestBodyAdviceAdapter {
             , Class<? extends HttpMessageConverter<?>> converterType) throws IOException {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String userId = authentication.getName();
-//        String finalUserId = userId;
-//        UserEntity userEntity = this.userRepository.findByUserId(userId)
-//                .orElseThrow(() -> new EntityNotFoundException("No such user [" + finalUserId + "]"));
-        MyKeyDto myKeyDto = this.encryptedBodyAdviceHelper.resolveMyKeyInfo(userId);
+        String loginId = authentication.getName();
+//        String finalLoginId = loginId;
+//        UserEntity userEntity = this.userRepository.findByLoginId(loginId)
+//                .orElseThrow(() -> new EntityNotFoundException("No such user [" + finalLoginId + "]"));
+        MyKeyDto myKeyDto = this.encryptedBodyAdviceHelper.resolveMyKeyInfo(loginId);
 
         logger.debug("beforeBodyRead - methodParameter.getMethod.getName: [" + methodParameter.getMethod().getName()
                 + "], methodParameter.getParameterType.getName: [" + methodParameter.getParameterType().getName()
-                + "], userId: [" + userId
-//                + "], userEntity.getUserId: [" + userEntity.getUserId()
-                + "], myKeyDto.getUserId: [" + (myKeyDto == null ? "NULL" : myKeyDto.getUserId())
+                + "], loginId: [" + loginId
+//                + "], userEntity.getLoginId: [" + userEntity.getLoginId()
+                + "], myKeyDto.getLoginId: [" + (myKeyDto == null ? "NULL" : myKeyDto.getLoginId())
                 + "], authentication.getName: [" + (authentication == null ? "NULL" : authentication.getName())
                 + "], authentication.isAuthenticated: [" + (authentication == null ? "NULL" : authentication.isAuthenticated())
                 + "]");
@@ -108,7 +108,7 @@ public class EncryptedRequestBodyAdvice extends RequestBodyAdviceAdapter {
         try (InputStream inputStream = inputMessage.getBody()) {
             byte[] body = StreamUtils.copyToByteArray(inputStream);
 //            String encryptedRsaDataBase64 = new String(body);
-////            logger.debug("beforeBodyRead - userId: [" + userId
+////            logger.debug("beforeBodyRead - loginId: [" + loginId
 ////                    + "], start");
 ////            byte[] decryptedBodyData = CryptoUtil.decryptWithRsaPrivateKey(
 ////                    Base64.getDecoder().decode(encryptedRsaDataBase64)
@@ -155,7 +155,7 @@ public class EncryptedRequestBodyAdvice extends RequestBodyAdviceAdapter {
             byte[] decryptedData = encryptedDetail.decryptedData();
             String decryptedDataStr = new String(decryptedData);
 
-            logger.debug("beforeBodyRead - userId: [" + userId
+            logger.debug("beforeBodyRead - loginId: [" + loginId
 //                    + "], encryptedRequestModel.cipher: [" + encryptedRequestModel.cipher()
                     + "], encryptedInfoModel.key: [" + encryptedInfo.key()
                     + "], encryptedInfoModel.iv: [" + encryptedInfo.iv()

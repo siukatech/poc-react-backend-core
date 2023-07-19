@@ -21,9 +21,9 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping("/users/{targetUserId}/user-info")
-    public ResponseEntity<?> getUserInfo(@PathVariable String targetUserId) {
-        UserDto userDto = this.userService.findByUserId(targetUserId);
+    @PostMapping("/users/{targetLoginId}/user-info")
+    public ResponseEntity<?> getUserInfo(@PathVariable String targetLoginId) {
+        UserDto userDto = this.userService.findByLoginId(targetLoginId);
 
         return ResponseEntity.ok(userDto);
     }

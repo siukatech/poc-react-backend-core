@@ -12,7 +12,6 @@ import org.assertj.core.api.Condition;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -21,22 +20,22 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.oauth2.client.OAuth2ClientProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.client.RestTemplate;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
@@ -90,7 +89,7 @@ public class AuthServiceTests extends AbstractUnitTests {
      * Cannot use @Mock, dont know why cannot mock this oAuth2ClientProperties.
      * If the AuthService.oAuth2ClientProperties changed to NOT final,
      * then using @Mock is ok
-     *
+     * <p>
      * However, if AuthService.oAuth2ClientProperties is final,
      * then only @Spy is ok with doReturn().when()
      */
@@ -163,7 +162,7 @@ public class AuthServiceTests extends AbstractUnitTests {
     private MyKeyDto prepareMyKeyDto_basic() throws NoSuchAlgorithmException {
         KeyPair keyPair = EncryptionUtil.generateRsaKeyPair();
         MyKeyDto myKeyDto = new MyKeyDto();
-        myKeyDto.setUserId("app-user-01");
+        myKeyDto.setLoginId("app-user-01");
 //        myKeyDto.setName("App User 01");
 //        myKeyDto.setPublicKey("public-key");
 //        myKeyDto.setPrivateKey("private-key");
@@ -188,7 +187,7 @@ public class AuthServiceTests extends AbstractUnitTests {
 //
 //        // given
 //        MyKeyDto myKeyDto = prepareMyKeyDto_basic();
-//        String userId = myKeyDto.getUserId();
+//        String loginId = myKeyDto.getLoginId();
 //        when(this.parentAppConfig.getMyKeyInfoUrl())
 //                .thenReturn(this.parentAppConfigForTests.getMyKeyInfoUrl());
 ////        when(oauth2ClientRestTemplate.exchange(anyString()
@@ -200,7 +199,7 @@ public class AuthServiceTests extends AbstractUnitTests {
 //        ;
 //
 //        // when
-//        MyKeyDto myKeyRet = this.authService.resolveMyKeyInfo(userId);
+//        MyKeyDto myKeyRet = this.authService.resolveMyKeyInfo(loginId);
 //
 //        // then
 //        logger.debug("resolveMyKeyInfo_basic - myKeyRet: [{}]", myKeyRet);
@@ -256,8 +255,8 @@ public class AuthServiceTests extends AbstractUnitTests {
                 .when(oAuth2ClientProperties).getProvider();
         doReturn(ResponseEntity.ok(prepareTokenRes()))
                 .when(this.oauth2ClientRestTemplate).exchange(anyString()
-                , eq(HttpMethod.POST), any(HttpEntity.class), eq(TokenRes.class))
-                ;
+                        , eq(HttpMethod.POST), any(HttpEntity.class), eq(TokenRes.class))
+        ;
 
         // when
         TokenRes tokenRes = this.authService.resolveAuthCodeTokenRes(clientName, code);

@@ -95,7 +95,7 @@ public class EncryptedBodyAdviceHelperTests extends AbstractUnitTests {
     private MyKeyDto prepareMyKeyDto_basic() throws NoSuchAlgorithmException {
         KeyPair keyPair = EncryptionUtil.generateRsaKeyPair();
         MyKeyDto myKeyDto = new MyKeyDto();
-        myKeyDto.setUserId("app-user-01");
+        myKeyDto.setLoginId("app-user-01");
 //        myKeyDto.setName("App User 01");
 //        myKeyDto.setPublicKey("public-key");
 //        myKeyDto.setPrivateKey("private-key");
@@ -214,7 +214,7 @@ public class EncryptedBodyAdviceHelperTests extends AbstractUnitTests {
 
         // given
         MyKeyDto myKeyDto = prepareMyKeyDto_basic();
-        String userId = myKeyDto.getUserId();
+        String loginId = myKeyDto.getLoginId();
         when(this.parentAppConfig.getMyKeyInfoUrl())
                 .thenReturn(this.parentAppConfigForTests.getMyKeyInfoUrl());
 //        when(oauth2ClientRestTemplate.exchange(anyString()
@@ -225,11 +225,11 @@ public class EncryptedBodyAdviceHelperTests extends AbstractUnitTests {
                         , ArgumentMatchers.any(HttpEntity.class), eq(MyKeyDto.class))
         ;
 
-////        doReturn(myKeyDto).when(authService).resolveMyKeyInfo(userId);
+////        doReturn(myKeyDto).when(authService).resolveMyKeyInfo(loginId);
 //        when(authService.resolveMyKeyInfo(anyString())).thenReturn(myKeyDto);
 
         // when
-        MyKeyDto myKeyRet = this.encryptedBodyAdviceHelper.resolveMyKeyInfo(userId);
+        MyKeyDto myKeyRet = this.encryptedBodyAdviceHelper.resolveMyKeyInfo(loginId);
 
         // then
         logger.debug("resolveMyKeyInfo_basic - myKeyRet: [{}]", myKeyRet);
