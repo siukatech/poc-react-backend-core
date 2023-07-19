@@ -255,4 +255,11 @@ public class AuthService {
         return tokenRes;
     }
 
+    public HttpStatusCode doAuthLogout(String logoutApi) throws URISyntaxException {
+        ResponseEntity<Map> responseEntity = this.oauth2ClientRestTemplate.getForEntity(new URI(logoutApi), Map.class);
+        Map map = responseEntity.getBody();
+        logger.debug("doAuthLogout - map: [{}], responseEntity: [{}]"
+                , map, responseEntity);
+        return responseEntity.getStatusCode();
+    }
 }

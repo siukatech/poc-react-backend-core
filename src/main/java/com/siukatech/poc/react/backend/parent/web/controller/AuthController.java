@@ -6,16 +6,22 @@ import com.siukatech.poc.react.backend.parent.web.annotation.v1.PublicApiV1Contr
 import com.siukatech.poc.react.backend.parent.web.model.auth.LoginForm;
 import com.siukatech.poc.react.backend.parent.web.model.auth.RefreshTokenForm;
 import com.siukatech.poc.react.backend.parent.web.model.auth.TokenRes;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.*;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+
+import java.net.URISyntaxException;
 
 @Slf4j
 @PublicApiV1Controller
@@ -27,7 +33,7 @@ public class AuthController {
 //    private String clientSceret;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-//    private final OAuth2ClientProperties oAuth2ClientProperties;
+    //    private final OAuth2ClientProperties oAuth2ClientProperties;
 //    private final RestTemplate oauth2ClientRestTemplate;
 //    private final ObjectMapper objectMapper;
     private final AuthService authService;
@@ -84,6 +90,42 @@ public class AuthController {
                 + "], tokenRes: [" + tokenRes
                 + "]");
         return ResponseEntity.ok(tokenRes);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> doAuthLogout(HttpServletRequest request) throws URISyntaxException {
+        try {
+            String requestURL = request.getRequestURL().toString();
+            String requestURI = request.getRequestURI();
+            String hostName = requestURL.substring(0, requestURL.lastIndexOf(requestURI));
+            String logoutApi = hostName + "/logout";
+            logger.debug("doAuthLogout - logoutApi: [{}]"
+                            + ", request.getLocalName: [{}]"
+                            + ", request.getLocalPort: [{}]"
+                            + ", request.getServerName: [{}]"
+                            + ", request.getServerPort: [{}]"
+                            + ", request.getPathInfo: [{}]"
+                            + ", request.getRequestURI: [{}]"
+                            + ", request.getProtocol: [{}]"
+                            + ", request.getRequestURL: [{}]"
+                    , logoutApi
+                    , request.getLocalName()
+                    , request.getLocalPort()
+                    , request.getServerName()
+                    , request.getServerPort()
+                    , request.getPathInfo()
+                    , request.getRequestURI()
+                    , request.getProtocol()
+                    , request.getRequestURL().toString()
+            );
+//            Map map = this.oauth2ClientRestTemplate.postForObject(new URI(logoutApi), null, HashMap.class);
+            HttpStatusCode httpStatusCode = this.authService.doAuthLogout(logoutApi);
+            logger.debug("doAuthLogout - httpStatusCode: [{}]", httpStatusCode);
+            return ResponseEntity.status(httpStatusCode.value()).build();
+        } catch (Exception e) {
+            logger.error("doAuthLogout", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
     }
 
 }

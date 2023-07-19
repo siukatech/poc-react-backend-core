@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
@@ -32,20 +33,23 @@ public class KeycloakLogoutHandler implements LogoutHandler {
 //        this.restTemplate = restTemplate;
 //    }
 
+    public KeycloakLogoutHandler() {
+        this.restTemplate = this.keycloakRestTemplate();
+    }
+
     // this is not working, will cause a circular-dependencies
     @Bean(name = "keycloakRestTemplate")
     public RestTemplate keycloakRestTemplate() {
         return new RestTemplate();
     }
 
-    public KeycloakLogoutHandler() {
-        this.restTemplate = this.keycloakRestTemplate();
-    }
-
     @Override
     public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
         logger.debug("logout - authentication: [" + (authentication == null ? "NULL" : authentication) + "]");
-        logoutFromKeycloak((OidcUser) authentication.getPrincipal());
+//        logoutFromKeycloak((OidcUser) authentication.getPrincipal());
+        if (authentication != null) logoutFromKeycloak((OidcUser) authentication.getPrincipal());
+        //
+        response.setStatus(HttpStatus.OK.value());
     }
 
     private void logoutFromKeycloak(OidcUser user) {

@@ -19,10 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
@@ -30,6 +27,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.net.URI;
 import java.security.NoSuchAlgorithmException;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -287,5 +285,24 @@ public class AuthControllerTests extends AbstractWebTests {
                 ;
     }
 
+    @Test
+    public void doAuthLogout_basic() throws Exception {
+        // given
+        when(authService.doAuthLogout(anyString())).thenReturn(HttpStatusCode.valueOf(HttpStatus.OK.value()));
+
+        // when
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                .post(new URI("/v1/public" + "/logout"))
+                .with(csrf())
+                ;
+
+        // then
+        MvcResult mvcResult = this.mockMvc
+                .perform(requestBuilder)
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andReturn()
+                ;
+    }
 
 }

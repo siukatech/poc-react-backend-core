@@ -327,4 +327,20 @@ public class AuthServiceTests extends AbstractUnitTests {
         ;
     }
 
+    @Test
+    public void doAuthLogout_basic() throws URISyntaxException {
+//        public HttpStatusCode doAuthLogout(String logoutApi) {
+        // given
+        String logoutApi = "http://localhost:8080/logout";
+        ResponseEntity responseEntity = ResponseEntity.status(HttpStatus.OK).build();
+//        when(oauth2ClientRestTemplate.getForEntity(any(URI.class), eq(Map.class))).thenReturn(responseEntity);
+        doReturn(responseEntity).when(oauth2ClientRestTemplate).getForEntity(any(URI.class), eq(Map.class));
+
+        // when
+        HttpStatusCode httpStatusCode = this.authService.doAuthLogout(logoutApi);
+
+        // then
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatusCode.valueOf(HttpStatus.OK.value()));
+    }
+
 }

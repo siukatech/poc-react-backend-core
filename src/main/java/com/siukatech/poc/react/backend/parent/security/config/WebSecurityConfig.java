@@ -12,6 +12,7 @@ import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2Res
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.FormHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -23,6 +24,7 @@ import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
 import org.springframework.security.oauth2.core.OAuth2TokenValidator;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 import org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -105,7 +107,7 @@ public class WebSecurityConfig {
         }
         restTemplate.getInterceptors().add(new OAuth2ClientHttpRequestInterceptor());
         logger.debug("oauth2ClientRestTemplate - formHttpMessageConverterCount.get: [{}]"
-                + ", restTemplate.toString: [{}]"
+                        + ", restTemplate.toString: [{}]"
                 , formHttpMessageConverterCount.get(), restTemplate.toString()
         );
         return restTemplate;
@@ -173,6 +175,7 @@ public class WebSecurityConfig {
                         .requestMatchers(RequestMatchers.anyOf(
                                 AntPathRequestMatcher.antMatcher("/")
                                 , AntPathRequestMatcher.antMatcher("/login")
+                                , AntPathRequestMatcher.antMatcher("/logout")
                                 , AntPathRequestMatcher.antMatcher("/error")
 
                                 // Only /v*/public/** is allowed to permit without security checking
@@ -202,7 +205,16 @@ public class WebSecurityConfig {
 //        ;
         http.logout(logoutConfigurer -> logoutConfigurer
                 .addLogoutHandler(keycloakLogoutHandler)
-                .logoutSuccessUrl("/login")
+//                .logoutRequestMatcher(AntPathRequestMatcher.antMatcher("/logout"))
+                //
+                // Reference:
+                // https://stackoverflow.com/a/38461866
+                // https://baeldung.com/spring-security-logout
+                // return http-status instead of doing redirect
+//                .logoutSuccessUrl("/")
+                .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler(HttpStatus.OK))
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID")
                 .permitAll()
         );
 //        http.oauth2Login(new Customizer<OAuth2LoginConfigurer<HttpSecurity>>() {
