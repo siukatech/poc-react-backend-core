@@ -6,11 +6,15 @@ import org.springframework.http.HttpInputMessage;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class DecodedHttpInputMessage implements HttpInputMessage {
+/**
+ * Reference:
+ * https://www.springcloud.io/post/2022-03/spring-mvc-decode-body/#gsc.tab=0
+ */
+public class DecodeHttpInputMessage implements HttpInputMessage {
     private HttpHeaders httpHeaders;
     private InputStream body;
 
-    public DecodedHttpInputMessage(HttpHeaders httpHeaders, InputStream body) {
+    public DecodeHttpInputMessage(HttpHeaders httpHeaders, InputStream body) {
         super();
         this.httpHeaders = httpHeaders;
         this.body = body;

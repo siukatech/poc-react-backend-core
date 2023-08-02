@@ -169,7 +169,7 @@ public class EncryptedRequestBodyAdvice extends RequestBodyAdviceAdapter {
 
 //            byte[] decryptedData = body;
 //            logger.debug("beforeBodyRead - body: [" + new String(decryptedData) + "]");
-            return new DecodedHttpInputMessage(inputMessage.getHeaders()
+            return new DecodeHttpInputMessage(inputMessage.getHeaders()
                     , new ByteArrayInputStream(decryptedData)
             );
         } catch (Exception e) {
