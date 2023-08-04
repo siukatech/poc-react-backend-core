@@ -1,7 +1,6 @@
 package com.siukatech.poc.react.backend.parent.global.config;
 
 import com.siukatech.poc.react.backend.parent.AbstractUnitTests;
-import com.siukatech.poc.react.backend.parent.global.config.ParentAppConfig;
 import com.siukatech.poc.react.backend.parent.web.annotation.v1.ProtectedApiV1Controller;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -30,20 +29,20 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  */
 @ExtendWith(SpringExtension.class)
-//@EnableConfigurationProperties(value = ParentAppConfig.class)
+//@EnableConfigurationProperties(value = ParentAppProp.class)
 @EnableConfigurationProperties
-@ContextConfiguration(classes = ParentAppConfig.class)
-//@ContextConfiguration(classes = ParentAppConfig.class, initializers = ConfigDataApplicationContextInitializer.class)
+@ContextConfiguration(classes = ParentAppProp.class)
+//@ContextConfiguration(classes = ParentAppProp.class, initializers = ConfigDataApplicationContextInitializer.class)
 //@TestPropertySource("classpath:global/parent-app-config-tests.yml")
 @TestPropertySource("classpath:global/parent-app-config-tests.properties")
 //@TestPropertySource(properties = {"spring.config.location = classpath:global/parent-app-config-tests.properties"})
 //@TestPropertySource(locations= {"classpath:global/parent-app-config-tests.yml"})
-public class ParentAppConfigTests extends AbstractUnitTests {
+public class ParentAppPropTests extends AbstractUnitTests {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    private ParentAppConfig parentAppConfig;
+    private ParentAppProp parentAppProp;
 
     @BeforeAll
     public static void init() {
@@ -54,22 +53,22 @@ public class ParentAppConfigTests extends AbstractUnitTests {
     }
 
     @Test
-    public void parentAppConfig_basic() {
-        logger.debug("parentAppConfig_basic - hostName: [{}]"
+    public void parentAppProp_basic() {
+        logger.debug("parentAppProp_basic - hostName: [{}]"
                         + ", myUserInfo: [{}]"
                         + ", myKeyInfo: [{}]"
-                , parentAppConfig.getHostName()
-                , parentAppConfig.getApi().getMyUserInfo()
-                , parentAppConfig.getApi().getMyKeyInfo()
+                , parentAppProp.getHostName()
+                , parentAppProp.getApi().getMyUserInfo()
+                , parentAppProp.getApi().getMyKeyInfo()
         );
-        assertThat(parentAppConfig.getHostName()).isEqualTo("http://localhost:28080");
-        assertThat(parentAppConfig.getApi().getMyUserInfo()).contains(ProtectedApiV1Controller.REQUEST_MAPPING_URI_PREFIX);
-        assertThat(parentAppConfig.getApi().getMyUserInfo()).contains("/my/user-info");
-//        assertThat(parentAppConfig.getApp().getHostName()).isEqualTo("http://localhost:28080");
-//        assertThat(parentAppConfig.getApi().getMyUserInfo()).contains(ProtectedApiV1Controller.REQUEST_MAPPING_URI_PREFIX);
-//        assertThat(parentAppConfig.getApi().getMyUserInfo()).contains("/my/user-info");
-        assertThat(parentAppConfig.getApi().getMyKeyInfo()).contains(ProtectedApiV1Controller.REQUEST_MAPPING_URI_PREFIX);
-        assertThat(parentAppConfig.getApi().getMyKeyInfo()).contains("/my/key-info");
+        assertThat(parentAppProp.getHostName()).isEqualTo("http://localhost:28080");
+        assertThat(parentAppProp.getApi().getMyUserInfo()).contains(ProtectedApiV1Controller.REQUEST_MAPPING_URI_PREFIX);
+        assertThat(parentAppProp.getApi().getMyUserInfo()).contains("/my/user-info");
+//        assertThat(parentAppProp.getApp().getHostName()).isEqualTo("http://localhost:28080");
+//        assertThat(parentAppProp.getApi().getMyUserInfo()).contains(ProtectedApiV1Controller.REQUEST_MAPPING_URI_PREFIX);
+//        assertThat(parentAppProp.getApi().getMyUserInfo()).contains("/my/user-info");
+        assertThat(parentAppProp.getApi().getMyKeyInfo()).contains(ProtectedApiV1Controller.REQUEST_MAPPING_URI_PREFIX);
+        assertThat(parentAppProp.getApi().getMyKeyInfo()).contains("/my/key-info");
     }
 
 }

@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ConfigurationProperties(prefix = "app")
 //@ConfigurationProperties
-public class ParentAppConfig {
+public class ParentAppProp {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 

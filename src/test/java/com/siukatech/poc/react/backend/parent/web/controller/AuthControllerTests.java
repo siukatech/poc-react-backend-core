@@ -2,17 +2,13 @@ package com.siukatech.poc.react.backend.parent.web.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.siukatech.poc.react.backend.parent.AbstractWebTests;
-import com.siukatech.poc.react.backend.parent.business.dto.MyKeyDto;
 import com.siukatech.poc.react.backend.parent.business.service.AuthService;
-import com.siukatech.poc.react.backend.parent.global.config.ParentAppConfig;
 import com.siukatech.poc.react.backend.parent.web.model.auth.LoginForm;
 import com.siukatech.poc.react.backend.parent.web.model.auth.RefreshTokenForm;
 import com.siukatech.poc.react.backend.parent.web.model.auth.TokenRes;
-import org.assertj.core.api.Condition;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.mockito.ArgumentMatchers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +24,6 @@ import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.net.URI;
-import java.security.NoSuchAlgorithmException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;

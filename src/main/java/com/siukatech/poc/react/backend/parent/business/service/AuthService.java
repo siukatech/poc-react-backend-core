@@ -2,7 +2,6 @@ package com.siukatech.poc.react.backend.parent.business.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.oauth2.sdk.GrantType;
-import com.siukatech.poc.react.backend.parent.global.config.ParentAppConfig;
 import com.siukatech.poc.react.backend.parent.web.model.auth.*;
 import org.apache.hc.core5.http.NameValuePair;
 import org.apache.hc.core5.http.message.BasicNameValuePair;
@@ -20,7 +19,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -31,22 +29,22 @@ public class AuthService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final OAuth2ClientProperties oAuth2ClientProperties;
     private final RestTemplate oauth2ClientRestTemplate;
-//    private final ParentAppConfig parentAppConfig;
+//    private final ParentAppProp parentAppProp;
     private final ObjectMapper objectMapper;
 
     public AuthService(OAuth2ClientProperties oAuth2ClientProperties
             , RestTemplate oauth2ClientRestTemplate
-//            , ParentAppConfig parentAppConfig
+//            , ParentAppProp parentAppProp
             , ObjectMapper objectMapper
     ) {
         this.oAuth2ClientProperties = oAuth2ClientProperties;
         this.oauth2ClientRestTemplate = oauth2ClientRestTemplate;
-//        this.parentAppConfig = parentAppConfig;
+//        this.parentAppProp = parentAppProp;
         this.objectMapper = objectMapper;
     }
 
 //    public MyKeyDto resolveMyKeyInfo(String loginId) {
-//        String myKeyInfoUrl = this.parentAppConfig.getMyKeyInfoUrl();
+//        String myKeyInfoUrl = this.parentAppProp.getMyKeyInfoUrl();
 //        MyKeyDto myKeyDto = null;
 //        if (StringUtils.isNotEmpty(myKeyInfoUrl)) {
 //            ResponseEntity<MyKeyDto> responseEntity = this.oauth2ClientRestTemplate.exchange(

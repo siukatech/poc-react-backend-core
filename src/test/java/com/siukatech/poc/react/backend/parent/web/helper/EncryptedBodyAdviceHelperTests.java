@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.siukatech.poc.react.backend.parent.AbstractUnitTests;
 import com.siukatech.poc.react.backend.parent.business.dto.MyKeyDto;
 import com.siukatech.poc.react.backend.parent.business.service.AuthService;
-import com.siukatech.poc.react.backend.parent.global.config.ParentAppConfig;
+import com.siukatech.poc.react.backend.parent.global.config.ParentAppProp;
 import com.siukatech.poc.react.backend.parent.util.EncryptionUtil;
 import com.siukatech.poc.react.backend.parent.web.model.encrypted.EncryptedDetail;
 import com.siukatech.poc.react.backend.parent.web.model.encrypted.EncryptedInfo;
@@ -47,7 +47,7 @@ import static org.mockito.Mockito.when;
         , SpringExtension.class
 })
 @EnableConfigurationProperties
-@ContextConfiguration(classes = {OAuth2ClientProperties.class, ParentAppConfig.class})
+@ContextConfiguration(classes = {OAuth2ClientProperties.class, ParentAppProp.class})
 @TestPropertySource({"classpath:abstract-oauth2-tests.properties"
         , "classpath:global/parent-app-config-tests.properties"
 })
@@ -61,7 +61,7 @@ public class EncryptedBodyAdviceHelperTests extends AbstractUnitTests {
     @Autowired
     private OAuth2ClientProperties oAuth2ClientPropertiesForTests;
     @Autowired
-    private ParentAppConfig parentAppConfigForTests;
+    private ParentAppProp parentAppPropForTests;
 
     //    @InjectMocks
     private EncryptedBodyAdviceHelper encryptedBodyAdviceHelper;
@@ -72,7 +72,7 @@ public class EncryptedBodyAdviceHelperTests extends AbstractUnitTests {
     @Spy
     private RestTemplate oauth2ClientRestTemplate;
     @Spy
-    private ParentAppConfig parentAppConfig;
+    private ParentAppProp parentAppProp;
     @Mock
     private AuthService authService;
 
@@ -86,7 +86,7 @@ public class EncryptedBodyAdviceHelperTests extends AbstractUnitTests {
         if (encryptedBodyAdviceHelper == null) {
             encryptedBodyAdviceHelper = new EncryptedBodyAdviceHelper(objectMapper
                     , oauth2ClientRestTemplate
-                    , parentAppConfig
+                    , parentAppProp
 //                    , authService
             );
         }
@@ -202,21 +202,21 @@ public class EncryptedBodyAdviceHelperTests extends AbstractUnitTests {
 
     @Test
     public void resolveMyKeyInfo_basic() throws NoSuchAlgorithmException {
-        logger.debug("resolveMyKeyInfo_basic - parentAppConfigForTests.myUserInfoUrl: [{}]"
-                        + ", parentAppConfig.myUserInfoUrl: [{}]"
-                        + ", parentAppConfig.getMyKeyInfoUrl: [{}]"
-                        + ", parentAppConfig.getMyKeyInfoUrl: [{}]"
-                , this.parentAppConfigForTests.getMyUserInfoUrl()
-                , this.parentAppConfig.getMyUserInfoUrl()
-                , this.parentAppConfigForTests.getMyKeyInfoUrl()
-                , this.parentAppConfig.getMyKeyInfoUrl()
+        logger.debug("resolveMyKeyInfo_basic - parentAppPropForTests.myUserInfoUrl: [{}]"
+                        + ", parentAppProp.myUserInfoUrl: [{}]"
+                        + ", parentAppProp.getMyKeyInfoUrl: [{}]"
+                        + ", parentAppProp.getMyKeyInfoUrl: [{}]"
+                , this.parentAppPropForTests.getMyUserInfoUrl()
+                , this.parentAppProp.getMyUserInfoUrl()
+                , this.parentAppPropForTests.getMyKeyInfoUrl()
+                , this.parentAppProp.getMyKeyInfoUrl()
         );
 
         // given
         MyKeyDto myKeyDto = prepareMyKeyDto_basic();
         String loginId = myKeyDto.getLoginId();
-        when(this.parentAppConfig.getMyKeyInfoUrl())
-                .thenReturn(this.parentAppConfigForTests.getMyKeyInfoUrl());
+        when(this.parentAppProp.getMyKeyInfoUrl())
+                .thenReturn(this.parentAppPropForTests.getMyKeyInfoUrl());
 //        when(oauth2ClientRestTemplate.exchange(anyString()
 //                , eq(HttpMethod.POST), eq(HttpEntity.EMPTY), eq(MyKeyDto.class)))
 //                .thenReturn(ResponseEntity.ok(prepareMyKeyDto_basic()));

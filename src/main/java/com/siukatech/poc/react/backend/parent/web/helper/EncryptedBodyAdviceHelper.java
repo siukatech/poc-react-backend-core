@@ -2,8 +2,7 @@ package com.siukatech.poc.react.backend.parent.web.helper;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.siukatech.poc.react.backend.parent.business.dto.MyKeyDto;
-import com.siukatech.poc.react.backend.parent.business.service.AuthService;
-import com.siukatech.poc.react.backend.parent.global.config.ParentAppConfig;
+import com.siukatech.poc.react.backend.parent.global.config.ParentAppProp;
 import com.siukatech.poc.react.backend.parent.util.EncryptionUtil;
 import com.siukatech.poc.react.backend.parent.web.annotation.base.EncryptedController;
 import com.siukatech.poc.react.backend.parent.web.model.encrypted.EncryptedDetail;
@@ -40,18 +39,18 @@ public class EncryptedBodyAdviceHelper {
 
     private final ObjectMapper objectMapper;
     private final RestTemplate oauth2ClientRestTemplate;
-    private final ParentAppConfig parentAppConfig;
+    private final ParentAppProp parentAppProp;
 //    private final AuthService authService;
 
 
     public EncryptedBodyAdviceHelper(ObjectMapper objectMapper
             , RestTemplate oauth2ClientRestTemplate
-            , ParentAppConfig parentAppConfig
+            , ParentAppProp parentAppProp
 //            , AuthService authService
     ) {
         this.objectMapper = objectMapper;
         this.oauth2ClientRestTemplate = oauth2ClientRestTemplate;
-        this.parentAppConfig = parentAppConfig;
+        this.parentAppProp = parentAppProp;
 //        this.authService = authService;
     }
 
@@ -224,7 +223,7 @@ public class EncryptedBodyAdviceHelper {
     }
 
     public MyKeyDto resolveMyKeyInfo(String loginId) {
-        String myKeyInfoUrl = this.parentAppConfig.getMyKeyInfoUrl();
+        String myKeyInfoUrl = this.parentAppProp.getMyKeyInfoUrl();
         MyKeyDto myKeyDto = null;
         if (StringUtils.isNotEmpty(myKeyInfoUrl)) {
             ResponseEntity<MyKeyDto> responseEntity = this.oauth2ClientRestTemplate.exchange(

@@ -3,7 +3,7 @@ package com.siukatech.poc.react.backend.parent.business.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.siukatech.poc.react.backend.parent.AbstractUnitTests;
 import com.siukatech.poc.react.backend.parent.business.dto.MyKeyDto;
-import com.siukatech.poc.react.backend.parent.global.config.ParentAppConfig;
+import com.siukatech.poc.react.backend.parent.global.config.ParentAppProp;
 import com.siukatech.poc.react.backend.parent.util.EncryptionUtil;
 import com.siukatech.poc.react.backend.parent.web.model.auth.LoginForm;
 import com.siukatech.poc.react.backend.parent.web.model.auth.RefreshTokenForm;
@@ -37,7 +37,6 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.when;
 
 @ExtendWith({MockitoExtension.class
         , SpringExtension.class
@@ -47,7 +46,7 @@ import static org.mockito.Mockito.when;
 //        RegistrationConfig.class, ProviderConfig.class
 //        ,
         OAuth2ClientProperties.class
-        , ParentAppConfig.class
+        , ParentAppProp.class
 })
 @TestPropertySource({"classpath:abstract-oauth2-tests.properties"
         , "classpath:global/parent-app-config-tests.properties"
@@ -80,7 +79,7 @@ public class AuthServiceTests extends AbstractUnitTests {
     @Autowired
     private OAuth2ClientProperties oAuth2ClientPropertiesForTests;
     @Autowired
-    private ParentAppConfig parentAppConfigForTests;
+    private ParentAppProp parentAppPropForTests;
 
     @InjectMocks
     private AuthService authService;
@@ -106,7 +105,7 @@ public class AuthServiceTests extends AbstractUnitTests {
     @Spy
     private ObjectMapper objectMapper;
     @Spy
-    private ParentAppConfig parentAppConfig;
+    private ParentAppProp parentAppProp;
 
 
 //    private
@@ -175,21 +174,21 @@ public class AuthServiceTests extends AbstractUnitTests {
 
 //    @Test
 //    public void resolveMyKeyInfo_basic() throws NoSuchAlgorithmException {
-//        logger.debug("resolveMyKeyInfo_basic - parentAppConfigForTests.myUserInfoUrl: [{}]"
-//                        + ", parentAppConfig.myUserInfoUrl: [{}]"
-//                        + ", parentAppConfig.getMyKeyInfoUrl: [{}]"
-//                        + ", parentAppConfig.getMyKeyInfoUrl: [{}]"
-//                , this.parentAppConfigForTests.getMyUserInfoUrl()
-//                , this.parentAppConfig.getMyUserInfoUrl()
-//                , this.parentAppConfigForTests.getMyKeyInfoUrl()
-//                , this.parentAppConfig.getMyKeyInfoUrl()
+//        logger.debug("resolveMyKeyInfo_basic - parentAppPropForTests.myUserInfoUrl: [{}]"
+//                        + ", parentAppProp.myUserInfoUrl: [{}]"
+//                        + ", parentAppProp.getMyKeyInfoUrl: [{}]"
+//                        + ", parentAppProp.getMyKeyInfoUrl: [{}]"
+//                , this.parentAppPropForTests.getMyUserInfoUrl()
+//                , this.parentAppProp.getMyUserInfoUrl()
+//                , this.parentAppPropForTests.getMyKeyInfoUrl()
+//                , this.parentAppProp.getMyKeyInfoUrl()
 //        );
 //
 //        // given
 //        MyKeyDto myKeyDto = prepareMyKeyDto_basic();
 //        String loginId = myKeyDto.getLoginId();
-//        when(this.parentAppConfig.getMyKeyInfoUrl())
-//                .thenReturn(this.parentAppConfigForTests.getMyKeyInfoUrl());
+//        when(this.parentAppProp.getMyKeyInfoUrl())
+//                .thenReturn(this.parentAppPropForTests.getMyKeyInfoUrl());
 ////        when(oauth2ClientRestTemplate.exchange(anyString()
 ////                , eq(HttpMethod.POST), eq(HttpEntity.EMPTY), eq(MyKeyDto.class)))
 ////                .thenReturn(ResponseEntity.ok(prepareMyKeyDto_basic()));
