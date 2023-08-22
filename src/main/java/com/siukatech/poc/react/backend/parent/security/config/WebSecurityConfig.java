@@ -182,7 +182,8 @@ public class WebSecurityConfig {
                                 , AntPathRequestMatcher.antMatcher("/v*" + PublicController.REQUEST_MAPPING_URI_PREFIX + "/**")
 
                                 // This is required to add HttpMethod.OPTIONS here
-                                // Preflight-request failed reason is missing WebMvcConfigSupport
+                                // Preflight-request failed reason is missing WebMvcConfig which implements WebMvcConfigurer,
+                                // NOT WebMvcConfigurationSupport, the WebMvcConfigurationSupport is obsolete
                                 , AntPathRequestMatcher.antMatcher(HttpMethod.OPTIONS, "/v*/**")
 
                         ))

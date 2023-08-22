@@ -8,15 +8,18 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class WebMvcConfigSupport extends WebMvcConfigurationSupport {
+//public class WebMvcConfig extends WebMvcConfigurationSupport {
+public class WebMvcConfig implements WebMvcConfigurer {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    protected void addCorsMappings(CorsRegistry registry) {
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        logger.debug("addCorsMappings - start");
         registry
                 .addMapping("/**")
 //                .allowedMethods(HttpMethod.HEAD.name()
@@ -31,6 +34,7 @@ public class WebMvcConfigSupport extends WebMvcConfigurationSupport {
                 //.allowedOrigins("http://localhost:3000/")
                 .allowedOrigins("*")
         ;
+        logger.debug("addCorsMappings - end");
     }
 
 //    private static final String dateFormat = "yyyy-MM-dd";
@@ -53,8 +57,9 @@ public class WebMvcConfigSupport extends WebMvcConfigurationSupport {
      * @param converters the list of configured converters to extend
      */
     @Override
-    protected void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
-        logger.debug("extendMessageConverters - getMessageConverters.size: [{}]", this.getMessageConverters().size());
+    public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
+        logger.debug("extendMessageConverters - start");
+        logger.debug("extendMessageConverters - converters.size: [{}]", converters.size());
         converters.stream().forEach(httpMessageConverter -> {
             logger.debug("extendMessageConverters - httpMessageConverter.getClass.getName: [{}]", httpMessageConverter.getClass().getName());
             if (httpMessageConverter instanceof MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter) {
@@ -66,6 +71,7 @@ public class WebMvcConfigSupport extends WebMvcConfigurationSupport {
                 objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
             }
         });
+        logger.debug("extendMessageConverters - end");
     }
 
 }
