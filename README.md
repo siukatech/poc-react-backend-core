@@ -125,6 +125,47 @@ Or perform a `curl http://localhost:38081/nexus/service/local/status` to check s
 
 
 
+### Realms, Roles and Users
+#### Realms (for private npm registry)  
+Login Nexus Repository Manager  
+Goto -> Security -> Realms  
+Add `npm Bearer Token Realm` from Available to Active.  
+Click `Save` after the above configuration.  
+![Nexus Realms 01](./assets/nexus-01-realms-config-01.png)
+
+
+
+#### Roles
+Login Nexus Repository Manager  
+Goto -> Security -> Roles    
+Click `Create Role` to create new role for maven publish.  
+Role Type: Nexus role  
+Role ID: nx-deployer-maven  
+Role Name: nx-deployer-maven  
+Role Description: Deployer role maven  
+Privileges: `nx-repository-view-maven2-*-*` (This role can view all nexus maven repositories.)  
+Click `Save` after the above configuration.  
+![Nexus Roles 01](./assets/nexus-02-roles-config-01.png)
+
+
+
+#### Users
+Login Nexus Repository Manager  
+Goto -> Security -> Users    
+Click `Create local user` to create new role for maven publish.  
+ID: deployer-maven  
+First name: maven  
+Last name: deployer
+Email: deployer-maven@localhost.com
+Password: xxxxxx  
+Confirm password: xxxxxx  
+Status: Active  
+Roles: nx-deployer-maven  
+Click `Create local user` after the above configuration.  
+![Nexus Users 01](./assets/nexus-03-users-config-01.png)
+
+
+
 ### Gradle
 ```groovy
 plugins {
