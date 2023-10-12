@@ -2,6 +2,7 @@ package com.siukatech.poc.react.backend.parent.web.controller;
 
 import com.siukatech.poc.react.backend.parent.AbstractWebTests;
 import com.siukatech.poc.react.backend.parent.business.dto.MyKeyDto;
+import com.siukatech.poc.react.backend.parent.business.dto.UserPermissionDto;
 import com.siukatech.poc.react.backend.parent.business.dto.UserDto;
 import com.siukatech.poc.react.backend.parent.business.service.UserService;
 import com.siukatech.poc.react.backend.parent.web.annotation.v1.ProtectedApiV1Controller;
@@ -32,6 +33,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
@@ -82,6 +84,27 @@ public class MyControllerTests extends AbstractWebTests {
         myKeyDto.setPublicKey("public-key");
         myKeyDto.setPrivateKey("private-key");
         return myKeyDto;
+    }
+
+
+    private List<UserPermissionDto> prepareUserPermissions_basic() {
+        String[][] userPermissionTempsArr = new String[][]{
+                new String[]{"app-user-01", "1", "role-users-01", "frontend-app", "menu.home", "view"}
+                , new String[]{"app-user-01", "1", "role-users-01", "frontend-app", "menu.items", "*"}
+//                , new String[]{"app-user-01", "1", "role-users-01", "frontend-app", "menu.shops", "view"}
+                , new String[]{"app-user-01", "1", "role-users-01", "frontend-app", "menu.merchants", "view"}
+        };
+        List<UserPermissionDto> userPermissionDtoList = new ArrayList<>();
+        for (String[] userPermissionTemps : userPermissionTempsArr) {
+            userPermissionDtoList.add(new UserPermissionDto());
+            userPermissionDtoList.get(userPermissionDtoList.size() - 1).setLoginId(userPermissionTemps[0]);
+            userPermissionDtoList.get(userPermissionDtoList.size() - 1).setUserId(Long.valueOf(userPermissionTemps[1]));
+            userPermissionDtoList.get(userPermissionDtoList.size() - 1).setUserRoleMid(userPermissionTemps[2]);
+            userPermissionDtoList.get(userPermissionDtoList.size() - 1).setAppMid(userPermissionTemps[3]);
+            userPermissionDtoList.get(userPermissionDtoList.size() - 1).setResourceMid(userPermissionTemps[4]);
+            userPermissionDtoList.get(userPermissionDtoList.size() - 1).setAccessRight(userPermissionTemps[5]);
+        }
+        return userPermissionDtoList;
     }
 
     private UsernamePasswordAuthenticationToken prepareAuthenticationToken_basic() {
@@ -138,7 +161,7 @@ public class MyControllerTests extends AbstractWebTests {
                         + "/my/public-key")
                 .with(authentication(prepareAuthenticationToken_basic()))
                 .with(csrf())
-                //.with(SecurityMockMvcRequestPostProcessors.user((UserDetails) authentication.getPrincipal()))
+                //.with(SecurityMockMvcRequestPostProcessors.users((UserDetails) authentication.getPrincipal()))
                 .accept(MediaType.APPLICATION_JSON);
 
         // then / verify
@@ -201,6 +224,30 @@ public class MyControllerTests extends AbstractWebTests {
         // result
         logger.debug("getUserInfo_basic - end - mvcResult.getResponse.getContentAsString: [" + mvcResult.getResponse().getContentAsString() + "]");
 
+    }
+
+    @Test
+    public void getUserPermissions_basic() throws Exception {
+        // given
+        List<UserPermissionDto> userPermissionDtoList = this.prepareUserPermissions_basic();
+        when(userService.findPermissionsByLoginId(anyString())).thenReturn(userPermissionDtoList);
+
+        // when
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get(ProtectedApiV1Controller.REQUEST_MAPPING_URI_PREFIX + "/my/permissions")
+                .with(authentication(prepareAuthenticationToken_basic()))
+                .with(csrf())
+                .accept(MediaType.APPLICATION_JSON);
+
+        // then
+        MvcResult mvcResult = this.mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk())
+//                .andExpect(content().json())
+                .andExpect(content().string(containsString("resourceMid")))
+                .andReturn();
+
+        // result
+        logger.debug("getUserPermissions_basic - end - mvcResult.getResponse.getContentAsString: [" + mvcResult.getResponse().getContentAsString() + "]");
     }
 
 }

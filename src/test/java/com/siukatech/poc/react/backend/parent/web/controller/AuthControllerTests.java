@@ -3,6 +3,7 @@ package com.siukatech.poc.react.backend.parent.web.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.siukatech.poc.react.backend.parent.AbstractWebTests;
 import com.siukatech.poc.react.backend.parent.business.service.AuthService;
+import com.siukatech.poc.react.backend.parent.business.service.UserService;
 import com.siukatech.poc.react.backend.parent.web.model.auth.LoginForm;
 import com.siukatech.poc.react.backend.parent.web.model.auth.RefreshTokenForm;
 import com.siukatech.poc.react.backend.parent.web.model.auth.TokenRes;
@@ -70,6 +71,10 @@ public class AuthControllerTests extends AbstractWebTests {
 
     @MockBean
     private AuthService authService;
+
+    // define this for keycloakJwtAuthenticationConverter initialization
+    @MockBean
+    private UserService userService;
 
 //    /**
 //     * @Autowired is defined because the OAuth2ClientProperties will be created based on the properties.

@@ -167,6 +167,15 @@ public class EncryptedBodyAdviceHelper {
         String encryptedAesContent = encryptedDataStr.substring(CIPHER_INFO_LENGTH);
         encryptedDataList.add(encryptedRsaInfo);
         encryptedDataList.add(encryptedAesContent);
+        logger.debug("resolveRsaInfoAesContent - CIPHER_INFO_LENGTH: [{}"
+                        + "], encryptedDataStr: [{}"
+                        + "], encryptedRsaInfo: [{}"
+                        + "], encryptedAesContent: [{}"
+                        + "]"
+                , CIPHER_INFO_LENGTH
+                , encryptedDataStr
+                , encryptedRsaInfo
+                , encryptedAesContent);
         return encryptedDataList.toArray(new String[encryptedDataList.size()]);
     }
 
@@ -179,8 +188,16 @@ public class EncryptedBodyAdviceHelper {
         String loginId = myKeyDto.getLoginId();
         logger.debug("decryptDataBase64ToBodyDetail - loginId: [" + loginId
                 + "], start");
+//        String encryptedDataBase64Str = this.objectMapper.readValue(encryptedDataBase64, String.class);
+        logger.debug("decryptDataBase64ToBodyDetail - loginId: [" + loginId
+                + "], encryptedDataBase64: [" + encryptedDataBase64
+//                + "], encryptedDataBase64Str: [" + encryptedDataBase64Str
+                + "]");
         byte[] encryptedData = Base64.getDecoder().decode(encryptedDataBase64.getBytes(StandardCharsets.UTF_8));
         String encryptedDataStr = new String(encryptedData);
+        logger.debug("decryptDataBase64ToBodyDetail - loginId: [" + loginId
+                + "], encryptedDataStr: [" + encryptedDataStr
+                + "]");
 //        String[] encryptedDataArr = StringUtils.split(encryptedDataStr, CIPHER_SEPARATOR);
         String[] encryptedDataArr = this.resolveRsaInfoAesContent(encryptedDataStr);
         String encryptedRsaInfo = encryptedDataArr[0];
@@ -239,8 +256,7 @@ public class EncryptedBodyAdviceHelper {
                         "User does not match loginId: [%s], myKeyDto.getLoginId: [%s]"
                                 .formatted(loginId, myKeyDto.getLoginId()));
             }
-        }
-        else {
+        } else {
             logger.debug("resolveMyKeyInfo - loginId: [{}], myKeyInfoUrl: [{}]"
                     , loginId, myKeyInfoUrl
             );

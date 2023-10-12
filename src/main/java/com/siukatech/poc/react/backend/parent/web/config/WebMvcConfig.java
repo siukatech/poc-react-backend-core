@@ -1,5 +1,6 @@
 package com.siukatech.poc.react.backend.parent.web.config;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import org.slf4j.Logger;
@@ -16,6 +17,12 @@ import java.util.List;
 //public class WebMvcConfig extends WebMvcConfigurationSupport {
 public class WebMvcConfig implements WebMvcConfigurer {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    private final ObjectMapper objectMapper;
+
+    public WebMvcConfig(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
@@ -63,12 +70,27 @@ public class WebMvcConfig implements WebMvcConfigurer {
         converters.stream().forEach(httpMessageConverter -> {
             logger.debug("extendMessageConverters - httpMessageConverter.getClass.getName: [{}]", httpMessageConverter.getClass().getName());
             if (httpMessageConverter instanceof MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter) {
-//                MappingJackson2HttpMessageConverter jacksonMessageConverter = (MappingJackson2HttpMessageConverter) httpMessageConverter;
-                ObjectMapper objectMapper = mappingJackson2HttpMessageConverter.getObjectMapper();
-                logger.debug("extendMessageConverters - MappingJackson2HttpMessageConverter.getObjectMapper: [{}]"
-                        , mappingJackson2HttpMessageConverter.getObjectMapper());
-                // here is configured for non-encrypted data, general response body
-                objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+////                MappingJackson2HttpMessageConverter jacksonMessageConverter = (MappingJackson2HttpMessageConverter) httpMessageConverter;
+//                ObjectMapper objectMapper = mappingJackson2HttpMessageConverter.getObjectMapper();
+//                logger.debug("extendMessageConverters - MappingJackson2HttpMessageConverter.getObjectMapper: [{}]"
+//                        , mappingJackson2HttpMessageConverter.getObjectMapper());
+//                objectMapper =
+//                        // here is configured for non-encrypted data, general response body
+//                        objectMapper
+//                                .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+//
+//                                // ignore unknown json properties to prevent HttpMessageNotReadableException
+//                                // https://stackoverflow.com/a/5455563
+////                objectMapper.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false);
+//                                .configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false)
+////                                .disable(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES)
+////                objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+//                                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+////                                .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+//                ;
+//                objectMapper.getDeserializationConfig().without(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES);
+
+                mappingJackson2HttpMessageConverter.setObjectMapper(objectMapper);
             }
         });
         logger.debug("extendMessageConverters - end");

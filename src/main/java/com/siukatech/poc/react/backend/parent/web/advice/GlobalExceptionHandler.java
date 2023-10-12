@@ -1,10 +1,10 @@
 package com.siukatech.poc.react.backend.parent.web.advice;
 
 import jakarta.persistence.EntityNotFoundException;
-import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.*;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -25,6 +25,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     /**
      * This is exception handler of IllegalArgumentException
+     *
      * @param ex
      * @param request
      * @return
@@ -32,6 +33,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(value = {IllegalArgumentException.class})
     protected ResponseEntity<?> handleIllegalArgument(RuntimeException ex, WebRequest request) {
 //        return this.handleExceptionInternal(ex, "handle IllegalArgumentException", new HttpHeaders(), HttpStatus.CONFLICT, request);
+        logger.error("handleIllegalArgument - ex: [" + ex
+                + "], ex.getClass.getName: [" + ex.getClass().getName()
+                + "]");
         HttpStatus status = HttpStatus.CONFLICT;
         Object[] args = {};
         String defaultDetail = ex.getMessage();
@@ -41,6 +45,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     /**
      * This is the exception handler of Spring Data ObjectOptimisticLockingFailureException
+     *
      * @param ex
      * @param request
      * @return
@@ -122,8 +127,26 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(ex, body, headers, status, request);
     }
 
+    @Override
+    protected ResponseEntity<Object> handleHttpMessageNotReadable(
+            HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+
+        logger.error("handleEntityNotFoundException - ex: [" + ex
+                + "], ex.getClass.getName: [" + ex.getClass().getName()
+                + "], ex.getMessage: [" + ex.getMessage()
+                + "], ex.fillInStackTrace: ", ex.fillInStackTrace());
+
+        String defaultDetail = ex.getMessage();
+        ProblemDetail body = createProblemDetail(ex, status
+//                , "Failed to read request"
+                , defaultDetail
+                , null, null, request);
+        return handleExceptionInternal(ex, body, headers, status, request);
+    }
+
     /**
      * This is the exception handler of Jpa EntityNotFoundException
+     *
      * @param ex
      * @param request
      * @return
@@ -135,8 +158,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 + "], ex.getClass.getName: [" + ex.getClass().getName()
                 + "]");
         HttpStatus status = HttpStatus.NOT_FOUND;
-        String defaultDetail = "" + ex.getMessage()
-                ;
+        String defaultDetail = "" + ex.getMessage();
         ProblemDetail body = createProblemDetail(ex, status, defaultDetail, null, null, request);
         return handleExceptionInternal(ex, body, new HttpHeaders(), status, request);
     }

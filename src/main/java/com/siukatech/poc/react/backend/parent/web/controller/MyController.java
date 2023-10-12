@@ -1,5 +1,6 @@
 package com.siukatech.poc.react.backend.parent.web.controller;
 
+import com.siukatech.poc.react.backend.parent.business.dto.UserPermissionDto;
 import com.siukatech.poc.react.backend.parent.business.dto.UserDto;
 import com.siukatech.poc.react.backend.parent.business.dto.MyKeyDto;
 import com.siukatech.poc.react.backend.parent.business.service.UserService;
@@ -10,7 +11,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+
+import java.util.List;
 
 @Slf4j
 @ProtectedApiV1Controller
@@ -54,6 +58,18 @@ public class MyController {
         UserDto userDto = this.userService.findByLoginId(loginId);
 
         return ResponseEntity.ok(userDto);
+    }
+
+    @GetMapping("/my/permissions")
+    public ResponseEntity<?> getUserPermissions(Authentication authentication) {
+        Authentication authenticationInSc = SecurityContextHolder.getContext().getAuthentication();
+        logger.debug("getUserPermissions - authentication: [{}], authenticationInSc: [{}]"
+                , authentication, authenticationInSc);
+        String loginId = authentication.getName();
+        List<UserPermissionDto> userPermissionDtoList = this.userService
+                .findPermissionsByLoginId(loginId);
+
+        return ResponseEntity.ok(userPermissionDtoList);
     }
 
 }

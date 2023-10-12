@@ -1,5 +1,6 @@
 package com.siukatech.poc.react.backend.parent.security.interceptor;
 
+import com.siukatech.poc.react.backend.parent.security.authentication.MyAuthenticationToken;
 import com.siukatech.poc.react.backend.parent.security.config.WebSecurityConfig;
 import com.siukatech.poc.react.backend.parent.security.converter.KeycloakJwtAuthenticationConverter;
 import org.slf4j.Logger;
@@ -24,9 +25,11 @@ public class OAuth2ClientHttpRequestInterceptor implements ClientHttpRequestInte
         // https://stackoverflow.com/a/47046477
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String tokenValue = null;
-        if (authentication instanceof OAuth2AuthenticationToken oAuth2AuthenticationToken) {
-//            OAuth2AuthenticationToken oAuth2AuthenticationToken = (OAuth2AuthenticationToken) authentication;
-            tokenValue = oAuth2AuthenticationToken.getPrincipal().getAttribute(KeycloakJwtAuthenticationConverter.ATTR_TOKEN_VALUE);
+//        if (authentication instanceof OAuth2AuthenticationToken oAuth2AuthenticationToken) {
+////            OAuth2AuthenticationToken oAuth2AuthenticationToken = (OAuth2AuthenticationToken) authentication;
+//            tokenValue = oAuth2AuthenticationToken.getPrincipal().getAttribute(KeycloakJwtAuthenticationConverter.ATTR_TOKEN_VALUE);
+        if (authentication instanceof MyAuthenticationToken myAuthenticationToken) {
+            tokenValue = myAuthenticationToken.getTokenValue();
         }
         logger.debug("intercept - request.URI: [{}]"
                         + ", authentication.getName: [{}]"

@@ -1,5 +1,7 @@
 package com.siukatech.poc.react.backend.parent.security.config;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.siukatech.poc.react.backend.parent.security.converter.KeycloakJwtAuthenticationConverter;
 import com.siukatech.poc.react.backend.parent.security.handler.KeycloakLogoutHandler;
@@ -47,14 +49,18 @@ public class WebSecurityConfig {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    private final ObjectMapper objectMapper;
+
     private final KeycloakLogoutHandler keycloakLogoutHandler;
     private final OAuth2ResourceServerProperties oAuth2ResourceServerProperties;
     private final KeycloakJwtAuthenticationConverter keycloakJwtAuthenticationConverter;
 
-    public WebSecurityConfig(KeycloakLogoutHandler keycloakLogoutHandler
+    public WebSecurityConfig(ObjectMapper objectMapper
+            , KeycloakLogoutHandler keycloakLogoutHandler
             , OAuth2ResourceServerProperties oAuth2ResourceServerProperties
             , KeycloakJwtAuthenticationConverter keycloakJwtAuthenticationConverter
     ) {
+        this.objectMapper = objectMapper;
         this.keycloakLogoutHandler = keycloakLogoutHandler;
         this.oAuth2ResourceServerProperties = oAuth2ResourceServerProperties;
         this.keycloakJwtAuthenticationConverter = keycloakJwtAuthenticationConverter;
@@ -92,11 +98,22 @@ public class WebSecurityConfig {
 //        restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter(this.objectMapper));
         restTemplate.getMessageConverters().stream().forEach(httpMessageConverter -> {
             if (httpMessageConverter instanceof MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter) {
-//                ((MappingJackson2HttpMessageConverter) httpMessageConverter)
-                mappingJackson2HttpMessageConverter
-                        .getObjectMapper()
-                        .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
-                ;
+////                ((MappingJackson2HttpMessageConverter) httpMessageConverter)
+//                ObjectMapper objectMapper =
+//                        mappingJackson2HttpMessageConverter
+//                                .getObjectMapper();
+//
+//                objectMapper = objectMapper
+//                        .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+//
+//                        // ignore unknown json properties to prevent HttpMessageNotReadableException
+//                        // https://stackoverflow.com/a/5455563
+//                        .configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false)
+////                        .disable(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES)
+//                        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+////                        .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+//                ;
+                mappingJackson2HttpMessageConverter.setObjectMapper(objectMapper);
             }
             if (httpMessageConverter instanceof FormHttpMessageConverter) {
                 formHttpMessageConverterCount.getAndIncrement();
@@ -205,18 +222,18 @@ public class WebSecurityConfig {
 //                .permitAll()
 //        ;
         http.logout(logoutConfigurer -> logoutConfigurer
-                .addLogoutHandler(keycloakLogoutHandler)
+                        .addLogoutHandler(keycloakLogoutHandler)
 //                .logoutRequestMatcher(AntPathRequestMatcher.antMatcher("/logout"))
-                //
-                // Reference:
-                // https://stackoverflow.com/a/38461866
-                // https://baeldung.com/spring-security-logout
-                // return http-status instead of doing redirect
+                        //
+                        // Reference:
+                        // https://stackoverflow.com/a/38461866
+                        // https://baeldung.com/spring-security-logout
+                        // return http-status instead of doing redirect
 //                .logoutSuccessUrl("/")
-                .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler(HttpStatus.OK))
-                .invalidateHttpSession(true)
-                .deleteCookies("JSESSIONID")
-                .permitAll()
+                        .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler(HttpStatus.OK))
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
+                        .permitAll()
         );
 //        http.oauth2Login(new Customizer<OAuth2LoginConfigurer<HttpSecurity>>() {
 //            @Override

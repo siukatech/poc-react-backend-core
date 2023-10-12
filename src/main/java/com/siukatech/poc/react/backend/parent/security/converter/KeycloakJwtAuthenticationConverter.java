@@ -1,12 +1,14 @@
 package com.siukatech.poc.react.backend.parent.security.converter;
 
+import com.siukatech.poc.react.backend.parent.business.dto.UserDto;
+import com.siukatech.poc.react.backend.parent.business.service.UserService;
+import com.siukatech.poc.react.backend.parent.security.authentication.MyAuthenticationToken;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.oidc.StandardClaimNames;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -24,7 +26,11 @@ public class KeycloakJwtAuthenticationConverter implements Converter<Jwt, Abstra
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public final static String ATTR_TOKEN_VALUE = "ATTR_TOKEN_VALUE";
+    private final UserService userService;
+
+    private KeycloakJwtAuthenticationConverter(UserService userService) {
+        this.userService = userService;
+    }
 
     @Override
     public AbstractAuthenticationToken convert(Jwt source) {
@@ -49,11 +55,16 @@ public class KeycloakJwtAuthenticationConverter implements Converter<Jwt, Abstra
 //        UsernamePasswordAuthenticationToken authenticationToken
 //                = new UsernamePasswordAuthenticationToken(userDetails
 //                , source.getTokenValue(), userDetails.getAuthorities());
+
+        UserDto userDto = userService.findByLoginId(loginId);
+
         Map<String, Object> attributeMap = new HashMap<>();
         attributeMap.put(StandardClaimNames.PREFERRED_USERNAME, loginId);
-        attributeMap.put(ATTR_TOKEN_VALUE, source.getTokenValue());
+        attributeMap.put(MyAuthenticationToken.ATTR_TOKEN_VALUE, source.getTokenValue());
+        attributeMap.put(MyAuthenticationToken.ATTR_USER_ID, userDto.getId());
         OAuth2User oAuth2User = new DefaultOAuth2User(convertedAuthorities, attributeMap, StandardClaimNames.PREFERRED_USERNAME);
-        OAuth2AuthenticationToken authenticationToken = new OAuth2AuthenticationToken(oAuth2User, convertedAuthorities, "keycloak");
+//        OAuth2AuthenticationToken authenticationToken = new OAuth2AuthenticationToken(oAuth2User, convertedAuthorities, "keycloak");
+        MyAuthenticationToken authenticationToken = new MyAuthenticationToken(oAuth2User, convertedAuthorities, "keycloak");
         return authenticationToken;
     }
 
