@@ -74,39 +74,42 @@ tasks.named('test') {
 	useJUnitPlatform()
 }
 
-publishing {
-	publications {
-		privateMaven(MavenPublication) {
-			def artifactIdStr = "$project.name"
-			groupId "$project.group"
-			version "$project.version"
-			artifactId "$artifactIdStr"
-//			from components.javaPlatform
-			from components.java
-			versionMapping {
-				usage('java-api') {
-					fromResolutionOf('runtimeClasspath')
-				}
-				usage('java-runtime') {
-					fromResolutionResult()
-				}
-			}
-			pom {
-				name = "$artifactId"
-				description = "$artifactId"
-			}
 
-		}
-	}
-	repositories {
-		maven {
-			name = 'platformSnapshot'
-			allowInsecureProtocol = true
-			credentials(PasswordCredentials)
-			url = uri("$platformSnapshotUri")
-		}
-	}
-}
+// disable publishing for jenkins testing
+//publishing {
+//	publications {
+//		privateMaven(MavenPublication) {
+//			def artifactIdStr = "$project.name"
+//			groupId "$project.group"
+//			version "$project.version"
+//			artifactId "$artifactIdStr"
+////			from components.javaPlatform
+//			from components.java
+//			versionMapping {
+//				usage('java-api') {
+//					fromResolutionOf('runtimeClasspath')
+//				}
+//				usage('java-runtime') {
+//					fromResolutionResult()
+//				}
+//			}
+//			pom {
+//				name = "$artifactId"
+//				description = "$artifactId"
+//			}
+//
+//		}
+//	}
+//	repositories {
+//		maven {
+//			name = 'platformSnapshot'
+//			allowInsecureProtocol = true
+//			credentials(PasswordCredentials)
+//			url = uri("$platformSnapshotUri")
+//		}
+//	}
+//}
+// disable publishing for jenkins testing
 
 
 //configurations {
