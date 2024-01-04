@@ -173,7 +173,9 @@ public class UserControllerTests {
                 .accept(MediaType.APPLICATION_JSON);
 
         // then / verify
-        MvcResult mvcResult = this.mockMvc.perform(requestBuilder)
+        MvcResult mvcResult = this.mockMvc
+                .perform(requestBuilder)
+                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json("{loginId: \"app-user-01\"}"))
                 .andReturn();

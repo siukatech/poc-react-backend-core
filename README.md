@@ -434,3 +434,49 @@ I also tried the AES/GCM on backend but failed on frontend.
 So the AES/CBC is default encryption algorithm.  
 
 
+
+# Springboot Upgrade ***
+## From 3.1.0 => 3.2.1
+After upgrade to `springboot` `3.2.1`, `@PathVariable` behavior is changed.  
+This can be fixed by update build.gradle or adding maven plugin.  
+
+Manually indicate the name of the variable one by one.   
+```java
+@PostMapping("/test/{id}")
+public ResponseEntity<?> test(@PathVariable
+      // name is required for framework to look up the parameter name
+      (name = "id")
+      id) {
+    // do something
+}
+```
+
+
+Better solution by using build.gradle (gradle) or pom.xml (maven).  
+```groovy
+...
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs.add("-parameters")
+}
+...
+```
+```xml
+...
+<plugin>
+  <groupId>org.apache.maven.plugins</groupId>
+  <artifactId>maven-compiler-plugin</artifactId>
+  <configuration>
+    <parameters>true</parameters>
+  </configuration>
+</plugin>
+...
+```
+
+
+**Reference:**  
+https://stackoverflow.com/a/77691302    
+https://github.com/spring-projects/spring-framework/wiki/Upgrading-to-Spring-Framework-6.x#parameter-name-retention  
+
+
+
+

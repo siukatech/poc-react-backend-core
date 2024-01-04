@@ -17,12 +17,19 @@ public class UserController {
 
     protected Logger logger = LoggerFactory.getLogger(this.getClass());
     protected final UserService userService;
+
     public UserController(UserService userService) {
         this.userService = userService;
     }
 
     @PostMapping("/users/{targetLoginId}/user-info")
-    public ResponseEntity<?> getUserInfo(@PathVariable String targetLoginId) {
+    public ResponseEntity<?> getUserInfo(@PathVariable
+//                                                 // after upgrade to springboot >= 3.2.1
+//                                                 // this can be fixed by update build.gradle or adding maven plugin
+//                                                 // https://stackoverflow.com/a/77691302
+//                                                 // https://github.com/spring-projects/spring-framework/wiki/Upgrading-to-Spring-Framework-6.x#parameter-name-retention
+//                                                 (name = "targetLoginId")
+                                         String targetLoginId) {
         UserDto userDto = this.userService.findByLoginId(targetLoginId);
 
         return ResponseEntity.ok(userDto);

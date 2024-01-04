@@ -2,10 +2,12 @@ plugins {
 //	id 'java'
 //	id 'java-platform'
 	id 'java-library'
-	id 'org.springframework.boot' version '3.1.0' apply false
-	id 'io.spring.dependency-management' version '1.1.0'
+//	id 'org.springframework.boot' version '3.1.0' apply false
+//	id 'io.spring.dependency-management' version '1.1.0'
+	id 'org.springframework.boot' version '3.2.1' apply false
 	id 'maven-publish'
 }
+apply plugin: 'io.spring.dependency-management'
 
 // https://stackoverflow.com/a/55731664
 dependencyManagement {
@@ -49,7 +51,7 @@ dependencies {
 //	api 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.15.2'
 ////	api 'org.apache.httpcomponents:httpclient:4.5.13'
 //	api 'org.apache.httpcomponents.client5:httpclient5:5.2.2'
-	api 'org.apache.httpcomponents.core5:httpcore5:5.2.2'
+	api 'org.apache.httpcomponents.core5:httpcore5:5.2.4'
 
 	api 'org.projectlombok:lombok:1.18.24'
 	annotationProcessor 'org.projectlombok:lombok:1.18.24'
@@ -69,6 +71,15 @@ dependencies {
 //bootJar {
 //	enabled = false
 //}
+
+
+// after upgrade to springboot >= 3.2.1
+// this can be fixed by update build.gradle or adding maven plugin
+// https://stackoverflow.com/a/77691302
+// https://github.com/spring-projects/spring-framework/wiki/Upgrading-to-Spring-Framework-6.x#parameter-name-retention
+tasks.withType(JavaCompile).configureEach {
+	options.compilerArgs.add("-parameters")
+}
 
 tasks.named('test') {
 	useJUnitPlatform()
