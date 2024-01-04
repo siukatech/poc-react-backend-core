@@ -3,7 +3,7 @@ package com.siukatech.poc.react.backend.parent.web.helper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.siukatech.poc.react.backend.parent.business.dto.MyKeyDto;
 import com.siukatech.poc.react.backend.parent.global.config.ParentAppProp;
-import com.siukatech.poc.react.backend.parent.util.EncryptionUtil;
+import com.siukatech.poc.react.backend.parent.util.EncryptionUtils;
 import com.siukatech.poc.react.backend.parent.web.annotation.base.EncryptedController;
 import com.siukatech.poc.react.backend.parent.web.model.encrypted.EncryptedDetail;
 import com.siukatech.poc.react.backend.parent.web.model.encrypted.EncryptedInfo;
@@ -64,7 +64,7 @@ public class EncryptedBodyAdviceHelper {
         String loginId = myKeyDto.getLoginId();
         logger.debug("decryptRsaDataBase64ToBodyDetail - loginId: [" + loginId
                 + "], start");
-        byte[] decryptedBodyData = EncryptionUtil.decryptWithRsaPrivateKey(
+        byte[] decryptedBodyData = EncryptionUtils.decryptWithRsaPrivateKey(
                 Base64.getDecoder().decode(encryptedRsaDataBase64)
 //                , userEntity.getPrivateKey()
                 , myKeyDto.getPrivateKey()
@@ -91,7 +91,7 @@ public class EncryptedBodyAdviceHelper {
 //                    , aesKey);
         byte[] decryptedData = null;
         if (encryptedReq.cipher() != null) {
-            decryptedData = EncryptionUtil.decryptWithAesCbcSecret(
+            decryptedData = EncryptionUtils.decryptWithAesCbcSecret(
                     Base64.getDecoder().decode(encryptedReq.cipher())
 //                    , aesKey
                     , Base64.getDecoder().decode(encryptedInfo.key())
@@ -136,7 +136,7 @@ public class EncryptedBodyAdviceHelper {
 //        byte[] encryptedAesData = EncryptionUtil.encryptWithAesEcbSecret(bodyStr
 //                , decodedKey
 //        );
-        byte[] encryptedAesData = EncryptionUtil.encryptWithAesCbcSecret(bodyStr
+        byte[] encryptedAesData = EncryptionUtils.encryptWithAesCbcSecret(bodyStr
                 , decodedKey, decodedIv
         );
         String encryptedAesDataBase64 = Base64.getEncoder().encodeToString(encryptedAesData);
@@ -209,7 +209,7 @@ public class EncryptedBodyAdviceHelper {
                 + "], encryptedRsaInfo: [" + encryptedRsaInfo
                 + "], encryptedAesContent: [" + encryptedAesContent
                 + "]");
-        byte[] decryptedRsaInfoData = EncryptionUtil.decryptWithRsaPrivateKey(
+        byte[] decryptedRsaInfoData = EncryptionUtils.decryptWithRsaPrivateKey(
                 Base64.getDecoder().decode(encryptedRsaInfo)
 //                , userEntity.getPrivateKey()
                 , myKeyDto.getPrivateKey()
@@ -223,7 +223,7 @@ public class EncryptedBodyAdviceHelper {
         byte[] decryptedAesContentData = null;
         String decryptedAesContentStr = null;
         if (encryptedAesContent != null) {
-            decryptedAesContentData = EncryptionUtil.decryptWithAesCbcSecret(
+            decryptedAesContentData = EncryptionUtils.decryptWithAesCbcSecret(
                     Base64.getDecoder().decode(encryptedAesContent)
                     , Base64.getDecoder().decode(encryptedInfo.key())
                     , Base64.getDecoder().decode(encryptedInfo.iv())

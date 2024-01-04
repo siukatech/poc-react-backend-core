@@ -5,7 +5,7 @@ import com.siukatech.poc.react.backend.parent.AbstractUnitTests;
 import com.siukatech.poc.react.backend.parent.business.dto.MyKeyDto;
 import com.siukatech.poc.react.backend.parent.business.service.AuthService;
 import com.siukatech.poc.react.backend.parent.global.config.ParentAppProp;
-import com.siukatech.poc.react.backend.parent.util.EncryptionUtil;
+import com.siukatech.poc.react.backend.parent.util.EncryptionUtils;
 import com.siukatech.poc.react.backend.parent.web.model.encrypted.EncryptedDetail;
 import com.siukatech.poc.react.backend.parent.web.model.encrypted.EncryptedInfo;
 import org.assertj.core.api.Condition;
@@ -93,7 +93,7 @@ public class EncryptedBodyAdviceHelperTests extends AbstractUnitTests {
     }
 
     private MyKeyDto prepareMyKeyDto_basic() throws NoSuchAlgorithmException {
-        KeyPair keyPair = EncryptionUtil.generateRsaKeyPair();
+        KeyPair keyPair = EncryptionUtils.generateRsaKeyPair();
         MyKeyDto myKeyDto = new MyKeyDto();
         myKeyDto.setLoginId("app-user-01");
 //        myKeyDto.setName("App User 01");
@@ -112,9 +112,9 @@ public class EncryptedBodyAdviceHelperTests extends AbstractUnitTests {
         // aes key MUST be 16, 24, 32
         // iv MUST be 16
         // salt MUST be 16
-        String key = EncryptionUtil.generateRandomToken(32);
-        String iv = EncryptionUtil.generateRandomToken(16);
-        String salt = EncryptionUtil.generateRandomToken(16);
+        String key = EncryptionUtils.generateRandomToken(32);
+        String iv = EncryptionUtils.generateRandomToken(16);
+        String salt = EncryptionUtils.generateRandomToken(16);
         EncryptedInfo encryptedInfo = new EncryptedInfo(key, iv, salt);
         return encryptedInfo;
     }
@@ -125,7 +125,7 @@ public class EncryptedBodyAdviceHelperTests extends AbstractUnitTests {
         MyKeyDto body = this.prepareMyKeyDto_basic();
         String bodyStr = this.objectMapper.writeValueAsString(body);
         EncryptedInfo encryptedInfo = this.prepareEncryptedInfo_basic();
-        byte[] aesKey = EncryptionUtil.encryptWithRsaPublicKey(encryptedInfo.key(), body.getPublicKey());
+        byte[] aesKey = EncryptionUtils.encryptWithRsaPublicKey(encryptedInfo.key(), body.getPublicKey());
         String aesKeyBase64 = Base64.getEncoder().encodeToString(aesKey);
         logger.debug("encryptBodyToDataBase64_basic - aesKeyBase64.length: [{}]"
                         + ", bodyStr: [{}]"
@@ -141,7 +141,7 @@ public class EncryptedBodyAdviceHelperTests extends AbstractUnitTests {
         byte[] data = Base64.getDecoder().decode(cipherText);
         byte[] secret = Base64.getDecoder().decode(encryptedInfo.key());
         byte[] iv = Base64.getDecoder().decode(encryptedInfo.iv());
-        byte[] content = EncryptionUtil.decryptWithAesCbcSecret(data, secret, iv);
+        byte[] content = EncryptionUtils.decryptWithAesCbcSecret(data, secret, iv);
         String contentStr = new String(content);
         logger.debug("encryptBodyToDataBase64_basic - contentStr: [{}]", contentStr);
 
@@ -174,11 +174,11 @@ public class EncryptedBodyAdviceHelperTests extends AbstractUnitTests {
         String encryptedInfoStr = this.objectMapper.writeValueAsString(encryptedInfo);
         byte[] secret = Base64.getDecoder().decode(encryptedInfo.key());
         byte[] iv = Base64.getDecoder().decode(encryptedInfo.iv());
-        byte[] aesKey = EncryptionUtil.encryptWithRsaPublicKey(encryptedInfo.key(), userDto.getPublicKey());
+        byte[] aesKey = EncryptionUtils.encryptWithRsaPublicKey(encryptedInfo.key(), userDto.getPublicKey());
         String aesKeyBase64 = Base64.getEncoder().encodeToString(aesKey);
-        byte[] headerData = EncryptionUtil.encryptWithRsaPublicKey(encryptedInfoStr, userDto.getPublicKey());
+        byte[] headerData = EncryptionUtils.encryptWithRsaPublicKey(encryptedInfoStr, userDto.getPublicKey());
         String headerDataBase64 = Base64.getEncoder().encodeToString(headerData);
-        byte[] bodyData = EncryptionUtil.encryptWithAesCbcSecret(userDtoStr, secret, iv);
+        byte[] bodyData = EncryptionUtils.encryptWithAesCbcSecret(userDtoStr, secret, iv);
         String bodyDataBase64 = Base64.getEncoder().encodeToString(bodyData);
         String encryptedBody = headerDataBase64 + bodyDataBase64;
         String encryptedDataBase64 = Base64.getEncoder().encodeToString(encryptedBody.getBytes(StandardCharsets.UTF_8));

@@ -2,6 +2,7 @@ package com.siukatech.poc.react.backend.parent.business.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.oauth2.sdk.GrantType;
+import com.siukatech.poc.react.backend.parent.util.URLEncoderUtils;
 import com.siukatech.poc.react.backend.parent.web.model.auth.*;
 import org.apache.hc.core5.http.NameValuePair;
 import org.apache.hc.core5.http.message.BasicNameValuePair;
@@ -29,7 +30,7 @@ public class AuthService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final OAuth2ClientProperties oAuth2ClientProperties;
     private final RestTemplate oauth2ClientRestTemplate;
-//    private final ParentAppProp parentAppProp;
+    //    private final ParentAppProp parentAppProp;
     private final ObjectMapper objectMapper;
 
     public AuthService(OAuth2ClientProperties oAuth2ClientProperties
@@ -94,7 +95,10 @@ public class AuthService {
                 .collect(Collectors.toList());
         // https://stackoverflow.com/a/2810434
         // https://stackoverflow.com/a/16066990
-        String queryString = URLEncodedUtils.format(nameValuePairList, Charset.forName(StandardCharsets.UTF_8.name()));
+        String queryString =
+//                URLEncodedUtils.format(nameValuePairList, Charset.forName(StandardCharsets.UTF_8.name()))
+//                URLEncoder.encode(
+                URLEncoderUtils.encodeToQueryString(nameValuePairList);
         String authUrl = new StringBuffer()
                 .append(provider.getAuthorizationUri())
                 .append("?")

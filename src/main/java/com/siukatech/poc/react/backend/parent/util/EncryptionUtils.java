@@ -19,9 +19,9 @@ import java.util.Base64;
  * https://4youngpadawans.com/end-to-end-encryption-between-react-and-spring/
  */
 @Slf4j
-public class EncryptionUtil {
+public class EncryptionUtils {
 
-    private static final Logger logger = LoggerFactory.getLogger(EncryptionUtil.class);
+    private static final Logger logger = LoggerFactory.getLogger(EncryptionUtils.class);
 
     public static final String ALGORITHM_RSA = "RSA";
     public static final String ALGORITHM_AES = "AES";
@@ -29,7 +29,7 @@ public class EncryptionUtil {
     public static final String TRANSFORMATION_AES_CBC_PKCS5PADDING = "AES/CBC/PKCS5Padding";
     public static final String TRANSFORMATION_AES_ECB_PKCS5PADDING = "AES/ECB/PKCS5Padding";
     public static final String TRANSFORMATION_AES_GCM_NOPADDING = "AES/GCM/NoPadding";
-    private EncryptionUtil() {
+    private EncryptionUtils() {
     }
 
     /**

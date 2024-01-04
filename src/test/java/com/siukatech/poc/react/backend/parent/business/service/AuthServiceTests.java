@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.siukatech.poc.react.backend.parent.AbstractUnitTests;
 import com.siukatech.poc.react.backend.parent.business.dto.MyKeyDto;
 import com.siukatech.poc.react.backend.parent.global.config.ParentAppProp;
-import com.siukatech.poc.react.backend.parent.util.EncryptionUtil;
+import com.siukatech.poc.react.backend.parent.util.EncryptionUtils;
 import com.siukatech.poc.react.backend.parent.web.model.auth.LoginForm;
 import com.siukatech.poc.react.backend.parent.web.model.auth.RefreshTokenForm;
 import com.siukatech.poc.react.backend.parent.web.model.auth.TokenRes;
@@ -159,7 +159,7 @@ public class AuthServiceTests extends AbstractUnitTests {
     }
 
     private MyKeyDto prepareMyKeyDto_basic() throws NoSuchAlgorithmException {
-        KeyPair keyPair = EncryptionUtil.generateRsaKeyPair();
+        KeyPair keyPair = EncryptionUtils.generateRsaKeyPair();
         MyKeyDto myKeyDto = new MyKeyDto();
         myKeyDto.setLoginId("app-user-01");
 //        myKeyDto.setName("App User 01");
