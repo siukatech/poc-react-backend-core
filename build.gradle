@@ -47,11 +47,14 @@ dependencies {
 	api 'org.hibernate:hibernate-validator:6.0.13.Final'
 //	api 'com.google.code.gson:gson:2.10.1'
 	api 'org.apache.commons:commons-lang3:3.12.0'
+	api 'commons-io:commons-io:2.15.1'
 	api 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
 //	api 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.15.2'
 ////	api 'org.apache.httpcomponents:httpclient:4.5.13'
 //	api 'org.apache.httpcomponents.client5:httpclient5:5.2.2'
 	api 'org.apache.httpcomponents.core5:httpcore5:5.2.4'
+	api 'org.reflections:reflections:0.10.2'
+	api 'org.apache.tika:tika-core:2.9.1'
 
 	api 'org.projectlombok:lombok:1.18.24'
 	annotationProcessor 'org.projectlombok:lombok:1.18.24'
@@ -87,39 +90,42 @@ tasks.named('test') {
 
 
 // disable publishing for jenkins testing
-//publishing {
-//	publications {
-//		privateMaven(MavenPublication) {
-//			def artifactIdStr = "$project.name"
-//			groupId "$project.group"
-//			version "$project.version"
-//			artifactId "$artifactIdStr"
-////			from components.javaPlatform
-//			from components.java
-//			versionMapping {
-//				usage('java-api') {
-//					fromResolutionOf('runtimeClasspath')
-//				}
-//				usage('java-runtime') {
-//					fromResolutionResult()
-//				}
-//			}
-//			pom {
-//				name = "$artifactId"
-//				description = "$artifactId"
-//			}
-//
-//		}
-//	}
-//	repositories {
-//		maven {
-//			name = 'platformSnapshot'
-//			allowInsecureProtocol = true
-//			credentials(PasswordCredentials)
-//			url = uri("$platformSnapshotUri")
-//		}
-//	}
-//}
+publishing {
+	publications {
+		privateMaven(MavenPublication) {
+			def artifactIdStr = "$project.name"
+			groupId "$project.group"
+			version "$project.version"
+			artifactId "$artifactIdStr"
+//			from components.javaPlatform
+			from components.java
+			versionMapping {
+				usage('java-api') {
+					fromResolutionOf('runtimeClasspath')
+				}
+				usage('java-runtime') {
+					fromResolutionResult()
+				}
+			}
+			pom {
+				name = "$artifactId"
+				description = "$artifactId"
+			}
+
+		}
+	}
+	if (project.hasProperty("platformSnapshotUri")) {
+		repositories {
+//			def publishingUri = project.hasProperty("platformSnapshotUri") ? "$platformSnapshotUri" : ""
+			maven {
+				name = 'platformSnapshot'
+				allowInsecureProtocol = true
+				credentials(PasswordCredentials)
+				url = uri("$platformSnapshotUri")
+			}
+		}
+	}
+}
 // disable publishing for jenkins testing
 
 
