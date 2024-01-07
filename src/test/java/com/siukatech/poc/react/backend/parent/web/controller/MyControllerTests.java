@@ -5,6 +5,7 @@ import com.siukatech.poc.react.backend.parent.business.dto.MyKeyDto;
 import com.siukatech.poc.react.backend.parent.business.dto.UserPermissionDto;
 import com.siukatech.poc.react.backend.parent.business.dto.UserDto;
 import com.siukatech.poc.react.backend.parent.business.service.UserService;
+import com.siukatech.poc.react.backend.parent.security.authentication.MyAuthenticationToken;
 import com.siukatech.poc.react.backend.parent.web.annotation.v1.ProtectedApiV1Controller;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,10 +19,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
@@ -107,11 +105,12 @@ public class MyControllerTests extends AbstractWebTests {
         return userPermissionDtoList;
     }
 
-    private UsernamePasswordAuthenticationToken prepareAuthenticationToken_basic() {
-        List<GrantedAuthority> convertedAuthorities = new ArrayList<GrantedAuthority>();
-        UserDetails userDetails = new User("app-user-01", "", convertedAuthorities);
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-        return authenticationToken;
+    private UsernamePasswordAuthenticationToken prepareUsernamePasswordAuthenticationToken_basic() {
+        return prepareUsernamePasswordAuthenticationToken("app-user-01");
+    }
+
+    private MyAuthenticationToken prepareMyAuthenticationToken_basic() {
+        return prepareMyAuthenticationToken("app-user-01", 1L);
     }
 
 //    @BeforeAll
@@ -159,7 +158,8 @@ public class MyControllerTests extends AbstractWebTests {
         RequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post(ProtectedApiV1Controller.REQUEST_MAPPING_URI_PREFIX
                         + "/my/public-key")
-                .with(authentication(prepareAuthenticationToken_basic()))
+//                .with(authentication(prepareUsernamePasswordAuthenticationToken_basic()))
+                .with(authentication(prepareMyAuthenticationToken_basic()))
                 .with(csrf())
                 //.with(SecurityMockMvcRequestPostProcessors.users((UserDetails) authentication.getPrincipal()))
                 .accept(MediaType.APPLICATION_JSON);
@@ -186,7 +186,7 @@ public class MyControllerTests extends AbstractWebTests {
         RequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post(ProtectedApiV1Controller.REQUEST_MAPPING_URI_PREFIX
                         + "/my/key-info")
-                .with(authentication(prepareAuthenticationToken_basic()))
+                .with(authentication(prepareUsernamePasswordAuthenticationToken_basic()))
                 .with(csrf())
                 .accept(MediaType.APPLICATION_JSON);
 
@@ -211,7 +211,7 @@ public class MyControllerTests extends AbstractWebTests {
         RequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post(ProtectedApiV1Controller.REQUEST_MAPPING_URI_PREFIX
                         + "/my/user-info")
-                .with(authentication(prepareAuthenticationToken_basic()))
+                .with(authentication(prepareUsernamePasswordAuthenticationToken_basic()))
                 .with(csrf())
                 .accept(MediaType.APPLICATION_JSON);
 
@@ -235,7 +235,7 @@ public class MyControllerTests extends AbstractWebTests {
         // when
         RequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get(ProtectedApiV1Controller.REQUEST_MAPPING_URI_PREFIX + "/my/permissions")
-                .with(authentication(prepareAuthenticationToken_basic()))
+                .with(authentication(prepareUsernamePasswordAuthenticationToken_basic()))
                 .with(csrf())
                 .accept(MediaType.APPLICATION_JSON);
 
