@@ -1,6 +1,5 @@
-package com.siukatech.poc.react.backend.parent.web.model;
+package com.siukatech.poc.react.backend.parent.business.form;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;

@@ -3,9 +3,9 @@ package com.siukatech.poc.react.backend.parent.web.controller;
 
 import com.siukatech.poc.react.backend.parent.business.service.AuthService;
 import com.siukatech.poc.react.backend.parent.web.annotation.v1.PublicApiV1Controller;
-import com.siukatech.poc.react.backend.parent.web.model.auth.LoginForm;
-import com.siukatech.poc.react.backend.parent.web.model.auth.RefreshTokenForm;
-import com.siukatech.poc.react.backend.parent.web.model.auth.TokenRes;
+import com.siukatech.poc.react.backend.parent.business.form.auth.LoginForm;
+import com.siukatech.poc.react.backend.parent.business.form.auth.RefreshTokenForm;
+import com.siukatech.poc.react.backend.parent.business.form.auth.TokenRes;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;

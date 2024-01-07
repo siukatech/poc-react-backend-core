@@ -1,4 +1,4 @@
-package com.siukatech.poc.react.backend.parent.web.model.auth;
+package com.siukatech.poc.react.backend.parent.business.form.auth;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
