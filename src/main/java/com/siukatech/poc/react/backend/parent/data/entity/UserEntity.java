@@ -1,14 +1,13 @@
 package com.siukatech.poc.react.backend.parent.data.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Entity(name = "users")
-public class UserEntity extends AbstractEntity {
+public class UserEntity extends AbstractEntity<Long> {
 
     @Column(name = "login_id")
     protected String loginId;
@@ -18,5 +17,9 @@ public class UserEntity extends AbstractEntity {
     protected String publicKey;
     @Column(name = "private_key")
     protected String privateKey;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    protected Long id;
 
 }

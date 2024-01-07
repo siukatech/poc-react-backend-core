@@ -27,14 +27,16 @@ import java.time.LocalDateTime;
 //@Inheritance
 @MappedSuperclass
 @EntityListeners(value = {AuditingEntityListener.class, AbstractEntityToPersistListener.class})
-public abstract class AbstractEntity {
+public abstract class AbstractEntity<T> {
 
     @Transient
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    protected Long id;
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    protected T id;
+    public abstract T getId();
+    public abstract void setId(T id);
 
     @CreatedBy
     @Column(name = "created_by")
