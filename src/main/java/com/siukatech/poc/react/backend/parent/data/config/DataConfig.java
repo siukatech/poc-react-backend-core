@@ -1,5 +1,6 @@
 package com.siukatech.poc.react.backend.parent.data.config;
 
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -13,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.Optional;
 
+@Slf4j
 @Configuration
 ////@AutoConfigureAfter(JpaRepositoriesAutoConfiguration.class)
 ////@EnableTransactionManagement(proxyTargetClass = true)
@@ -26,13 +28,11 @@ public class DataConfig {
     @Bean
     public AuditorAware<String> auditorAware() {
         return new AuditorAware<String>() {
-            private Logger logger = LoggerFactory.getLogger(this.getClass());
-
             @Override
             public Optional<String> getCurrentAuditor() {
                 Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
                 String name = (authentication == null ? "NULL" : authentication.getName());
-                logger.debug("getCurrentAuditor - name: [{}], authentication: [{}]"
+                log.debug("getCurrentAuditor - name: [{}], authentication: [{}]"
                         , name, authentication);
                 return Optional.of(name);
             }

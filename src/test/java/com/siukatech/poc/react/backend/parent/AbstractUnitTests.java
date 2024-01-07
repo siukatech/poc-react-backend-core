@@ -2,12 +2,14 @@ package com.siukatech.poc.react.backend.parent;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.slf4j.LoggerFactory;
 import org.springframework.test.context.TestPropertySource;
 
 
+//@Slf4j
 @TestPropertySource(
 //        properties = {
 //        "client-id=XXX"
@@ -23,7 +25,7 @@ import org.springframework.test.context.TestPropertySource;
 )
 public abstract class AbstractUnitTests {
 
-    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(AbstractUnitTests.class);
+    protected static final org.slf4j.Logger log = LoggerFactory.getLogger(AbstractUnitTests.class);
 
     @BeforeAll
     public static void init() {
@@ -31,13 +33,13 @@ public abstract class AbstractUnitTests {
 //        rootLogger.setLevel(Level.ALL);
         rootLogger.setLevel(Level.DEBUG);
 
-        logger.debug("AbstractUnitTests.init............");
+        log.debug("AbstractUnitTests.init............");
 
     }
 
     @AfterAll
     public static void terminate() {
-        logger.debug("AbstractUnitTests.terminate............");
+        log.debug("AbstractUnitTests.terminate............");
     }
 
 }

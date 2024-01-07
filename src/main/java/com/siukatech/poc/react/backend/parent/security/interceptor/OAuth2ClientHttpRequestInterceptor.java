@@ -3,6 +3,7 @@ package com.siukatech.poc.react.backend.parent.security.interceptor;
 import com.siukatech.poc.react.backend.parent.security.authentication.MyAuthenticationToken;
 import com.siukatech.poc.react.backend.parent.security.config.WebSecurityConfig;
 import com.siukatech.poc.react.backend.parent.security.converter.KeycloakJwtAuthenticationConverter;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -16,9 +17,8 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 
 import java.io.IOException;
 
-
+@Slf4j
 public class OAuth2ClientHttpRequestInterceptor implements ClientHttpRequestInterceptor {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
     public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
@@ -31,7 +31,7 @@ public class OAuth2ClientHttpRequestInterceptor implements ClientHttpRequestInte
         if (authentication instanceof MyAuthenticationToken myAuthenticationToken) {
             tokenValue = myAuthenticationToken.getTokenValue();
         }
-        logger.debug("intercept - request.URI: [{}]"
+        log.debug("intercept - request.URI: [{}]"
                         + ", authentication.getName: [{}]"
                         + ", authentication.getCredentials: [{}]"
                         + ", authentication.getClass.getName: [{}]"

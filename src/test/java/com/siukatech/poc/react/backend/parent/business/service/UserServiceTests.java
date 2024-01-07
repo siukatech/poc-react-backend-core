@@ -7,6 +7,7 @@ import com.siukatech.poc.react.backend.parent.data.entity.UserEntity;
 import com.siukatech.poc.react.backend.parent.data.entity.UserPermissionEntity;
 import com.siukatech.poc.react.backend.parent.data.repository.UserPermissionRepository;
 import com.siukatech.poc.react.backend.parent.data.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -25,11 +26,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
+@Slf4j
 @ExtendWith(MockitoExtension.class)
 //@ContextConfiguration(classes = {WebConfig.class})
 public class UserServiceTests extends AbstractUnitTests {
-
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @InjectMocks
     private UserService userService;
@@ -57,23 +57,23 @@ public class UserServiceTests extends AbstractUnitTests {
     @BeforeEach
     public void setup() {
 //        // get Logback Logger
-//        Logger logger = (Logger) LoggerFactory.getLogger(this.getClass());
+//        Logger log = (Logger) LoggerFactory.getLogger(this.getClass());
 //
 //        // create and start a ListAppender
 //        ListAppender<ILoggingEvent> listAppender = new ListAppender<>();
 //        listAppender.start();
 //
-//        // add the appender to the logger
-//        logger.addAppender(listAppender);
-//        final Logger logger = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
-//        logger.setLevel(Level.ALL);
+//        // add the appender to the log
+//        log.addAppender(listAppender);
+//        final Logger log = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+//        log.setLevel(Level.ALL);
 
-        logger.debug("setup");
+        log.debug("setup");
     }
 
     @AfterEach()
     public void teardown() {
-        logger.debug("teardown");
+        log.debug("teardown");
     }
 
     private List<UserPermissionEntity> prepareUserPermissions_basic() {

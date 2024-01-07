@@ -3,6 +3,7 @@ package com.siukatech.poc.react.backend.parent.data.repository;
 import com.siukatech.poc.react.backend.parent.AbstractJpaTests;
 import com.siukatech.poc.react.backend.parent.data.entity.UserEntity;
 import com.siukatech.poc.react.backend.parent.data.entity.UserPermissionEntity;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,10 +14,9 @@ import org.springframework.test.context.jdbc.Sql;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @DataJpaTest
 public class UserPermissionRepositoryTests extends AbstractJpaTests {
-
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     public UserRepository userRepository;
@@ -45,11 +45,11 @@ public class UserPermissionRepositoryTests extends AbstractJpaTests {
     })
     public void findUserPermissionByLoginId_basic() {
         Optional<UserEntity> userEntityOptional = userRepository.findByLoginId("app-user-02");
-        logger.debug("findUserPermissionByLoginId_basic - userEntityOptional.get: [" + userEntityOptional.get() + "]");
+        log.debug("findUserPermissionByLoginId_basic - userEntityOptional.get: [" + userEntityOptional.get() + "]");
         List<UserPermissionEntity> userPermissionEntityList = userPermissionRepository
                 .findUserPermissionByLoginId("app-user-02");
 
-        logger.debug("findUserPermissionByLoginId_basic - userPermissionEntityList.size: [" + userPermissionEntityList.size()
+        log.debug("findUserPermissionByLoginId_basic - userPermissionEntityList.size: [" + userPermissionEntityList.size()
                 + "], userPermissionEntityList: [" + userPermissionEntityList
                 + "]");
         Assertions.assertEquals(userPermissionEntityList.get(0).getLoginId(), "app-user-02");

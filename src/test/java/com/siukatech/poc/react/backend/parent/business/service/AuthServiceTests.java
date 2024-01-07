@@ -8,6 +8,7 @@ import com.siukatech.poc.react.backend.parent.util.EncryptionUtils;
 import com.siukatech.poc.react.backend.parent.business.form.auth.LoginForm;
 import com.siukatech.poc.react.backend.parent.business.form.auth.RefreshTokenForm;
 import com.siukatech.poc.react.backend.parent.business.form.auth.TokenRes;
+import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Condition;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -38,6 +39,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doReturn;
 
+@Slf4j
 @ExtendWith({MockitoExtension.class
         , SpringExtension.class
 })
@@ -52,8 +54,6 @@ import static org.mockito.Mockito.doReturn;
         , "classpath:global/parent-app-config-tests.properties"
 })
 public class AuthServiceTests extends AbstractUnitTests {
-
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final String CLIENT_NAME = "keycloak";
 
@@ -142,18 +142,18 @@ public class AuthServiceTests extends AbstractUnitTests {
 
     @BeforeEach
     public void setup() {
-//        logger.debug("setup - registrationConfig: [{}], providerConfig: [{}]"
+//        log.debug("setup - registrationConfig: [{}], providerConfig: [{}]"
 //                        + ", registrationConfig.clientId: [{}]"
 //                        + ", registrationConfig.scope: [{}]"
 //                , this.registrationConfig, this.providerConfig
 //                , this.registrationConfig.getClientId()
 //                , this.registrationConfig.getScope()
 //        );
-//////        logger.debug("setup - registrationMap: [{}], providerMap: [{}]"
+//////        log.debug("setup - registrationMap: [{}], providerMap: [{}]"
 //////                , this.registrationMap, this.providerMap);
-////        logger.debug("setup - registrationClientId: [{}]"
+////        log.debug("setup - registrationClientId: [{}]"
 ////                , this.registrationClientId);
-        logger.debug("setup - oAuth2ClientPropertiesForTests.getRegistration.size: [{}]"
+        log.debug("setup - oAuth2ClientPropertiesForTests.getRegistration.size: [{}]"
                 , this.oAuth2ClientPropertiesForTests.getRegistration().size()
         );
     }
@@ -174,7 +174,7 @@ public class AuthServiceTests extends AbstractUnitTests {
 
 //    @Test
 //    public void resolveMyKeyInfo_basic() throws NoSuchAlgorithmException {
-//        logger.debug("resolveMyKeyInfo_basic - parentAppPropForTests.myUserInfoUrl: [{}]"
+//        log.debug("resolveMyKeyInfo_basic - parentAppPropForTests.myUserInfoUrl: [{}]"
 //                        + ", parentAppProp.myUserInfoUrl: [{}]"
 //                        + ", parentAppProp.getMyKeyInfoUrl: [{}]"
 //                        + ", parentAppProp.getMyKeyInfoUrl: [{}]"
@@ -201,7 +201,7 @@ public class AuthServiceTests extends AbstractUnitTests {
 //        MyKeyDto myKeyRet = this.authService.resolveMyKeyInfo(loginId);
 //
 //        // then
-//        logger.debug("resolveMyKeyInfo_basic - myKeyRet: [{}]", myKeyRet);
+//        log.debug("resolveMyKeyInfo_basic - myKeyRet: [{}]", myKeyRet);
 //        assertThat(myKeyRet).hasFieldOrProperty("privateKey")
 //                .has(new Condition<>(u -> u.getPrivateKey().contains(myKeyDto.getPrivateKey())
 //                        , "Has %s", "private-key"))
@@ -225,7 +225,7 @@ public class AuthServiceTests extends AbstractUnitTests {
                 .when(this.oAuth2ClientProperties).getRegistration();
         doReturn(this.oAuth2ClientPropertiesForTests.getProvider())
                 .when(this.oAuth2ClientProperties).getProvider();
-        logger.debug("getAuthCodeLoginUrl_basic - oAuth2ClientPropertiesForTests.getRegistration.size: [{}]"
+        log.debug("getAuthCodeLoginUrl_basic - oAuth2ClientPropertiesForTests.getRegistration.size: [{}]"
                 , this.oAuth2ClientPropertiesForTests.getRegistration().size()
         );
 

@@ -27,7 +27,6 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 @RestControllerAdvice
 public class EncryptedResponseBodyAdvice implements ResponseBodyAdvice {
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final static String HEADER_X_DATA_ENC_INFO = "X-DATA-ENC-INFO";
     private final EncryptedBodyContext encryptedBodyContext;
 //    private final UserRepository userRepository;
@@ -50,21 +49,21 @@ public class EncryptedResponseBodyAdvice implements ResponseBodyAdvice {
 //                .anyMatch(annotation -> annotation.annotationType().equals(EncryptedApiV1Controller.class));
 //        //boolean resultFromPath = returnType.getParameter()
 
-//        logger.debug("supports - returnType.getMethod.getName: [" + returnType.getMethod().getName()
+//        log.debug("supports - returnType.getMethod.getName: [" + returnType.getMethod().getName()
 //                + "], returnType.getMethod.getDeclaringClass.getName: [" + returnType.getMethod().getDeclaringClass().getName()
 //                + "], resultFromAnnotation: [" + resultFromAnnotation
 //                + "]");
 //        Arrays.stream(returnType.getMethod().getDeclaringClass().getDeclaredAnnotations()).forEach(annotation -> {
-//            logger.debug("supports - getDeclaringClass.getDeclaredAnnotations - annotation: [" + annotation.annotationType().getName() + "]");
+//            log.debug("supports - getDeclaringClass.getDeclaredAnnotations - annotation: [" + annotation.annotationType().getName() + "]");
 //        });
 //        Arrays.stream(returnType.getMethod().getDeclaringClass().getAnnotations()).forEach(annotation -> {
-//            logger.debug("supports - getDeclaringClass.getAnnotations - annotation: [" + annotation.annotationType().getName() + "]");
+//            log.debug("supports - getDeclaringClass.getAnnotations - annotation: [" + annotation.annotationType().getName() + "]");
 //        });
 //        Arrays.stream(returnType.getMethod().getDeclaredAnnotations()).forEach(annotation -> {
-//            logger.debug("supports - getMethod.getDeclaredAnnotations - annotation: [" + annotation.annotationType().getName() + "]");
+//            log.debug("supports - getMethod.getDeclaredAnnotations - annotation: [" + annotation.annotationType().getName() + "]");
 //        });
 //        Arrays.stream(returnType.getMethod().getAnnotations()).forEach(annotation -> {
-//            logger.debug("supports - getMethod.getAnnotations - annotation: [" + annotation.annotationType().getName() + "]");
+//            log.debug("supports - getMethod.getAnnotations - annotation: [" + annotation.annotationType().getName() + "]");
 //        });
 
         boolean resultFromAnnotation = this.encryptedBodyAdviceHelper.isEncryptedApiController(returnType);
@@ -79,7 +78,7 @@ public class EncryptedResponseBodyAdvice implements ResponseBodyAdvice {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String loginId = authentication.getName();
 
-        logger.debug("beforeBodyWrite - returnType.getMethod.getName: [" + returnType.getMethod().getName()
+        log.debug("beforeBodyWrite - returnType.getMethod.getName: [" + returnType.getMethod().getName()
                 + "], returnType.getParameterName: [" + returnType.getParameterName()
                 + "], selectedContentType.getCharset: [" + (selectedContentType == null ? "NULL" : selectedContentType.getCharset())
                 + "], selectedConverterType.getName: [" + selectedConverterType.getName()
@@ -94,7 +93,7 @@ public class EncryptedResponseBodyAdvice implements ResponseBodyAdvice {
         EncryptedDetail encryptedDetail = this.encryptedBodyContext.getEncryptedDetail();
         String encryptedRsaDataBase64 = request.getHeaders().getFirst(HEADER_X_DATA_ENC_INFO);
         EncryptedInfo encryptedInfo = null;
-        logger.debug("beforeBodyWrite - returnType.getMethod.getName: [" + returnType.getMethod().getName()
+        log.debug("beforeBodyWrite - returnType.getMethod.getName: [" + returnType.getMethod().getName()
 //                + "], userEntity.getId: [" + (userEntity == null ? "NULL" : userEntity.getId())
                 + "], myKeyDto.getLoginId: [" + (myKeyDto == null ? "NULL" : myKeyDto.getLoginId())
                 + "], encryptedBodyDetail.encryptedInfoModel.key: [" + (encryptedDetail == null ? "NULL" : encryptedDetail.encryptedInfo().key())
@@ -128,7 +127,7 @@ public class EncryptedResponseBodyAdvice implements ResponseBodyAdvice {
             encryptedInfo = encryptedDetail.encryptedInfo();
         }
 
-        logger.debug("beforeBodyWrite - returnType.getMethod.getName: [" + returnType.getMethod().getName()
+        log.debug("beforeBodyWrite - returnType.getMethod.getName: [" + returnType.getMethod().getName()
                 + "], loginId: [" + loginId
                 + "], encryptedInfoModel.key: [" + encryptedInfo.key()
                 + "], encryptedInfoModel.iv: [" + encryptedInfo.iv()
@@ -168,7 +167,7 @@ public class EncryptedResponseBodyAdvice implements ResponseBodyAdvice {
 //            String encryptedAesDataBase64 = Base64.getEncoder().encodeToString(encryptedAesData);
 ////            byte[] encryptedRsaData = CryptoUtil.encryptWithRsaPrivateKey(encryptedAesDataBase64, userEntity.getPrivateKey());
 ////            String encryptedRsaDataBase64 = Base64.getEncoder().encodeToString(encryptedRsaData);
-//            logger.debug("beforeBodyWrite - bodyStr: [" + bodyStr
+//            log.debug("beforeBodyWrite - bodyStr: [" + bodyStr
 //                    + "], decodedKey.length: [" + decodedKey.length
 //                    + "], encryptedAesData.length: [" + encryptedAesData.length
 //                    + "], encryptedDataBase64: [" + encryptedAesDataBase64

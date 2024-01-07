@@ -21,8 +21,6 @@ import java.util.Base64;
 @Slf4j
 public class EncryptionUtils {
 
-    private static final Logger logger = LoggerFactory.getLogger(EncryptionUtils.class);
-
     public static final String ALGORITHM_RSA = "RSA";
     public static final String ALGORITHM_AES = "AES";
     public static final String TRANSFORMATION_RSA = "RSA";
@@ -66,7 +64,7 @@ public class EncryptionUtils {
     }
 
     public static PrivateKey getRsaPrivateKey(String base64PrivateKey) throws Exception {
-        logger.debug("getRsaPrivateKey - base64PrivateKey: [" + base64PrivateKey + "]");
+        log.debug("getRsaPrivateKey - base64PrivateKey: [" + base64PrivateKey + "]");
         byte[] privateKey = Base64.getDecoder().decode(base64PrivateKey);
         //PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(privateKey);
         EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(privateKey);

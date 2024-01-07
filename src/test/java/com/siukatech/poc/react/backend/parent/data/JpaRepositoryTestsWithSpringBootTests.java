@@ -1,5 +1,6 @@
 package com.siukatech.poc.react.backend.parent.data;
 
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +19,7 @@ import org.springframework.test.context.TestPropertySource;
 /**
  * This is not working at this moment
  */
+//@Slf4j
 //@Deprecated
 @SpringBootTest
 @OverrideAutoConfiguration(enabled = false)
@@ -31,7 +33,7 @@ import org.springframework.test.context.TestPropertySource;
         , "classpath:abstract-oauth2-tests.properties"})
 public class JpaRepositoryTestsWithSpringBootTests {
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    protected static final Logger log = LoggerFactory.getLogger(JpaRepositoryTestsWithSpringBootTests.class);
 
 //    @MockBean
     @SpyBean
@@ -40,7 +42,7 @@ public class JpaRepositoryTestsWithSpringBootTests {
 
     @Test
     void contextLoads() {
-        logger.debug("contextLoads - testing logging");
+        log.debug("contextLoads - testing logging");
     }
 
 }

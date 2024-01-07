@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.oauth2.sdk.GrantType;
 import com.siukatech.poc.react.backend.parent.business.form.auth.*;
 import com.siukatech.poc.react.backend.parent.util.URLEncoderUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.core5.http.NameValuePair;
 import org.apache.hc.core5.http.message.BasicNameValuePair;
 import org.slf4j.Logger;
@@ -21,10 +22,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class AuthService {
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final OAuth2ClientProperties oAuth2ClientProperties;
     private final RestTemplate oauth2ClientRestTemplate;
     //    private final ParentAppProp parentAppProp;
@@ -48,7 +49,7 @@ public class AuthService {
 //            ResponseEntity<MyKeyDto> responseEntity = this.oauth2ClientRestTemplate.exchange(
 //                    myKeyInfoUrl, HttpMethod.POST, HttpEntity.EMPTY, MyKeyDto.class);
 //            myKeyDto = responseEntity.getBody();
-//            logger.debug("resolveMyKeyInfo - loginId: [{}], myKeyInfoUrl: [{}], myKeyDto.getLoginId: [{}]"
+//            log.debug("resolveMyKeyInfo - loginId: [{}], myKeyInfoUrl: [{}], myKeyDto.getLoginId: [{}]"
 ////                + ", responseEntity.getBody.toString: [{}]"
 //                    , loginId, myKeyInfoUrl, myKeyDto.getLoginId()
 ////                , responseEntity.getBody().toString()
@@ -60,7 +61,7 @@ public class AuthService {
 //            }
 //        }
 //        else {
-//            logger.debug("resolveMyKeyInfo - loginId: [{}], myKeyInfoUrl: [{}]"
+//            log.debug("resolveMyKeyInfo - loginId: [{}], myKeyInfoUrl: [{}]"
 //                    , loginId, myKeyInfoUrl
 //            );
 //            throw new RuntimeException(
@@ -108,7 +109,7 @@ public class AuthService {
 //                .append("redirect_uri").append("=").append(registration.getRedirectUri())
                 .append(queryString)
                 .toString();
-        logger.debug("getAuthCodeLoginUrl - clientName: [{}], authUrl: [{}]", clientName, authUrl);
+        log.debug("getAuthCodeLoginUrl - clientName: [{}], authUrl: [{}]", clientName, authUrl);
         return authUrl;
     }
 
@@ -134,21 +135,21 @@ public class AuthService {
         //
         HttpEntity<?> httpEntity = new HttpEntity<>(tokenReqMultiValueMap, httpHeaders);
 
-        logger.debug("resolveOAuth2TokenRes - clientName: [" + clientName
+        log.debug("resolveOAuth2TokenRes - clientName: [" + clientName
                 + "], tokenReq: [" + tokenReq
                 + "], httpHeaders: [" + httpHeaders
                 + "], oauth2ClientRestTemplate.toString: [" + oauth2ClientRestTemplate.toString()
                 + "], oauth2ClientRestTemplate.getMessageConverters.size: [" + oauth2ClientRestTemplate.getMessageConverters().size()
                 + "]");
         oauth2ClientRestTemplate.getMessageConverters().stream().forEach(httpMessageConverter -> {
-            logger.debug("resolveOAuth2TokenRes - httpMessageConverter.getClass.getName: [" + httpMessageConverter.getClass().getName() + "]");
+            log.debug("resolveOAuth2TokenRes - httpMessageConverter.getClass.getName: [" + httpMessageConverter.getClass().getName() + "]");
         });
 
         ResponseEntity<TokenRes> responseEntity = oauth2ClientRestTemplate.exchange(tokenUrl
                 , HttpMethod.POST, httpEntity, TokenRes.class);
 
         TokenRes tokenRes = responseEntity.getBody();
-        logger.debug("resolveOAuth2TokenRes - clientName: [" + clientName
+        log.debug("resolveOAuth2TokenRes - clientName: [" + clientName
                 + "], tokenReq: [" + tokenReq
                 + "], responseEntity: [" + responseEntity
                 + "]");
@@ -194,7 +195,7 @@ public class AuthService {
 //        //
 //        HttpEntity<?> httpEntity = new HttpEntity<>(tokenReqMultiValueMap, httpHeaders);
 //
-//        logger.debug("resolveTokenRes - clientName: [" + clientName
+//        log.debug("resolveTokenRes - clientName: [" + clientName
 //                + "], code: [" + code
 //                + "], tokenCodeReq: [" + tokenCodeReq
 //                + "], httpHeaders: [" + httpHeaders
@@ -202,14 +203,14 @@ public class AuthService {
 //                + "], oauth2ClientRestTemplate.getMessageConverters.size: [" + oauth2ClientRestTemplate.getMessageConverters().size()
 //                + "]");
 //        oauth2ClientRestTemplate.getMessageConverters().stream().forEach(httpMessageConverter -> {
-//            logger.debug("token - httpMessageConverter.getClass.getName: [" + httpMessageConverter.getClass().getName() + "]");
+//            log.debug("token - httpMessageConverter.getClass.getName: [" + httpMessageConverter.getClass().getName() + "]");
 //        });
 //
 //        ResponseEntity<TokenRes> responseEntity = oauth2ClientRestTemplate.exchange(tokenUrl
 //                , HttpMethod.POST, httpEntity, TokenRes.class);
 //
 //        TokenRes tokenRes = responseEntity.getBody();
-//        logger.debug("resolveTokenRes - clientName: [" + clientName
+//        log.debug("resolveTokenRes - clientName: [" + clientName
 //                + "], code: [" + code
 //                + "], tokenCodeReq: [" + tokenCodeReq
 //                + "], responseEntity: [" + responseEntity
@@ -252,7 +253,7 @@ public class AuthService {
     public HttpStatusCode doAuthLogout(String logoutApi) throws URISyntaxException {
         ResponseEntity<Map> responseEntity = this.oauth2ClientRestTemplate.getForEntity(new URI(logoutApi), Map.class);
         Map map = responseEntity.getBody();
-        logger.debug("doAuthLogout - map: [{}], responseEntity: [{}]"
+        log.debug("doAuthLogout - map: [{}], responseEntity: [{}]"
                 , map, responseEntity);
         return responseEntity.getStatusCode();
     }

@@ -3,6 +3,7 @@ package com.siukatech.poc.react.backend.parent.security.handler;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
@@ -21,10 +22,10 @@ import org.springframework.web.util.UriComponentsBuilder;
  * https://stackoverflow.com/q/76497592
  * https://stackoverflow.com/q/75910767
  */
+@Slf4j
 @Component
 public class KeycloakLogoutHandler implements LogoutHandler {
 
-    private static final Logger logger = LoggerFactory.getLogger(KeycloakLogoutHandler.class);
     //@Autowired @Qualifier("securityRestTemplate")
     private RestTemplate restTemplate;
 
@@ -45,7 +46,7 @@ public class KeycloakLogoutHandler implements LogoutHandler {
 
     @Override
     public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
-        logger.debug("logout - authentication: [" + (authentication == null ? "NULL" : authentication) + "]");
+        log.debug("logout - authentication: [" + (authentication == null ? "NULL" : authentication) + "]");
 //        logoutFromKeycloak((OidcUser) authentication.getPrincipal());
         if (authentication != null) logoutFromKeycloak((OidcUser) authentication.getPrincipal());
         //
@@ -59,16 +60,16 @@ public class KeycloakLogoutHandler implements LogoutHandler {
                 .queryParam("id_token_hint", user.getIdToken().getTokenValue());
         String uriComponentsStr = builder.toUriString();
 
-        logger.info("logoutFromKeycloak - endSessionEndpoint: [" + endSessionEndpoint
+        log.info("logoutFromKeycloak - endSessionEndpoint: [" + endSessionEndpoint
                 + "], uriComponentsStr: [" + uriComponentsStr
                 + "]");
 
         ResponseEntity<String> logoutResponse = restTemplate.getForEntity(
                 uriComponentsStr, String.class);
         if (logoutResponse.getStatusCode().is2xxSuccessful()) {
-            logger.info("logoutFromKeycloak - Successfully logged out from Keycloak");
+            log.info("logoutFromKeycloak - Successfully logged out from Keycloak");
         } else {
-            logger.error("logoutFromKeycloak - Could not propagate logout to Keycloak");
+            log.error("logoutFromKeycloak - Could not propagate logout to Keycloak");
         }
     }
 

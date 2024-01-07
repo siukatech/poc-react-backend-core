@@ -33,8 +33,6 @@ import java.lang.reflect.Type;
 @RestControllerAdvice
 public class EncryptedRequestBodyAdvice extends RequestBodyAdviceAdapter {
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
     private final EncryptedBodyContext encryptedBodyContext;
     //    private final UserRepository userRepository;
 //    private final ObjectMapper objectMapper;
@@ -59,7 +57,7 @@ public class EncryptedRequestBodyAdvice extends RequestBodyAdviceAdapter {
 //        boolean resultFromAnnotation = Arrays.stream(methodParameter.getMethod().getDeclaringClass().getDeclaredAnnotations())
 //                .anyMatch(annotation -> annotation.annotationType().equals(EncryptedApiV1Controller.class));
 //        //boolean resultFromPath = methodParameter.getParameter()
-//        logger.debug("supports - methodParameter.getMethod.getName: [" + methodParameter.getMethod().getName()
+//        log.debug("supports - methodParameter.getMethod.getName: [" + methodParameter.getMethod().getName()
 //                + "], methodParameter.getParameterType.getName: [" + methodParameter.getParameterType().getName()
 //                + "], targetType.getTypeName: [" + targetType.getTypeName()
 //                + "], methodParameter.getMember.getName: [" + methodParameter.getMember().getName()
@@ -68,16 +66,16 @@ public class EncryptedRequestBodyAdvice extends RequestBodyAdviceAdapter {
 //                + "], resultFromAnnotation: [" + resultFromAnnotation
 //                + "]");
 //        Arrays.stream(methodParameter.getMethod().getDeclaringClass().getDeclaredAnnotations()).forEach(annotation -> {
-//            logger.debug("supports - getDeclaringClass.getDeclaredAnnotations - annotation: [" + annotation.annotationType().getName() + "]");
+//            log.debug("supports - getDeclaringClass.getDeclaredAnnotations - annotation: [" + annotation.annotationType().getName() + "]");
 //        });
 //        Arrays.stream(methodParameter.getMethod().getDeclaringClass().getAnnotations()).forEach(annotation -> {
-//            logger.debug("supports - getDeclaringClass.getAnnotations - annotation: [" + annotation.annotationType().getName() + "]");
+//            log.debug("supports - getDeclaringClass.getAnnotations - annotation: [" + annotation.annotationType().getName() + "]");
 //        });
 //        Arrays.stream(methodParameter.getMethod().getDeclaredAnnotations()).forEach(annotation -> {
-//            logger.debug("supports - getMethod.getDeclaredAnnotations - annotation: [" + annotation.annotationType().getName() + "]");
+//            log.debug("supports - getMethod.getDeclaredAnnotations - annotation: [" + annotation.annotationType().getName() + "]");
 //        });
 //        Arrays.stream(methodParameter.getMethod().getAnnotations()).forEach(annotation -> {
-//            logger.debug("supports - getMethod.getAnnotations - annotation: [" + annotation.annotationType().getName() + "]");
+//            log.debug("supports - getMethod.getAnnotations - annotation: [" + annotation.annotationType().getName() + "]");
 //        });
         boolean resultFromAnnotation = this.encryptedBodyAdviceHelper.isEncryptedApiController(methodParameter);
         return resultFromAnnotation;
@@ -95,7 +93,7 @@ public class EncryptedRequestBodyAdvice extends RequestBodyAdviceAdapter {
 //                .orElseThrow(() -> new EntityNotFoundException("No such user [" + finalLoginId + "]"));
         MyKeyDto myKeyDto = this.encryptedBodyAdviceHelper.resolveMyKeyInfo(loginId);
 
-        logger.debug("beforeBodyRead - methodParameter.getMethod.getName: [" + methodParameter.getMethod().getName()
+        log.debug("beforeBodyRead - methodParameter.getMethod.getName: [" + methodParameter.getMethod().getName()
                 + "], methodParameter.getParameterType.getName: [" + methodParameter.getParameterType().getName()
                 + "], loginId: [" + loginId
 //                + "], userEntity.getLoginId: [" + userEntity.getLoginId()
@@ -108,14 +106,14 @@ public class EncryptedRequestBodyAdvice extends RequestBodyAdviceAdapter {
         try (InputStream inputStream = inputMessage.getBody()) {
             byte[] body = StreamUtils.copyToByteArray(inputStream);
 //            String encryptedRsaDataBase64 = new String(body);
-////            logger.debug("beforeBodyRead - loginId: [" + loginId
+////            log.debug("beforeBodyRead - loginId: [" + loginId
 ////                    + "], start");
 ////            byte[] decryptedBodyData = CryptoUtil.decryptWithRsaPrivateKey(
 ////                    Base64.getDecoder().decode(encryptedRsaDataBase64)
 ////                    , userEntity.getPrivateKey()
 ////            );
 ////            String decryptedBodyStr = new String(decryptedBodyData);
-////            logger.debug("beforeBodyRead - encryptedRsaDataBase64: [" + encryptedRsaDataBase64
+////            log.debug("beforeBodyRead - encryptedRsaDataBase64: [" + encryptedRsaDataBase64
 ////                    + "], decryptedBodyStr: [" + decryptedBodyStr
 ////                    + "]");
 ////            EncryptedRequestModel encryptedRequestModel = null;
@@ -155,7 +153,7 @@ public class EncryptedRequestBodyAdvice extends RequestBodyAdviceAdapter {
             byte[] decryptedData = encryptedDetail.decryptedData();
             String decryptedDataStr = new String(decryptedData);
 
-            logger.debug("beforeBodyRead - loginId: [" + loginId
+            log.debug("beforeBodyRead - loginId: [" + loginId
 //                    + "], encryptedRequestModel.cipher: [" + encryptedRequestModel.cipher()
                     + "], encryptedInfoModel.key: [" + encryptedInfo.key()
                     + "], encryptedInfoModel.iv: [" + encryptedInfo.iv()
@@ -168,7 +166,7 @@ public class EncryptedRequestBodyAdvice extends RequestBodyAdviceAdapter {
             this.encryptedBodyContext.setEncryptedDetail(encryptedDetail);
 
 //            byte[] decryptedData = body;
-//            logger.debug("beforeBodyRead - body: [" + new String(decryptedData) + "]");
+//            log.debug("beforeBodyRead - body: [" + new String(decryptedData) + "]");
             DecodeHttpInputMessage decodeHttpInputMessage =
                     new DecodeHttpInputMessage(inputMessage.getHeaders()
                             , new ByteArrayInputStream(decryptedData)
@@ -184,8 +182,8 @@ public class EncryptedRequestBodyAdvice extends RequestBodyAdviceAdapter {
             , MethodParameter methodParameter, Type targetType
             , Class<? extends HttpMessageConverter<?>> converterType) {
         //Map<String, String> input = (Map<String, String>) body;
-        //logger.debug("afterBodyRead - input: [" + input + "]");
-        logger.debug("afterBodyRead - methodParameter.getMethod.getName: [" + methodParameter.getMethod().getName()
+        //log.debug("afterBodyRead - input: [" + input + "]");
+        log.debug("afterBodyRead - methodParameter.getMethod.getName: [" + methodParameter.getMethod().getName()
                 + "], methodParameter.getParameterType.getName: [" + methodParameter.getParameterType().getName()
                 + "]");
         return body;
@@ -195,7 +193,7 @@ public class EncryptedRequestBodyAdvice extends RequestBodyAdviceAdapter {
     public Object handleEmptyBody(@Nullable Object body, HttpInputMessage inputMessage
             , MethodParameter methodParameter, Type targetType
             , Class<? extends HttpMessageConverter<?>> converterType) {
-        logger.debug("handleEmptyBody - methodParameter.getMethod.getName: [" + methodParameter.getMethod().getName()
+        log.debug("handleEmptyBody - methodParameter.getMethod.getName: [" + methodParameter.getMethod().getName()
                 + "], methodParameter.getParameterType.getName: [" + methodParameter.getParameterType().getName()
                 + "]");
         return body;

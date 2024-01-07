@@ -15,8 +15,6 @@ import org.springframework.context.annotation.Configuration;
 //@ConfigurationProperties
 public class ParentAppProp {
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
 //    @Bean(name = "securityRestTemplate")
 //    public RestTemplate restTemplate() {
 //        return new RestTemplate();
@@ -32,7 +30,7 @@ public class ParentAppProp {
                 && (this.getApi() != null && StringUtils.isNotEmpty(this.getApi().getMyUserInfo())) ) {
             myUserInfoUrl = this.getHostName() + this.getApi().getMyUserInfo();
         }
-        logger.debug("getMyUserInfoUrl - getHostName: [{}], getMyUserInfo: [{}], myUserInfoUrl: [{}]"
+        log.debug("getMyUserInfoUrl - getHostName: [{}], getMyUserInfo: [{}], myUserInfoUrl: [{}]"
                 , this.getHostName()
                 , (this.getApi() == null ? "NULL" : this.getApi().getMyUserInfo())
                 , myUserInfoUrl
@@ -47,7 +45,7 @@ public class ParentAppProp {
                 && (this.getApi() != null && StringUtils.isNotEmpty(this.getApi().getMyKeyInfo())) ) {
             myKeyInfoUrl = this.getHostName() + this.getApi().getMyKeyInfo();
         }
-        logger.debug("getMyKeyInfoUrl - getHostName: [{}], getMyUserInfo: [{}], myKeyInfoUrl: [{}]"
+        log.debug("getMyKeyInfoUrl - getHostName: [{}], getMyUserInfo: [{}], myKeyInfoUrl: [{}]"
                 , this.getHostName()
                 , (this.getApi() == null ? "NULL" : this.getApi().getMyKeyInfo())
                 , myKeyInfoUrl

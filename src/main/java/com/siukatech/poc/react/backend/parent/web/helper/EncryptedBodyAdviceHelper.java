@@ -9,6 +9,7 @@ import com.siukatech.poc.react.backend.parent.business.form.encrypted.EncryptedD
 import com.siukatech.poc.react.backend.parent.business.form.encrypted.EncryptedInfo;
 import com.siukatech.poc.react.backend.parent.business.form.encrypted.EncryptedReq;
 import jakarta.persistence.EntityNotFoundException;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,14 +29,13 @@ import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Component
 public class EncryptedBodyAdviceHelper {
 
     //    private final String CIPHER_SEPARATOR = "|||";
     private final String CIPHER_SEPARATOR = "";
     private final Integer CIPHER_INFO_LENGTH = 344;
-
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final ObjectMapper objectMapper;
     private final RestTemplate oauth2ClientRestTemplate;
@@ -62,7 +62,7 @@ public class EncryptedBodyAdviceHelper {
     ) throws Exception {
 //        String loginId = userEntity.getLoginId();
         String loginId = myKeyDto.getLoginId();
-        logger.debug("decryptRsaDataBase64ToBodyDetail - loginId: [" + loginId
+        log.debug("decryptRsaDataBase64ToBodyDetail - loginId: [" + loginId
                 + "], start");
         byte[] decryptedBodyData = EncryptionUtils.decryptWithRsaPrivateKey(
                 Base64.getDecoder().decode(encryptedRsaDataBase64)
@@ -70,7 +70,7 @@ public class EncryptedBodyAdviceHelper {
                 , myKeyDto.getPrivateKey()
         );
         String decryptedBodyStr = new String(decryptedBodyData);
-        logger.debug("decryptRsaDataBase64ToBodyDetail - encryptedRsaDataBase64: [" + encryptedRsaDataBase64
+        log.debug("decryptRsaDataBase64ToBodyDetail - encryptedRsaDataBase64: [" + encryptedRsaDataBase64
                 + "], decryptedBodyStr: [" + decryptedBodyStr
                 + "]");
         EncryptedReq encryptedReq = null;
@@ -142,7 +142,7 @@ public class EncryptedBodyAdviceHelper {
         String encryptedAesDataBase64 = Base64.getEncoder().encodeToString(encryptedAesData);
 //            byte[] encryptedRsaData = CryptoUtil.encryptWithRsaPrivateKey(encryptedAesDataBase64, userEntity.getPrivateKey());
 //            String encryptedRsaDataBase64 = Base64.getEncoder().encodeToString(encryptedRsaData);
-        logger.debug("encryptBodyToDataBase64 - decodedKey.length: [" + (decodedKey == null ? "NULL" : decodedKey.length)
+        log.debug("encryptBodyToDataBase64 - decodedKey.length: [" + (decodedKey == null ? "NULL" : decodedKey.length)
 //                + "], bodyStr: [" + bodyStr
                 + "], encryptedAesData.length: [" + (encryptedAesData == null ? "NULL" : encryptedAesData.length)
                 + "], encryptedDataBase64: [" + encryptedAesDataBase64
@@ -167,7 +167,7 @@ public class EncryptedBodyAdviceHelper {
         String encryptedAesContent = encryptedDataStr.substring(CIPHER_INFO_LENGTH);
         encryptedDataList.add(encryptedRsaInfo);
         encryptedDataList.add(encryptedAesContent);
-        logger.debug("resolveRsaInfoAesContent - CIPHER_INFO_LENGTH: [{}"
+        log.debug("resolveRsaInfoAesContent - CIPHER_INFO_LENGTH: [{}"
                         + "], encryptedDataStr: [{}"
                         + "], encryptedRsaInfo: [{}"
                         + "], encryptedAesContent: [{}"
@@ -186,16 +186,16 @@ public class EncryptedBodyAdviceHelper {
     ) throws Exception {
 //        String loginId = userEntity.getLoginId();
         String loginId = myKeyDto.getLoginId();
-        logger.debug("decryptDataBase64ToBodyDetail - loginId: [" + loginId
+        log.debug("decryptDataBase64ToBodyDetail - loginId: [" + loginId
                 + "], start");
 //        String encryptedDataBase64Str = this.objectMapper.readValue(encryptedDataBase64, String.class);
-        logger.debug("decryptDataBase64ToBodyDetail - loginId: [" + loginId
+        log.debug("decryptDataBase64ToBodyDetail - loginId: [" + loginId
                 + "], encryptedDataBase64: [" + encryptedDataBase64
 //                + "], encryptedDataBase64Str: [" + encryptedDataBase64Str
                 + "]");
         byte[] encryptedData = Base64.getDecoder().decode(encryptedDataBase64.getBytes(StandardCharsets.UTF_8));
         String encryptedDataStr = new String(encryptedData);
-        logger.debug("decryptDataBase64ToBodyDetail - loginId: [" + loginId
+        log.debug("decryptDataBase64ToBodyDetail - loginId: [" + loginId
                 + "], encryptedDataStr: [" + encryptedDataStr
                 + "]");
 //        String[] encryptedDataArr = StringUtils.split(encryptedDataStr, CIPHER_SEPARATOR);
@@ -205,7 +205,7 @@ public class EncryptedBodyAdviceHelper {
         if (encryptedDataArr.length > 1) {
             encryptedAesContent = encryptedDataArr[1];
         }
-        logger.debug("decryptDataBase64ToBodyDetail - loginId: [" + loginId
+        log.debug("decryptDataBase64ToBodyDetail - loginId: [" + loginId
                 + "], encryptedRsaInfo: [" + encryptedRsaInfo
                 + "], encryptedAesContent: [" + encryptedAesContent
                 + "]");
@@ -215,7 +215,7 @@ public class EncryptedBodyAdviceHelper {
                 , myKeyDto.getPrivateKey()
         );
         String decryptedRsaInfoStr = new String(decryptedRsaInfoData);
-        logger.debug("decryptDataBase64ToBodyDetail - loginId: [" + loginId
+        log.debug("decryptDataBase64ToBodyDetail - loginId: [" + loginId
                 + "], decryptedRsaInfoStr: [" + decryptedRsaInfoStr
                 + "]");
         EncryptedInfo encryptedInfo = this.objectMapper
@@ -230,7 +230,7 @@ public class EncryptedBodyAdviceHelper {
             );
             decryptedAesContentStr = new String(decryptedAesContentData);
         }
-        logger.debug("decryptDataBase64ToBodyDetail - loginId: [" + loginId
+        log.debug("decryptDataBase64ToBodyDetail - loginId: [" + loginId
                 + "], decryptedAesContentData.length: [" + (decryptedAesContentData == null ? "NULL" : decryptedAesContentData.length)
                 + "], decryptedAesContentStr: [" + decryptedAesContentStr
                 + "]");
@@ -246,7 +246,7 @@ public class EncryptedBodyAdviceHelper {
             ResponseEntity<MyKeyDto> responseEntity = this.oauth2ClientRestTemplate.exchange(
                     myKeyInfoUrl, HttpMethod.POST, HttpEntity.EMPTY, MyKeyDto.class);
             myKeyDto = responseEntity.getBody();
-            logger.debug("resolveMyKeyInfo - loginId: [{}], myKeyInfoUrl: [{}], myKeyDto.getLoginId: [{}]"
+            log.debug("resolveMyKeyInfo - loginId: [{}], myKeyInfoUrl: [{}], myKeyDto.getLoginId: [{}]"
 //                + ", responseEntity.getBody.toString: [{}]"
                     , loginId, myKeyInfoUrl, myKeyDto.getLoginId()
 //                , responseEntity.getBody().toString()
@@ -257,7 +257,7 @@ public class EncryptedBodyAdviceHelper {
                                 .formatted(loginId, myKeyDto.getLoginId()));
             }
         } else {
-            logger.debug("resolveMyKeyInfo - loginId: [{}], myKeyInfoUrl: [{}]"
+            log.debug("resolveMyKeyInfo - loginId: [{}], myKeyInfoUrl: [{}]"
                     , loginId, myKeyInfoUrl
             );
             throw new RuntimeException(
@@ -287,7 +287,7 @@ public class EncryptedBodyAdviceHelper {
                 methodParameter.getDeclaringClass(), EncryptedController.class);
         resultFromAnnotation = (encryptedControllerAnnotation != null);
 
-        logger.debug("isEncryptedApiController - methodParameter.getMethod.getName: [" + methodParameter.getMethod().getName()
+        log.debug("isEncryptedApiController - methodParameter.getMethod.getName: [" + methodParameter.getMethod().getName()
                 + "], methodParameter.getParameterType.getName: [" + methodParameter.getParameterType().getName()
                 + "], methodParameter.getMember.getName: [" + methodParameter.getMember().getName()
 //                + "], methodParameter.getConstructor.getName: [" + methodParameter.getConstructor().getName()
@@ -297,19 +297,19 @@ public class EncryptedBodyAdviceHelper {
                 + "]");
 
 //        Arrays.stream(methodParameter.getMethod().getDeclaringClass().getDeclaredAnnotations()).forEach(annotation -> {
-//            logger.debug("isEncryptedApiController - getDeclaringClass.getDeclaredAnnotations - annotation: [" + annotation.annotationType().getName() + "]");
+//            log.debug("isEncryptedApiController - getDeclaringClass.getDeclaredAnnotations - annotation: [" + annotation.annotationType().getName() + "]");
 //        });
 //        Arrays.stream(methodParameter.getMethod().getDeclaringClass().getAnnotations()).forEach(annotation -> {
-//            logger.debug("isEncryptedApiController - getDeclaringClass.getAnnotations - annotation: [" + annotation.annotationType().getName() + "]");
+//            log.debug("isEncryptedApiController - getDeclaringClass.getAnnotations - annotation: [" + annotation.annotationType().getName() + "]");
 //        });
 //        Arrays.stream(methodParameter.getMethod().getDeclaredAnnotations()).forEach(annotation -> {
-//            logger.debug("isEncryptedApiController - getMethod.getDeclaredAnnotations - annotation: [" + annotation.annotationType().getName() + "]");
+//            log.debug("isEncryptedApiController - getMethod.getDeclaredAnnotations - annotation: [" + annotation.annotationType().getName() + "]");
 //        });
 //        Arrays.stream(methodParameter.getMethod().getAnnotations()).forEach(annotation -> {
-//            logger.debug("isEncryptedApiController - getMethod.getAnnotations - annotation: [" + annotation.annotationType().getName() + "]");
+//            log.debug("isEncryptedApiController - getMethod.getAnnotations - annotation: [" + annotation.annotationType().getName() + "]");
 //        });
         annotationList.stream().forEach(annotation -> {
-            logger.debug("isEncryptedApiController - annotationList - annotation: [" + annotation.annotationType().getName() + "]");
+            log.debug("isEncryptedApiController - annotationList - annotation: [" + annotation.annotationType().getName() + "]");
         });
 
         return resultFromAnnotation;

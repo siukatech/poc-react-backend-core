@@ -15,7 +15,6 @@ import java.util.List;
 @Slf4j
 @NoArgsConstructor
 public class URLEncoderUtils {
-    private static final Logger logger = LoggerFactory.getLogger(URLEncoderUtils.class);
 
     public static String encodeToQueryString(List<NameValuePair> nameValuePairList) {
         List<String> queryList = nameValuePairList.stream().map(nameValuePair -> {

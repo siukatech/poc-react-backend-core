@@ -15,13 +15,11 @@ import java.io.IOException;
 @Deprecated
 public class MyObjectMapper extends ObjectMapper {
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
     public MyObjectMapper() {
         super();
         this.registerModule(new JavaTimeModule());
 
-        logger.debug("MyObjectMapper - getDeserializationConfig.getDeserializationFeatures - 1: [{}]"
+        log.debug("MyObjectMapper - getDeserializationConfig.getDeserializationFeatures - 1: [{}]"
                 , getDeserializationConfig().getDeserializationFeatures()
         );
 
@@ -38,13 +36,13 @@ public class MyObjectMapper extends ObjectMapper {
 //        configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false);
         configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, true);
 
-        logger.debug("MyObjectMapper - getDeserializationConfig.getDeserializationFeatures - 2: [{}]"
+        log.debug("MyObjectMapper - getDeserializationConfig.getDeserializationFeatures - 2: [{}]"
                 , getDeserializationConfig().getDeserializationFeatures()
         );
         configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false);
         configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-        logger.debug("MyObjectMapper - getDeserializationConfig.getDeserializationFeatures - 3: [{}]"
+        log.debug("MyObjectMapper - getDeserializationConfig.getDeserializationFeatures - 3: [{}]"
                 , getDeserializationConfig().getDeserializationFeatures()
         );
     }
@@ -52,12 +50,12 @@ public class MyObjectMapper extends ObjectMapper {
     @Override
     public ObjectReader reader() {
         ObjectReader reader = super.reader();
-        logger.debug("reader - reader.getConfig.getDeserializationFeatures - 1: [{}]"
+        log.debug("reader - reader.getConfig.getDeserializationFeatures - 1: [{}]"
                 , reader.getConfig().getDeserializationFeatures()
         );
         reader = reader.without(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES);
         reader = reader.without(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-        logger.debug("reader - reader.getConfig.getDeserializationFeatures - 2: [{}]"
+        log.debug("reader - reader.getConfig.getDeserializationFeatures - 2: [{}]"
                 , reader.getConfig().getDeserializationFeatures()
         );
         return reader;
@@ -65,7 +63,7 @@ public class MyObjectMapper extends ObjectMapper {
 
     @Override
     public <T> T readValue(JsonParser p, JavaType valueType) throws IOException, StreamReadException, DatabindException {
-        logger.debug("readValue - valueType: [{}]", valueType.getClass().getName());
+        log.debug("readValue - valueType: [{}]", valueType.getClass().getName());
         return super.readValue(p, valueType);
     }
 

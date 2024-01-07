@@ -8,18 +8,18 @@ import com.siukatech.poc.react.backend.parent.data.entity.UserPermissionEntity;
 import com.siukatech.poc.react.backend.parent.data.repository.UserPermissionRepository;
 import com.siukatech.poc.react.backend.parent.data.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Service
 public class UserService {
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ModelMapper modelMapper;
     private final UserRepository userRepository;
     private final UserPermissionRepository userPermissionRepository;
@@ -35,7 +35,7 @@ public class UserService {
     public UserDto findByLoginId(String targetLoginId) {
         UserEntity userEntity = this.userRepository.findByLoginId(targetLoginId)
                 .orElseThrow(() -> new EntityNotFoundException("No such user [%s]".formatted(targetLoginId)));
-        logger.debug("findByLoginId - modelMapper: [" + this.modelMapper + "]");
+        log.debug("findByLoginId - modelMapper: [" + this.modelMapper + "]");
         UserDto userDto = this.modelMapper.map(userEntity, UserDto.class);
         return userDto;
     }
@@ -43,7 +43,7 @@ public class UserService {
     public MyKeyDto findKeyByLoginId(String targetLoginId) {
         UserEntity userEntity = this.userRepository.findByLoginId(targetLoginId)
                 .orElseThrow(() -> new EntityNotFoundException("No such user [%s]".formatted(targetLoginId)));
-        logger.debug("findKeyByLoginId - modelMapper: [" + this.modelMapper + "]");
+        log.debug("findKeyByLoginId - modelMapper: [" + this.modelMapper + "]");
         MyKeyDto myKeyDto = this.modelMapper.map(userEntity, MyKeyDto.class);
         return myKeyDto;
     }

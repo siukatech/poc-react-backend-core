@@ -1,6 +1,7 @@
 package com.siukatech.poc.react.backend.parent.web.advice;
 
 import jakarta.persistence.EntityNotFoundException;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.*;
@@ -17,11 +18,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+@Slf4j
 @Component
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
-
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     /**
      * This is exception handler of IllegalArgumentException
@@ -33,7 +33,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(value = {IllegalArgumentException.class})
     protected ResponseEntity<?> handleIllegalArgument(RuntimeException ex, WebRequest request) {
 //        return this.handleExceptionInternal(ex, "handle IllegalArgumentException", new HttpHeaders(), HttpStatus.CONFLICT, request);
-        logger.error("handleIllegalArgument - ex: [" + ex
+        log.error("handleIllegalArgument - ex: [" + ex
                 + "], ex.getClass.getName: [" + ex.getClass().getName()
                 + "]");
         HttpStatus status = HttpStatus.CONFLICT;
@@ -53,7 +53,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(value = {ObjectOptimisticLockingFailureException.class})
     protected ResponseEntity<?> handleObjectOptimisticLockingFailure(ObjectOptimisticLockingFailureException ex, WebRequest request) {
 //        return this.handleExceptionInternal(ex, null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
-        logger.error("handleObjectOptimisticLockingFailure - ex: [" + ex
+        log.error("handleObjectOptimisticLockingFailure - ex: [" + ex
                 + "], ex.getIdentifier.getClass.getName: [" + ex.getIdentifier().getClass().getName()
                 + "], ex.getIdentifier: [" + ex.getIdentifier()
                 + "], ex.getPersistentClassName: [" + ex.getPersistentClassName()
@@ -97,7 +97,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 //                errorMessage += String.join(",", Arrays.stream(fieldError.getArguments()).toArray(String[]::new));
 //                errorMessage += ")";
                 Arrays.stream(fieldError.getArguments()).forEach(arg -> {
-                    logger.debug("handleMethodArgumentNotValid - arg: [" + arg + "]");
+                    log.debug("handleMethodArgumentNotValid - arg: [" + arg + "]");
                 });
             }
 //            errorMessage += System.lineSeparator();
@@ -131,7 +131,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleHttpMessageNotReadable(
             HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
 
-        logger.error("handleEntityNotFoundException - ex: [" + ex
+        log.error("handleEntityNotFoundException - ex: [" + ex
                 + "], ex.getClass.getName: [" + ex.getClass().getName()
                 + "], ex.getMessage: [" + ex.getMessage()
                 + "], ex.fillInStackTrace: ", ex.fillInStackTrace());
@@ -154,7 +154,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(value = {EntityNotFoundException.class})
     protected ResponseEntity<?> handleEntityNotFoundException(EntityNotFoundException ex, WebRequest request) {
 //        return this.handleExceptionInternal(ex, null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
-        logger.error("handleEntityNotFoundException - ex: [" + ex
+        log.error("handleEntityNotFoundException - ex: [" + ex
                 + "], ex.getClass.getName: [" + ex.getClass().getName()
                 + "]");
         HttpStatus status = HttpStatus.NOT_FOUND;

@@ -1,10 +1,11 @@
 package com.siukatech.poc.react.backend.parent;
 
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.test.context.TestPropertySource;
 
-
+@Slf4j
 @TestPropertySource(
 //        properties = {
 ////        "logging.level.org.springframework.web=TRACE"
@@ -18,6 +19,5 @@ import org.springframework.test.context.TestPropertySource;
 // yml is NOT supported by @TestPropertySource
 //@TestPropertySource("classpath:application.yml")
 public class AbstractJpaTests extends AbstractUnitTests {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 }

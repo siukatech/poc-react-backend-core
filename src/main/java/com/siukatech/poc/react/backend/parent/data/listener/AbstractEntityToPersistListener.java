@@ -4,17 +4,17 @@ package com.siukatech.poc.react.backend.parent.data.listener;
 import com.siukatech.poc.react.backend.parent.data.entity.AbstractEntity;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Slf4j
 //@Component
 public class AbstractEntityToPersistListener {
 
-    protected final Logger logger = LoggerFactory.getLogger(this.getClass());
-
     @PrePersist
     protected void onSavePrePersist(final AbstractEntity abstractEntity) {
-        logger.debug("onSavePrePersist - abstractEntity.getId: [" + abstractEntity.getId()
+        log.debug("onSavePrePersist - abstractEntity.getId: [" + abstractEntity.getId()
                 + "], abstractEntity.getVersionNo: [" + abstractEntity.getVersionNo()
                 + "]");
         if (abstractEntity.getId() != null && abstractEntity.getVersionNo() == null) {
@@ -26,7 +26,7 @@ public class AbstractEntityToPersistListener {
 
     @PreUpdate
     protected void onSavePreUpdate(final AbstractEntity abstractEntity) {
-        logger.debug("onSavePreUpdate - abstractEntity.getId: [" + abstractEntity.getId()
+        log.debug("onSavePreUpdate - abstractEntity.getId: [" + abstractEntity.getId()
                 + "], abstractEntity.getVersionNo: [" + abstractEntity.getVersionNo()
                 + "]");
         if (abstractEntity.getVersionNo() == null) {

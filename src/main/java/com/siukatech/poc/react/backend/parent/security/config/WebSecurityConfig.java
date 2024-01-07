@@ -47,8 +47,6 @@ import java.util.stream.Collectors;
 //@ConditionalOnProperty(name = "", havingValue = "http", matchIfMissing = true)
 public class WebSecurityConfig {
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
     private final ObjectMapper objectMapper;
 
     private final KeycloakLogoutHandler keycloakLogoutHandler;
@@ -76,13 +74,13 @@ public class WebSecurityConfig {
         // This is not working
 //        RestTemplateBuilder restTemplateBuilder = new RestTemplateBuilder();
 //        restTemplateBuilder.additionalInterceptors(new ClientHttpRequestInterceptor() {
-////            private final Logger logger = LoggerFactory.getLogger(this.getClass());
-//            private final Logger logger = LoggerFactory.getLogger(WebSecurityConfig.class);
+////            private final Logger log = LoggerFactory.getLogger(this.getClass());
+//            private final Logger log = LoggerFactory.getLogger(WebSecurityConfig.class);
 //
 //            @Override
 //            public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
 //                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//                logger.debug("oauth2ClientRestTemplate - RestTemplateBuilder - ClientHttpRequestInterceptor - intercept - "
+//                log.debug("oauth2ClientRestTemplate - RestTemplateBuilder - ClientHttpRequestInterceptor - intercept - "
 //                                + "authentication.getName: [{}], authentication.getCredentials: [{}]"
 //                        , authentication.getName(), authentication.getCredentials());
 ////                String jwtToken = authentication.getCredentials().toString();
@@ -123,7 +121,7 @@ public class WebSecurityConfig {
             restTemplate.getMessageConverters().add(new FormHttpMessageConverter());
         }
         restTemplate.getInterceptors().add(new OAuth2ClientHttpRequestInterceptor());
-        logger.debug("oauth2ClientRestTemplate - formHttpMessageConverterCount.get: [{}]"
+        log.debug("oauth2ClientRestTemplate - formHttpMessageConverterCount.get: [{}]"
                         + ", restTemplate.toString: [{}]"
                 , formHttpMessageConverterCount.get(), restTemplate.toString()
         );

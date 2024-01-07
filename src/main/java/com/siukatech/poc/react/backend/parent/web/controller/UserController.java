@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 @ProtectedApiV1Controller
 public class UserController {
 
-    protected Logger logger = LoggerFactory.getLogger(this.getClass());
     protected final UserService userService;
 
     public UserController(UserService userService) {

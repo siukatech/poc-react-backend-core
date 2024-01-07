@@ -7,6 +7,7 @@ import com.siukatech.poc.react.backend.parent.business.service.UserService;
 import com.siukatech.poc.react.backend.parent.business.form.auth.LoginForm;
 import com.siukatech.poc.react.backend.parent.business.form.auth.RefreshTokenForm;
 import com.siukatech.poc.react.backend.parent.business.form.auth.TokenRes;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
@@ -37,6 +38,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@Slf4j
 @WebMvcTest(controllers = {AuthController.class})
 @AutoConfigureMockMvc(addFilters = false)
 @TestPropertySource(
@@ -57,8 +59,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         locations = {"classpath:abstract-oauth2-tests.properties"}
 )
 public class AuthControllerTests extends AbstractWebTests {
-
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private ObjectMapper objectMapperForTests;

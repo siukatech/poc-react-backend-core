@@ -2,6 +2,7 @@ package com.siukatech.poc.react.backend.parent.global.config;
 
 import com.siukatech.poc.react.backend.parent.AbstractUnitTests;
 import com.siukatech.poc.react.backend.parent.web.annotation.v1.ProtectedApiV1Controller;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,6 +29,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * NOT recommended.
  *
  */
+@Slf4j
 @ExtendWith(SpringExtension.class)
 //@EnableConfigurationProperties(value = ParentAppProp.class)
 @EnableConfigurationProperties
@@ -38,8 +40,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 //@TestPropertySource(properties = {"spring.config.location = classpath:global/parent-app-config-tests.properties"})
 //@TestPropertySource(locations= {"classpath:global/parent-app-config-tests.yml"})
 public class ParentAppPropTests extends AbstractUnitTests {
-
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private ParentAppProp parentAppProp;
@@ -54,7 +54,7 @@ public class ParentAppPropTests extends AbstractUnitTests {
 
     @Test
     public void parentAppProp_basic() {
-        logger.debug("parentAppProp_basic - hostName: [{}]"
+        log.debug("parentAppProp_basic - hostName: [{}]"
                         + ", myUserInfo: [{}]"
                         + ", myKeyInfo: [{}]"
                 , parentAppProp.getHostName()

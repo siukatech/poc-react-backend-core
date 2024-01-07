@@ -24,8 +24,6 @@ import java.util.Map;
 @Component
 public class KeycloakJwtAuthenticationConverter implements Converter<Jwt, AbstractAuthenticationToken> {
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
     private final UserService userService;
 
     private KeycloakJwtAuthenticationConverter(UserService userService) {
@@ -36,7 +34,7 @@ public class KeycloakJwtAuthenticationConverter implements Converter<Jwt, Abstra
     public AbstractAuthenticationToken convert(Jwt source) {
         // subject is the user-id
         String loginId = source.getClaimAsString(StandardClaimNames.PREFERRED_USERNAME);
-        logger.debug("convert - source.getId: [" + source.getId()
+        log.debug("convert - source.getId: [" + source.getId()
                 + "], source.getClaims: [" + source.getClaims()
                 + "], source.getHeaders: [" + source.getHeaders()
                 + "], source.getAudience: [" + source.getAudience()

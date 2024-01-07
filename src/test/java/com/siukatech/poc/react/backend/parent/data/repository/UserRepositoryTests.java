@@ -2,6 +2,7 @@ package com.siukatech.poc.react.backend.parent.data.repository;
 
 import com.siukatech.poc.react.backend.parent.AbstractJpaTests;
 import com.siukatech.poc.react.backend.parent.data.entity.UserEntity;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +12,7 @@ import org.springframework.orm.ObjectOptimisticLockingFailureException;
 
 import java.lang.reflect.Method;
 
+@Slf4j
 @DataJpaTest
 //        (properties = {
 ////                "logging.level.org.springframework.web=TRACE"
@@ -21,8 +23,6 @@ import java.lang.reflect.Method;
 //        })
 ////@TestPropertySource("classpath:application.yml")
 public class UserRepositoryTests extends AbstractJpaTests {
-
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     public UserRepository userRepository;
@@ -45,7 +45,7 @@ public class UserRepositoryTests extends AbstractJpaTests {
     @BeforeEach()
     public void setup(TestInfo testInfo) {
         Method method = testInfo.getTestMethod().get();
-        logger.debug("setup - testInfo: [" + testInfo
+        log.debug("setup - testInfo: [" + testInfo
                 + "], method: [" + method.getName()
                 + "]");
         UserEntity userEntity = null;
@@ -65,7 +65,7 @@ public class UserRepositoryTests extends AbstractJpaTests {
     @AfterEach
     public void teardown(TestInfo testInfo) {
         Method method = testInfo.getTestMethod().get();
-        logger.debug("teardown - testInfo: [" + testInfo
+        log.debug("teardown - testInfo: [" + testInfo
                 + "], method: [" + method.getName()
                 + "]");
         UserEntity userEntity = userEntity = this.userRepository.findByLoginId("app-user-01")
@@ -97,7 +97,7 @@ public class UserRepositoryTests extends AbstractJpaTests {
         this.userRepository.save(userEntity);
         UserEntity userEntityAfterUpdate = userRepository.findByLoginId("app-user-01")
                 .orElseThrow(() -> new RuntimeException());
-        logger.debug("updateUser_version_updated - userEntity.getVersionNo: [" + userEntity.getVersionNo()
+        log.debug("updateUser_version_updated - userEntity.getVersionNo: [" + userEntity.getVersionNo()
                 + "], userEntityAfterUpdate.getVersionNo: [" + userEntityAfterUpdate.getVersionNo()
                 + "]");
         Assertions.assertEquals(userEntity.getVersionNo(), 2L);
@@ -124,7 +124,7 @@ public class UserRepositoryTests extends AbstractJpaTests {
 
         UserEntity userEntityAfterUpdate = userRepository.findByLoginId("app-user-01")
                 .orElseThrow(() -> new RuntimeException());
-        logger.debug("updateUser_version_not_match - 1 - userEntity.getId: [" + userEntity.getId()
+        log.debug("updateUser_version_not_match - 1 - userEntity.getId: [" + userEntity.getId()
                 + "], userEntity.getName: [" + userEntity.getName()
                 + "], userEntity.getVersionNo: [" + userEntity.getVersionNo()
                 + "], userEntityAfterUpdate.getId: [" + userEntityAfterUpdate.getId()
@@ -138,7 +138,7 @@ public class UserRepositoryTests extends AbstractJpaTests {
         Exception objectOptimisticLockingFailureException = Assertions.assertThrows(ObjectOptimisticLockingFailureException.class, () -> {
             this.userRepository.save(userEntityClone);
         });
-        logger.debug("updateUser_version_not_match - 2 - userEntity.getId: [" + userEntity.getId()
+        log.debug("updateUser_version_not_match - 2 - userEntity.getId: [" + userEntity.getId()
                 + "], userEntity.getName: [" + userEntity.getName()
                 + "], userEntity.getVersionNo: [" + userEntity.getVersionNo()
                 + "], userEntityAfterUpdate.getId: [" + userEntityAfterUpdate.getId()

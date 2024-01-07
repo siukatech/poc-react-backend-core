@@ -3,6 +3,7 @@ package com.siukatech.poc.react.backend.parent.web.config;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpMethod;
@@ -14,9 +15,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import java.util.Arrays;
 import java.util.List;
 
+@Slf4j
 //public class WebMvcConfig extends WebMvcConfigurationSupport {
 public class WebMvcConfig implements WebMvcConfigurer {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final ObjectMapper objectMapper;
 
@@ -26,7 +27,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        logger.debug("addCorsMappings - start");
+        log.debug("addCorsMappings - start");
         registry
                 .addMapping("/**")
 //                .allowedMethods(HttpMethod.HEAD.name()
@@ -41,7 +42,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 //.allowedOrigins("http://localhost:3000/")
                 .allowedOrigins("*")
         ;
-        logger.debug("addCorsMappings - end");
+        log.debug("addCorsMappings - end");
     }
 
 //    private static final String dateFormat = "yyyy-MM-dd";
@@ -65,14 +66,14 @@ public class WebMvcConfig implements WebMvcConfigurer {
      */
     @Override
     public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
-        logger.debug("extendMessageConverters - start");
-        logger.debug("extendMessageConverters - converters.size: [{}]", converters.size());
+        log.debug("extendMessageConverters - start");
+        log.debug("extendMessageConverters - converters.size: [{}]", converters.size());
         converters.stream().forEach(httpMessageConverter -> {
-            logger.debug("extendMessageConverters - httpMessageConverter.getClass.getName: [{}]", httpMessageConverter.getClass().getName());
+            log.debug("extendMessageConverters - httpMessageConverter.getClass.getName: [{}]", httpMessageConverter.getClass().getName());
             if (httpMessageConverter instanceof MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter) {
 ////                MappingJackson2HttpMessageConverter jacksonMessageConverter = (MappingJackson2HttpMessageConverter) httpMessageConverter;
 //                ObjectMapper objectMapper = mappingJackson2HttpMessageConverter.getObjectMapper();
-//                logger.debug("extendMessageConverters - MappingJackson2HttpMessageConverter.getObjectMapper: [{}]"
+//                log.debug("extendMessageConverters - MappingJackson2HttpMessageConverter.getObjectMapper: [{}]"
 //                        , mappingJackson2HttpMessageConverter.getObjectMapper());
 //                objectMapper =
 //                        // here is configured for non-encrypted data, general response body
@@ -93,7 +94,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 mappingJackson2HttpMessageConverter.setObjectMapper(objectMapper);
             }
         });
-        logger.debug("extendMessageConverters - end");
+        log.debug("extendMessageConverters - end");
     }
 
 }

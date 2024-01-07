@@ -8,6 +8,7 @@ import com.siukatech.poc.react.backend.parent.global.config.ParentAppProp;
 import com.siukatech.poc.react.backend.parent.util.EncryptionUtils;
 import com.siukatech.poc.react.backend.parent.business.form.encrypted.EncryptedDetail;
 import com.siukatech.poc.react.backend.parent.business.form.encrypted.EncryptedInfo;
+import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Condition;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -43,6 +44,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
+@Slf4j
 @ExtendWith({MockitoExtension.class
         , SpringExtension.class
 })
@@ -52,8 +54,6 @@ import static org.mockito.Mockito.when;
         , "classpath:global/parent-app-config-tests.properties"
 })
 public class EncryptedBodyAdviceHelperTests extends AbstractUnitTests {
-
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     /**
      * This is the OAuth2ClientProperties initiated with @TestPropertySource
@@ -127,7 +127,7 @@ public class EncryptedBodyAdviceHelperTests extends AbstractUnitTests {
         EncryptedInfo encryptedInfo = this.prepareEncryptedInfo_basic();
         byte[] aesKey = EncryptionUtils.encryptWithRsaPublicKey(encryptedInfo.key(), body.getPublicKey());
         String aesKeyBase64 = Base64.getEncoder().encodeToString(aesKey);
-        logger.debug("encryptBodyToDataBase64_basic - aesKeyBase64.length: [{}]"
+        log.debug("encryptBodyToDataBase64_basic - aesKeyBase64.length: [{}]"
                         + ", bodyStr: [{}]"
                 , aesKeyBase64.length()
                 , bodyStr
@@ -137,13 +137,13 @@ public class EncryptedBodyAdviceHelperTests extends AbstractUnitTests {
         String cipherText = this.encryptedBodyAdviceHelper.encryptBodyToDataBase64(body, encryptedInfo);
 
         // then
-        logger.debug("encryptBodyToDataBase64_basic - cipherText: [{}]", cipherText);
+        log.debug("encryptBodyToDataBase64_basic - cipherText: [{}]", cipherText);
         byte[] data = Base64.getDecoder().decode(cipherText);
         byte[] secret = Base64.getDecoder().decode(encryptedInfo.key());
         byte[] iv = Base64.getDecoder().decode(encryptedInfo.iv());
         byte[] content = EncryptionUtils.decryptWithAesCbcSecret(data, secret, iv);
         String contentStr = new String(content);
-        logger.debug("encryptBodyToDataBase64_basic - contentStr: [{}]", contentStr);
+        log.debug("encryptBodyToDataBase64_basic - contentStr: [{}]", contentStr);
 
         assertThat(bodyStr).isEqualTo(contentStr);
 
@@ -182,7 +182,7 @@ public class EncryptedBodyAdviceHelperTests extends AbstractUnitTests {
         String bodyDataBase64 = Base64.getEncoder().encodeToString(bodyData);
         String encryptedBody = headerDataBase64 + bodyDataBase64;
         String encryptedDataBase64 = Base64.getEncoder().encodeToString(encryptedBody.getBytes(StandardCharsets.UTF_8));
-        logger.debug("decryptDataBase64ToBodyDetail_basic - headerDataBase64.length: [{}]"
+        log.debug("decryptDataBase64ToBodyDetail_basic - headerDataBase64.length: [{}]"
                         + ", bodyDataBase64.length: [{}]"
                 , headerDataBase64.length()
                 , bodyDataBase64.length()
@@ -192,7 +192,7 @@ public class EncryptedBodyAdviceHelperTests extends AbstractUnitTests {
         EncryptedDetail encryptedDetail = this.encryptedBodyAdviceHelper.decryptDataBase64ToBodyDetail(encryptedDataBase64, userDto);
 
         // then
-        logger.debug("decryptDataBase64ToBodyDetail_basic - encryptedDetail: [{}]"
+        log.debug("decryptDataBase64ToBodyDetail_basic - encryptedDetail: [{}]"
                         + ""
                 , encryptedDetail
         );
@@ -202,7 +202,7 @@ public class EncryptedBodyAdviceHelperTests extends AbstractUnitTests {
 
     @Test
     public void resolveMyKeyInfo_basic() throws NoSuchAlgorithmException {
-        logger.debug("resolveMyKeyInfo_basic - parentAppPropForTests.myUserInfoUrl: [{}]"
+        log.debug("resolveMyKeyInfo_basic - parentAppPropForTests.myUserInfoUrl: [{}]"
                         + ", parentAppProp.myUserInfoUrl: [{}]"
                         + ", parentAppProp.getMyKeyInfoUrl: [{}]"
                         + ", parentAppProp.getMyKeyInfoUrl: [{}]"
@@ -232,7 +232,7 @@ public class EncryptedBodyAdviceHelperTests extends AbstractUnitTests {
         MyKeyDto myKeyRet = this.encryptedBodyAdviceHelper.resolveMyKeyInfo(loginId);
 
         // then
-        logger.debug("resolveMyKeyInfo_basic - myKeyRet: [{}]", myKeyRet);
+        log.debug("resolveMyKeyInfo_basic - myKeyRet: [{}]", myKeyRet);
         assertThat(myKeyRet).hasFieldOrProperty("privateKey")
                 .has(new Condition<>(u -> u.getPrivateKey().contains(myKeyDto.getPrivateKey())
                         , "Has %s", "private-key"))
@@ -253,7 +253,7 @@ public class EncryptedBodyAdviceHelperTests extends AbstractUnitTests {
         boolean resultForFalse = this.encryptedBodyAdviceHelper.isEncryptedApiController(methodParameterForFalse);
 
         // then
-        logger.debug("isEncryptedApiController_basic - resultForTrue: [{}]"
+        log.debug("isEncryptedApiController_basic - resultForTrue: [{}]"
                         + ", resultForFalse: [{}]"
                 , resultForTrue
                 , resultForFalse

@@ -479,4 +479,12 @@ https://github.com/spring-projects/spring-framework/wiki/Upgrading-to-Spring-Fra
 
 
 
+# Annotation
+## @Slf4j
+Using `@Slf4j`, after compilation, following statement will be added to the class.  
+```java
+...
+private static final Logger log = LoggerFactory.getLogger(xxx.class);
+...
+```
 

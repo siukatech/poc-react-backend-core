@@ -1,20 +1,23 @@
 package com.siukatech.poc.react.backend.parent.data;
 
+import com.siukatech.poc.react.backend.parent.web.controller.UserControllerTests;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+//@Slf4j
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class JpaRepositoryTestsWithDataJpaTests {
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    protected static final Logger log = LoggerFactory.getLogger(JpaRepositoryTestsWithDataJpaTests.class);
 
     @Test
     void contextLoads() {
-        logger.debug("contextLoads - testing logging");
+        log.debug("contextLoads - testing logging");
     }
 
 }

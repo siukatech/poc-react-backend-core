@@ -29,13 +29,14 @@ import java.time.LocalDateTime;
 @EntityListeners(value = {AuditingEntityListener.class, AbstractEntityToPersistListener.class})
 public abstract class AbstractEntity<T> {
 
-    @Transient
-    protected final Logger logger = LoggerFactory.getLogger(this.getClass());
+//    @Transient
+//    protected final Logger log = LoggerFactory.getLogger(this.getClass());
 
-//    @Id
+    //    @Id
 //    @GeneratedValue(strategy = GenerationType.IDENTITY)
 //    protected T id;
     public abstract T getId();
+
     public abstract void setId(T id);
 
     @CreatedBy
@@ -62,7 +63,7 @@ public abstract class AbstractEntity<T> {
     // This can be handled by AbstractEntityToPersistListener.class by adding to @EntityListeners
 //    @PreUpdate
 //    protected void onSavePreUpdate() {
-//        logger.debug("onSavePreUpdate - getId: [" + this.getId()
+//        log.debug("onSavePreUpdate - getId: [" + this.getId()
 //                + "], getVersionNo: [" + this.getVersionNo()
 //                + "]");
 //        if (this.getVersionNo() == null) {
@@ -72,7 +73,7 @@ public abstract class AbstractEntity<T> {
 //
 //    @PrePersist
 //    protected void onSavePrePersist() {
-//        logger.debug("onSavePrePersist - getId: [" + this.getId()
+//        log.debug("onSavePrePersist - getId: [" + this.getId()
 //                + "], getVersionNo: [" + this.getVersionNo()
 //                + "]");
 //        if (this.getId() != null && this.getVersionNo() == null) {

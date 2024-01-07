@@ -1,10 +1,12 @@
 package com.siukatech.poc.react.backend.parent.web.controller;
 
+import com.siukatech.poc.react.backend.parent.AbstractUnitTests;
 import com.siukatech.poc.react.backend.parent.business.dto.UserDto;
 import com.siukatech.poc.react.backend.parent.business.service.UserService;
 import com.siukatech.poc.react.backend.parent.web.annotation.v1.ProtectedApiV1Controller;
 import com.siukatech.poc.react.backend.parent.web.context.EncryptedBodyContext;
 import com.siukatech.poc.react.backend.parent.web.helper.EncryptedBodyAdviceHelper;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
@@ -41,6 +43,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+//@Slf4j
 @WebMvcTest(controllers = {UserController.class}
 //        , excludeAutoConfiguration = {SecurityAutoConfiguration.class}
         , properties = {
@@ -57,9 +60,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc(addFilters = false)
 public class UserControllerTests {
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-//    @Autowired
+    protected static final Logger log = LoggerFactory.getLogger(UserControllerTests.class);
 
+//    @Autowired
     private MockMvc mockMvc;
     @Autowired
     private WebApplicationContext webApplicationContext;
@@ -122,7 +125,7 @@ public class UserControllerTests {
                     .build();
         }
         //
-        logger.debug("setup - SecurityContextHolder.getContext.getAuthentication: [" + SecurityContextHolder.getContext().getAuthentication() + "]");
+        log.debug("setup - SecurityContextHolder.getContext.getAuthentication: [" + SecurityContextHolder.getContext().getAuthentication() + "]");
     }
 //
 //    @Test
@@ -135,7 +138,7 @@ public class UserControllerTests {
 //        when(userService.findByLoginId(anyString())).thenReturn(userDto);
 //
 //        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        logger.debug("getPublicKey_basic - authentication: [" + authentication + "]");
+//        log.debug("getPublicKey_basic - authentication: [" + authentication + "]");
 //
 //        // when
 //        RequestBuilder requestBuilder = MockMvcRequestBuilders
@@ -154,7 +157,7 @@ public class UserControllerTests {
 //                .andReturn();
 //
 //        // result
-//        logger.debug("getPublicKey_basic - end - mvcResult.getResponse.getContentAsString: [" + mvcResult.getResponse().getContentAsString() + "]");
+//        log.debug("getPublicKey_basic - end - mvcResult.getResponse.getContentAsString: [" + mvcResult.getResponse().getContentAsString() + "]");
 //
 //    }
 
@@ -181,7 +184,7 @@ public class UserControllerTests {
                 .andReturn();
 
         // result
-        logger.debug("getUserInfo_basic - end - mvcResult.getResponse.getContentAsString: [" + mvcResult.getResponse().getContentAsString() + "]");
+        log.debug("getUserInfo_basic - end - mvcResult.getResponse.getContentAsString: [" + mvcResult.getResponse().getContentAsString() + "]");
 
     }
 

@@ -20,7 +20,6 @@ import java.util.List;
 @ProtectedApiV1Controller
 public class MyController {
 
-    protected Logger logger = LoggerFactory.getLogger(this.getClass());
     protected final UserService userService;
     public MyController(UserService userService) {
         this.userService = userService;
@@ -29,7 +28,7 @@ public class MyController {
     @PostMapping("/my/public-key")
     public ResponseEntity<?> getPublicKey(Authentication authentication) {
         Authentication authenticationInSc = SecurityContextHolder.getContext().getAuthentication();
-        logger.debug("getPublicKey - authentication: [{}], authenticationInSc: [{}]"
+        log.debug("getPublicKey - authentication: [{}], authenticationInSc: [{}]"
                 , authentication, authenticationInSc);
         String loginId = authentication.getName();
         MyKeyDto myKeyDto = this.userService.findKeyByLoginId(loginId);
@@ -41,7 +40,7 @@ public class MyController {
     @PostMapping("/my/key-info")
     public ResponseEntity<?> getKeyInfo(Authentication authentication) {
         Authentication authenticationInSc = SecurityContextHolder.getContext().getAuthentication();
-        logger.debug("getKeyInfo - authentication: [{}], authenticationInSc: [{}]"
+        log.debug("getKeyInfo - authentication: [{}], authenticationInSc: [{}]"
                 , authentication, authenticationInSc);
         String loginId = authentication.getName();
         MyKeyDto myKeyDto = this.userService.findKeyByLoginId(loginId);
@@ -52,7 +51,7 @@ public class MyController {
     @PostMapping("/my/user-info")
     public ResponseEntity<?> getUserInfo(Authentication authentication) {
         Authentication authenticationInSc = SecurityContextHolder.getContext().getAuthentication();
-        logger.debug("getUserInfo - authentication: [{}], authenticationInSc: [{}]"
+        log.debug("getUserInfo - authentication: [{}], authenticationInSc: [{}]"
                 , authentication, authenticationInSc);
         String loginId = authentication.getName();
         UserDto userDto = this.userService.findByLoginId(loginId);
@@ -63,7 +62,7 @@ public class MyController {
     @GetMapping("/my/permissions")
     public ResponseEntity<?> getUserPermissions(Authentication authentication) {
         Authentication authenticationInSc = SecurityContextHolder.getContext().getAuthentication();
-        logger.debug("getUserPermissions - authentication: [{}], authenticationInSc: [{}]"
+        log.debug("getUserPermissions - authentication: [{}], authenticationInSc: [{}]"
                 , authentication, authenticationInSc);
         String loginId = authentication.getName();
         List<UserPermissionDto> userPermissionDtoList = this.userService

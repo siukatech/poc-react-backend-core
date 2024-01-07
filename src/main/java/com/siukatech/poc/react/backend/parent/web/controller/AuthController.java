@@ -32,7 +32,6 @@ public class AuthController {
 //    @Value("${security.oauth2.client.registration.keycloak.client-secret}")
 //    private String clientSceret;
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     //    private final OAuth2ClientProperties oAuth2ClientProperties;
 //    private final RestTemplate oauth2ClientRestTemplate;
 //    private final ObjectMapper objectMapper;
@@ -54,7 +53,7 @@ public class AuthController {
     @GetMapping(value = "/auth/login/{clientName}")
     public void doAuthCodeLogin(HttpServletResponse response, @PathVariable String clientName) {
         String authCodeLoginUrl = this.authService.getAuthCodeLoginUrl(clientName);
-        logger.debug("doAuthCodeLogin - clientName: [{}], authCodeLoginUrl: [{}]"
+        log.debug("doAuthCodeLogin - clientName: [{}], authCodeLoginUrl: [{}]"
                 , clientName, authCodeLoginUrl);
         response.setHeader(HttpHeaders.LOCATION, authCodeLoginUrl);
         response.setStatus(HttpStatus.FOUND.value());
@@ -63,7 +62,7 @@ public class AuthController {
     @PostMapping(value = "/auth/token/{clientName}/{code}")
     public ResponseEntity<?> doAuthCodeToken(@PathVariable String clientName, @PathVariable String code) {
         TokenRes tokenRes = this.authService.resolveAuthCodeTokenRes(clientName, code);
-        logger.debug("doAuthCodeToken - clientName: [" + clientName
+        log.debug("doAuthCodeToken - clientName: [" + clientName
                 + "], code: [" + code
                 + "], tokenRes: [" + tokenRes
                 + "]");
@@ -74,7 +73,7 @@ public class AuthController {
     public ResponseEntity<?> doPasswordLogin(@PathVariable String clientName
             , @RequestBody @Valid LoginForm loginForm) {
         TokenRes tokenRes = this.authService.resolvePasswordTokenRes(clientName, loginForm);
-        logger.debug("doPasswordLogin - clientName: [" + clientName
+        log.debug("doPasswordLogin - clientName: [" + clientName
                 + "], loginForm.getUsername: [" + loginForm.getUsername()
                 + "], tokenRes: [" + tokenRes
                 + "]");
@@ -85,7 +84,7 @@ public class AuthController {
     public ResponseEntity<?> doAuthTokenRefresh(@PathVariable String clientName
             , @RequestBody @Valid RefreshTokenForm refreshTokenForm) {
         TokenRes tokenRes = this.authService.resolveRefreshTokenTokenRes(clientName, refreshTokenForm);
-        logger.debug("doPasswordLogin - clientName: [" + clientName
+        log.debug("doPasswordLogin - clientName: [" + clientName
                 + "], refreshTokenForm: [" + refreshTokenForm
                 + "], tokenRes: [" + tokenRes
                 + "]");
@@ -99,7 +98,7 @@ public class AuthController {
             String requestURI = request.getRequestURI();
             String hostName = requestURL.substring(0, requestURL.lastIndexOf(requestURI));
             String logoutApi = hostName + "/logout";
-            logger.debug("doAuthLogout - logoutApi: [{}]"
+            log.debug("doAuthLogout - logoutApi: [{}]"
                             + ", request.getLocalName: [{}]"
                             + ", request.getLocalPort: [{}]"
                             + ", request.getServerName: [{}]"
@@ -120,10 +119,10 @@ public class AuthController {
             );
 //            Map map = this.oauth2ClientRestTemplate.postForObject(new URI(logoutApi), null, HashMap.class);
             HttpStatusCode httpStatusCode = this.authService.doAuthLogout(logoutApi);
-            logger.debug("doAuthLogout - httpStatusCode: [{}]", httpStatusCode);
+            log.debug("doAuthLogout - httpStatusCode: [{}]", httpStatusCode);
             return ResponseEntity.status(httpStatusCode.value()).build();
         } catch (Exception e) {
-            logger.error("doAuthLogout", e);
+            log.error("doAuthLogout", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
