@@ -204,14 +204,17 @@ publishing {
 			}
 		}
 	}
-	repositories {
-		maven {
-			name = '[repository-name]'
-			allowInsecureProtocol = true
-			credentials(PasswordCredentials)
-			url = uri("$[repository-name]Uri")
-		}
-	}
+    if (project.hasProperty("[repository-name]Uri")) {
+        repositories {
+//			def publishingUri = project.hasProperty("[repository-name]Uri") ? "$[repository-name]Uri" : ""
+            maven {
+                name = '[repository-name]'
+                allowInsecureProtocol = true
+                credentials(PasswordCredentials)
+                url = uri("$[repository-name]Uri")
+            }
+        }
+    }
 }
 ```
 
