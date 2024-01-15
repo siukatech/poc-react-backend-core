@@ -27,6 +27,10 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 @RestControllerAdvice
 public class EncryptedResponseBodyAdvice implements ResponseBodyAdvice {
 
+    // Reference:
+    // https://stackoverflow.com/a/3561399
+    // Prefix "X-" IS NOT a recommendation for custom http header name.
+    // Custom header name is just sensible without the "X-" prefix.
     private final static String HEADER_X_DATA_ENC_INFO = "X-DATA-ENC-INFO";
     private final EncryptedBodyContext encryptedBodyContext;
 //    private final UserRepository userRepository;
