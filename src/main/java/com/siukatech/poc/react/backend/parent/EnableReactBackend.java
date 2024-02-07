@@ -16,5 +16,5 @@ import java.lang.annotation.*;
         WebConfigImport.class
         , SecurityConfigImport.class
 })
-public @interface EnableReactBackendParent {
+public @interface EnableReactBackend {
 }
