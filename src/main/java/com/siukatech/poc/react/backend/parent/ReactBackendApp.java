@@ -15,10 +15,10 @@ import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfi
         , SecurityAutoConfiguration.class
     }
 )
-public class ReactBackendParent {
+public class ReactBackendApp {
 
     public static void main(String[] args) {
-        SpringApplication.run(ReactBackendParent.class, args);
+        SpringApplication.run(ReactBackendApp.class, args);
     }
 
 }
