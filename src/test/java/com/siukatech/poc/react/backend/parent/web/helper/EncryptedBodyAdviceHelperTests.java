@@ -221,7 +221,7 @@ public class EncryptedBodyAdviceHelperTests extends AbstractUnitTests {
 //                , eq(HttpMethod.POST), eq(HttpEntity.EMPTY), eq(MyKeyDto.class)))
 //                .thenReturn(ResponseEntity.ok(prepareMyKeyDto_basic()));
         doReturn(ResponseEntity.ok(myKeyDto))
-                .when(this.oauth2ClientRestTemplate).exchange(anyString(), eq(HttpMethod.POST)
+                .when(this.oauth2ClientRestTemplate).exchange(anyString(), eq(HttpMethod.GET)
                         , ArgumentMatchers.any(HttpEntity.class), eq(MyKeyDto.class))
         ;
 

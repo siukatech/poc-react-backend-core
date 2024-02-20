@@ -244,7 +244,7 @@ public class EncryptedBodyAdviceHelper {
         MyKeyDto myKeyDto = null;
         if (StringUtils.isNotEmpty(myKeyInfoUrl)) {
             ResponseEntity<MyKeyDto> responseEntity = this.oauth2ClientRestTemplate.exchange(
-                    myKeyInfoUrl, HttpMethod.POST, HttpEntity.EMPTY, MyKeyDto.class);
+                    myKeyInfoUrl, HttpMethod.GET, HttpEntity.EMPTY, MyKeyDto.class);
             myKeyDto = responseEntity.getBody();
             log.debug("resolveMyKeyInfo - loginId: [{}], myKeyInfoUrl: [{}], myKeyDto.getLoginId: [{}]"
 //                + ", responseEntity.getBody.toString: [{}]"

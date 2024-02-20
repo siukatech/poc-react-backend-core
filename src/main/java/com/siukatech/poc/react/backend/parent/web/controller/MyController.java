@@ -25,7 +25,7 @@ public class MyController {
         this.userService = userService;
     }
 
-    @PostMapping("/my/public-key")
+    @GetMapping("/my/public-key")
     public ResponseEntity<?> getPublicKey(Authentication authentication) {
         Authentication authenticationInSc = SecurityContextHolder.getContext().getAuthentication();
         log.debug("getPublicKey - authentication: [{}], authenticationInSc: [{}]"
@@ -37,7 +37,7 @@ public class MyController {
         return ResponseEntity.ok(publicKeyBase64);
     }
 
-    @PostMapping("/my/key-info")
+    @GetMapping("/my/key-info")
     public ResponseEntity<?> getKeyInfo(Authentication authentication) {
         Authentication authenticationInSc = SecurityContextHolder.getContext().getAuthentication();
         log.debug("getKeyInfo - authentication: [{}], authenticationInSc: [{}]"
@@ -48,7 +48,7 @@ public class MyController {
         return ResponseEntity.ok(myKeyDto);
     }
 
-    @PostMapping("/my/user-info")
+    @GetMapping("/my/user-info")
     public ResponseEntity<?> getUserInfo(Authentication authentication) {
         Authentication authenticationInSc = SecurityContextHolder.getContext().getAuthentication();
         log.debug("getUserInfo - authentication: [{}], authenticationInSc: [{}]"
