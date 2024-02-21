@@ -2,11 +2,8 @@ package com.siukatech.poc.react.backend.parent.data.listener;
 
 
 import com.siukatech.poc.react.backend.parent.data.entity.AbstractEntity;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
+import jakarta.persistence.*;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Slf4j
 //@Component

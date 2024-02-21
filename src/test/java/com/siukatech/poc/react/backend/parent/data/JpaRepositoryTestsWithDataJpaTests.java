@@ -1,7 +1,5 @@
 package com.siukatech.poc.react.backend.parent.data;
 
-import com.siukatech.poc.react.backend.parent.web.controller.UserControllerTests;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
