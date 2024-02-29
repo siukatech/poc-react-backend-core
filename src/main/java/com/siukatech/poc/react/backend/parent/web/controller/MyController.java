@@ -4,12 +4,15 @@ import com.siukatech.poc.react.backend.parent.business.dto.MyKeyDto;
 import com.siukatech.poc.react.backend.parent.business.dto.UserDto;
 import com.siukatech.poc.react.backend.parent.business.dto.UserPermissionDto;
 import com.siukatech.poc.react.backend.parent.business.service.UserService;
+import com.siukatech.poc.react.backend.parent.util.HttpHeaderUtils;
 import com.siukatech.poc.react.backend.parent.web.annotation.v1.ProtectedApiV1Controller;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.List;
 
@@ -23,8 +26,10 @@ public class MyController {
     }
 
     @GetMapping("/my/public-key")
-    public ResponseEntity<?> getPublicKey(Authentication authentication) {
+    public ResponseEntity<?> getPublicKey(@RequestHeader HttpHeaders httpHeaders
+            , Authentication authentication) {
         Authentication authenticationInSc = SecurityContextHolder.getContext().getAuthentication();
+        HttpHeaderUtils.logHttpHeaders(httpHeaders);
         log.debug("getPublicKey - authentication: [{}], authenticationInSc: [{}]"
                 , authentication, authenticationInSc);
         String loginId = authentication.getName();
@@ -35,8 +40,10 @@ public class MyController {
     }
 
     @GetMapping("/my/key-info")
-    public ResponseEntity<?> getKeyInfo(Authentication authentication) {
+    public ResponseEntity<?> getKeyInfo(@RequestHeader HttpHeaders httpHeaders
+            , Authentication authentication) {
         Authentication authenticationInSc = SecurityContextHolder.getContext().getAuthentication();
+        HttpHeaderUtils.logHttpHeaders(httpHeaders);
         log.debug("getKeyInfo - authentication: [{}], authenticationInSc: [{}]"
                 , authentication, authenticationInSc);
         String loginId = authentication.getName();
@@ -46,8 +53,10 @@ public class MyController {
     }
 
     @GetMapping("/my/user-info")
-    public ResponseEntity<?> getUserInfo(Authentication authentication) {
+    public ResponseEntity<?> getUserInfo(@RequestHeader HttpHeaders httpHeaders
+            , Authentication authentication) {
         Authentication authenticationInSc = SecurityContextHolder.getContext().getAuthentication();
+        HttpHeaderUtils.logHttpHeaders(httpHeaders);
         log.debug("getUserInfo - authentication: [{}], authenticationInSc: [{}]"
                 , authentication, authenticationInSc);
         String loginId = authentication.getName();
@@ -57,8 +66,10 @@ public class MyController {
     }
 
     @GetMapping("/my/permissions")
-    public ResponseEntity<?> getUserPermissions(Authentication authentication) {
+    public ResponseEntity<?> getUserPermissions(@RequestHeader HttpHeaders httpHeaders
+            , Authentication authentication) {
         Authentication authenticationInSc = SecurityContextHolder.getContext().getAuthentication();
+        HttpHeaderUtils.logHttpHeaders(httpHeaders);
         log.debug("getUserPermissions - authentication: [{}], authenticationInSc: [{}]"
                 , authentication, authenticationInSc);
         String loginId = authentication.getName();

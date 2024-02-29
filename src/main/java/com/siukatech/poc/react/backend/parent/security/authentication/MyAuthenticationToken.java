@@ -10,6 +10,7 @@ public class MyAuthenticationToken extends OAuth2AuthenticationToken {
 
     public final static String ATTR_TOKEN_VALUE = "ATTR_TOKEN_VALUE";
     public final static String ATTR_USER_ID = "ATTR_USER_ID";
+    public final static String ATTR_PUBLIC_KEY = "ATTR_PUBLIC_KEY";
 
     /**
      * Constructs an {@code OAuth2AuthenticationToken} using the provided parameters.
@@ -19,7 +20,9 @@ public class MyAuthenticationToken extends OAuth2AuthenticationToken {
      * @param authorizedClientRegistrationId the registration identifier of the
      *                                       {@link OAuth2AuthorizedClient Authorized Client}
      */
-    public MyAuthenticationToken(OAuth2User principal, Collection<? extends GrantedAuthority> authorities, String authorizedClientRegistrationId) {
+    public MyAuthenticationToken(OAuth2User principal
+            , Collection<? extends GrantedAuthority> authorities
+            , String authorizedClientRegistrationId) {
         super(principal, authorities, authorizedClientRegistrationId);
     }
 
@@ -29,6 +32,10 @@ public class MyAuthenticationToken extends OAuth2AuthenticationToken {
 
     public Long getUserId() {
         return this.getPrincipal().getAttribute(ATTR_USER_ID);
+    }
+
+    public String getPublicKey() {
+        return this.getPrincipal().getAttribute(ATTR_PUBLIC_KEY);
     }
 
 }
