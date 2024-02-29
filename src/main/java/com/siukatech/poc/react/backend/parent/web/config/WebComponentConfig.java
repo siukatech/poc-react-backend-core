@@ -1,13 +1,5 @@
 package com.siukatech.poc.react.backend.parent.web.config;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.json.JsonMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.modelmapper.ModelMapper;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
@@ -29,7 +21,7 @@ import org.springframework.context.annotation.FilterType;
 //        , EncryptedRequestBodyAdvice.class
 //        , EncryptedResponseBodyAdvice.class
 //})
-public class WebConfig {
+public class WebComponentConfig {
 //
 //    /**
 //     * Reference:

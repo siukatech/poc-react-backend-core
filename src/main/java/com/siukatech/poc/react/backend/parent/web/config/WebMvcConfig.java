@@ -1,15 +1,14 @@
 package com.siukatech.poc.react.backend.parent.web.config;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
+import com.siukatech.poc.react.backend.parent.security.interceptor.AuthorizationDataInterceptor;
+import com.siukatech.poc.react.backend.parent.security.provider.AuthorizationDataProvider;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.Arrays;
@@ -20,9 +19,11 @@ import java.util.List;
 public class WebMvcConfig implements WebMvcConfigurer {
 
     private final ObjectMapper objectMapper;
+    private final AuthorizationDataInterceptor authorizationDataInterceptor;
 
-    public WebMvcConfig(ObjectMapper objectMapper) {
+    public WebMvcConfig(ObjectMapper objectMapper, AuthorizationDataInterceptor authorizationDataInterceptor) {
         this.objectMapper = objectMapper;
+        this.authorizationDataInterceptor = authorizationDataInterceptor;
     }
 
     @Override
@@ -95,6 +96,15 @@ public class WebMvcConfig implements WebMvcConfigurer {
             }
         });
         log.debug("extendMessageConverters - end");
+    }
+
+    public void addInterceptors(InterceptorRegistry registry) {
+        log.debug("addInterceptors - start");
+        registry.addInterceptor(authorizationDataInterceptor)
+                .addPathPatterns("/**")
+                .excludePathPatterns("/auth/**", "/logout")
+        ;
+        log.debug("addInterceptors - end");
     }
 
 }
