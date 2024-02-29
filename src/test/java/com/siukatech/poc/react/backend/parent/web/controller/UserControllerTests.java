@@ -1,12 +1,11 @@
 package com.siukatech.poc.react.backend.parent.web.controller;
 
-import com.siukatech.poc.react.backend.parent.AbstractUnitTests;
 import com.siukatech.poc.react.backend.parent.business.dto.UserDto;
 import com.siukatech.poc.react.backend.parent.business.service.UserService;
+import com.siukatech.poc.react.backend.parent.security.provider.AuthorizationDataProvider;
 import com.siukatech.poc.react.backend.parent.web.annotation.v1.ProtectedApiV1Controller;
 import com.siukatech.poc.react.backend.parent.web.context.EncryptedBodyContext;
 import com.siukatech.poc.react.backend.parent.web.helper.EncryptedBodyAdviceHelper;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
@@ -76,6 +75,8 @@ public class UserControllerTests {
     private EncryptedBodyAdviceHelper encryptedBodyAdviceHelper;
 //    @MockBean
 //    private InMemoryClientRegistrationRepository clientRegistrationRepository;
+    @MockBean
+    private AuthorizationDataProvider authorizationDataProvider;
 
 
 //    private UserEntity prepareUserEntity_basic() {

@@ -3,11 +3,12 @@ package com.siukatech.poc.react.backend.parent.web.helper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.siukatech.poc.react.backend.parent.AbstractUnitTests;
 import com.siukatech.poc.react.backend.parent.business.dto.MyKeyDto;
-import com.siukatech.poc.react.backend.parent.business.service.AuthService;
-import com.siukatech.poc.react.backend.parent.global.config.ParentAppProp;
-import com.siukatech.poc.react.backend.parent.util.EncryptionUtils;
 import com.siukatech.poc.react.backend.parent.business.form.encrypted.EncryptedDetail;
 import com.siukatech.poc.react.backend.parent.business.form.encrypted.EncryptedInfo;
+import com.siukatech.poc.react.backend.parent.business.service.AuthService;
+import com.siukatech.poc.react.backend.parent.global.config.ParentAppProp;
+import com.siukatech.poc.react.backend.parent.security.provider.AuthorizationDataProvider;
+import com.siukatech.poc.react.backend.parent.util.EncryptionUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Condition;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,8 +18,6 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.oauth2.client.OAuth2ClientProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -75,6 +74,8 @@ public class EncryptedBodyAdviceHelperTests extends AbstractUnitTests {
     private ParentAppProp parentAppProp;
     @Mock
     private AuthService authService;
+    @Mock
+    private AuthorizationDataProvider authorizationDataProvider;
 
 
     @BeforeEach
@@ -218,7 +219,7 @@ public class EncryptedBodyAdviceHelperTests extends AbstractUnitTests {
         when(this.parentAppProp.getMyKeyInfoUrl())
                 .thenReturn(this.parentAppPropForTests.getMyKeyInfoUrl());
 //        when(oauth2ClientRestTemplate.exchange(anyString()
-//                , eq(HttpMethod.POST), eq(HttpEntity.EMPTY), eq(MyKeyDto.class)))
+//                , eq(HttpMethod.GET), eq(HttpEntity.EMPTY), eq(MyKeyDto.class)))
 //                .thenReturn(ResponseEntity.ok(prepareMyKeyDto_basic()));
         doReturn(ResponseEntity.ok(myKeyDto))
                 .when(this.oauth2ClientRestTemplate).exchange(anyString(), eq(HttpMethod.GET)

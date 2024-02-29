@@ -1,10 +1,13 @@
 package com.siukatech.poc.react.backend.parent;
 
 import com.siukatech.poc.react.backend.parent.security.authentication.MyAuthenticationToken;
+import com.siukatech.poc.react.backend.parent.security.provider.AuthorizationDataProvider;
 import com.siukatech.poc.react.backend.parent.web.context.EncryptedBodyContext;
 import com.siukatech.poc.react.backend.parent.web.helper.EncryptedBodyAdviceHelper;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -25,6 +28,8 @@ public abstract class AbstractWebTests extends AbstractUnitTests {
     protected EncryptedBodyAdviceHelper encryptedBodyAdviceHelper;
 //    @MockBean
 //    private InMemoryClientRegistrationRepository clientRegistrationRepository;
+    @MockBean
+    private AuthorizationDataProvider authorizationDataProvider;
 
     protected UsernamePasswordAuthenticationToken prepareUsernamePasswordAuthenticationToken(String username) {
         List<GrantedAuthority> convertedAuthorities = new ArrayList<GrantedAuthority>();

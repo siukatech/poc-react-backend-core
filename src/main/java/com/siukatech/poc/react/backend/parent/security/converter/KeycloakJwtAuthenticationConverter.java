@@ -1,11 +1,9 @@
 package com.siukatech.poc.react.backend.parent.security.converter;
 
 import com.siukatech.poc.react.backend.parent.business.dto.UserDto;
-import com.siukatech.poc.react.backend.parent.business.service.UserService;
 import com.siukatech.poc.react.backend.parent.security.authentication.MyAuthenticationToken;
+import com.siukatech.poc.react.backend.parent.security.provider.AuthorizationDataProvider;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -24,16 +22,21 @@ import java.util.Map;
 @Component
 public class KeycloakJwtAuthenticationConverter implements Converter<Jwt, AbstractAuthenticationToken> {
 
-    private final UserService userService;
+//    private final UserService userService;
+    private final AuthorizationDataProvider authorizationDataProvider;
 
-    private KeycloakJwtAuthenticationConverter(UserService userService) {
-        this.userService = userService;
+    private KeycloakJwtAuthenticationConverter(
+//            UserService userService,
+            AuthorizationDataProvider authorizationDataProvider) {
+//        this.userService = userService;
+        this.authorizationDataProvider = authorizationDataProvider;
     }
 
     @Override
     public AbstractAuthenticationToken convert(Jwt source) {
         // subject is the user-id
         String loginId = source.getClaimAsString(StandardClaimNames.PREFERRED_USERNAME);
+        String tokenValue = source.getTokenValue();
         log.debug("convert - source.getId: [" + source.getId()
                 + "], source.getClaims: [" + source.getClaims()
                 + "], source.getHeaders: [" + source.getHeaders()
@@ -42,7 +45,8 @@ public class KeycloakJwtAuthenticationConverter implements Converter<Jwt, Abstra
                 + "], source.getIssuedAt: [" + source.getIssuedAt()
                 + "], source.getNotBefore: [" + source.getNotBefore()
                 + "], source.getSubject: [" + source.getSubject()
-                + "], source.getTokenValue: [" + source.getTokenValue()
+//                + "], source.getTokenValue: [" + source.getTokenValue()
+                + "], tokenValue: [" + tokenValue
                 + "], loginId: [" + loginId
                 + "]");
         List<GrantedAuthority> convertedAuthorities = new ArrayList<>();
@@ -54,12 +58,19 @@ public class KeycloakJwtAuthenticationConverter implements Converter<Jwt, Abstra
 //                = new UsernamePasswordAuthenticationToken(userDetails
 //                , source.getTokenValue(), userDetails.getAuthorities());
 
-        UserDto userDto = userService.findByLoginId(loginId);
-
         Map<String, Object> attributeMap = new HashMap<>();
         attributeMap.put(StandardClaimNames.PREFERRED_USERNAME, loginId);
-        attributeMap.put(MyAuthenticationToken.ATTR_TOKEN_VALUE, source.getTokenValue());
-        attributeMap.put(MyAuthenticationToken.ATTR_USER_ID, userDto.getId());
+        attributeMap.put(MyAuthenticationToken.ATTR_TOKEN_VALUE, tokenValue);
+
+//        // Todo
+        UserDto userDto = null;
+//        if (SecurityContextHolder.getContext().getAuthentication() != null) {
+//        userDto = userService.findByLoginId(loginId);
+            userDto = authorizationDataProvider.findByLoginIdAndTokenValue(loginId, tokenValue);
+            attributeMap.put(MyAuthenticationToken.ATTR_USER_ID, userDto.getId());
+        attributeMap.put(MyAuthenticationToken.ATTR_PUBLIC_KEY, userDto.getPublicKey());
+//        }
+
         OAuth2User oAuth2User = new DefaultOAuth2User(convertedAuthorities, attributeMap, StandardClaimNames.PREFERRED_USERNAME);
 //        OAuth2AuthenticationToken authenticationToken = new OAuth2AuthenticationToken(oAuth2User, convertedAuthorities, "keycloak");
         MyAuthenticationToken authenticationToken = new MyAuthenticationToken(oAuth2User, convertedAuthorities, "keycloak");
