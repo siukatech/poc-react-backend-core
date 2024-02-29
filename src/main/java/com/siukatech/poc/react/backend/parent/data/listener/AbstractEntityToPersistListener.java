@@ -21,6 +21,13 @@ public class AbstractEntityToPersistListener {
         }
     }
 
+    @PostPersist
+    protected void onSavePostPersist(final AbstractEntity abstractEntity) {
+        log.debug("onSavePostPersist - abstractEntity.getId: [" + abstractEntity.getId()
+                + "], abstractEntity.getVersionNo: [" + abstractEntity.getVersionNo()
+                + "]");
+    }
+
     @PreUpdate
     protected void onSavePreUpdate(final AbstractEntity abstractEntity) {
         log.debug("onSavePreUpdate - abstractEntity.getId: [" + abstractEntity.getId()
@@ -29,6 +36,34 @@ public class AbstractEntityToPersistListener {
         if (abstractEntity.getVersionNo() == null) {
             throw new IllegalArgumentException("VersionNo cannot null be null for " + abstractEntity.getClass().getName() + ".id#" + abstractEntity.getId() + ", onSavePreUpdate");
         }
+    }
+
+    @PostUpdate
+    protected void onSavePostUpdate(final AbstractEntity abstractEntity) {
+        log.debug("onSavePostUpdate - abstractEntity.getId: [" + abstractEntity.getId()
+                + "], abstractEntity.getVersionNo: [" + abstractEntity.getVersionNo()
+                + "]");
+    }
+
+    @PreRemove
+    protected void onSavePreRemove(final AbstractEntity abstractEntity) {
+        log.debug("onSavePreRemove - abstractEntity.getId: [" + abstractEntity.getId()
+                + "], abstractEntity.getVersionNo: [" + abstractEntity.getVersionNo()
+                + "]");
+    }
+
+    @PostRemove
+    protected void onSavePostRemove(final AbstractEntity abstractEntity) {
+        log.debug("onSavePostRemove - abstractEntity.getId: [" + abstractEntity.getId()
+                + "], abstractEntity.getVersionNo: [" + abstractEntity.getVersionNo()
+                + "]");
+    }
+
+    @PostLoad
+    protected void onGetPostLoad(final AbstractEntity abstractEntity) {
+        log.debug("onGetPostLoad - abstractEntity.getId: [" + abstractEntity.getId()
+                + "], abstractEntity.getVersionNo: [" + abstractEntity.getVersionNo()
+                + "]");
     }
 
 }
