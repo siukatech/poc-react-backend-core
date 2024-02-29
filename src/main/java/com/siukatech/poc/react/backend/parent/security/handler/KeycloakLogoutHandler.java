@@ -4,6 +4,7 @@ package com.siukatech.poc.react.backend.parent.security.handler;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,18 +28,18 @@ public class KeycloakLogoutHandler implements LogoutHandler {
     //@Autowired @Qualifier("securityRestTemplate")
     private RestTemplate restTemplate;
 
-    // this is not working, will cause a circular-dependencies
+    // This is not working, will cause a circular-dependencies - start
 //    public KeycloakLogoutHandler(@Qualifier("securityRestTemplate") RestTemplate restTemplate) {
 //        this.restTemplate = restTemplate;
 //    }
+    // This is not working - end
 
-    public KeycloakLogoutHandler() {
-        this.restTemplate = this.keycloakRestTemplate();
+    public KeycloakLogoutHandler(RestTemplateBuilder restTemplateBuilder) {
+        this.restTemplate = this.keycloakRestTemplate(restTemplateBuilder);
     }
 
-    // this is not working, will cause a circular-dependencies
     @Bean(name = "keycloakRestTemplate")
-    public RestTemplate keycloakRestTemplate() {
+    public RestTemplate keycloakRestTemplate(RestTemplateBuilder restTemplateBuilder) {
         return new RestTemplate();
     }
 
