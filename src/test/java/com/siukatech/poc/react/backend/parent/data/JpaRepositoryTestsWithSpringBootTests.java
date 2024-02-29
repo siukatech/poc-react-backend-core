@@ -6,8 +6,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.security.oauth2.client.OAuth2ClientProperties;
 import org.springframework.boot.test.autoconfigure.OverrideAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
+import org.springframework.boot.test.autoconfigure.web.client.AutoConfigureWebClient;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.test.context.TestPropertySource;
 
 
@@ -19,6 +22,7 @@ import org.springframework.test.context.TestPropertySource;
 @SpringBootTest
 @OverrideAutoConfiguration(enabled = false)
 @AutoConfigureDataJpa
+@AutoConfigureWebClient(registerRestTemplate = true)
 //@AutoConfigureTestDatabase
 ////@TestPropertySource({
 ////		"classpath:application.yml"
@@ -34,6 +38,11 @@ public class JpaRepositoryTestsWithSpringBootTests {
     @SpyBean
 //    @Autowired
     private OAuth2ClientProperties oAuth2ClientProperties;
+
+    // This is not working, start
+//    @MockBean
+//    private RestTemplateBuilder restTemplateBuilder;
+    // This is not working, end
 
     @Test
     void contextLoads() {

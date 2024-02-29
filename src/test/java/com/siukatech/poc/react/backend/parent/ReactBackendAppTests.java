@@ -5,23 +5,33 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.security.oauth2.client.OAuth2ClientProperties;
 import org.springframework.boot.test.autoconfigure.OverrideAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
+import org.springframework.boot.test.autoconfigure.web.client.AutoConfigureWebClient;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 
 /**
  * <pre>
  * To start the SpringBootTest with JPA.
  * There are two ways to configure the Test class.
  * 1. Use the following annotations without {@literal @}SpringBootTest
- * 		{@literal @}DataJpaTest
- * 		{@literal @}AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+ *        {@literal @}DataJpaTest
+ *        {@literal @}AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
  *
  * 2. Use the {@literal @}SpringBootTest with following annotations
- * 		{@literal @}OverrideAutoConfiguration(enabled = false)
- * 		{@literal @}AutoConfigureDataJpa
+ *        {@literal @}OverrideAutoConfiguration(enabled = false)
+ *        {@literal @}AutoConfigureDataJpa
  *
  * TestPropertySource({"classpath:application.yml"}) is NOT required.
+ *
  * </pre>
+ *
+ * // Reference:
+ * // https://www.jvt.me/posts/2022/02/01/resttemplate-integration-test/
+ * @AutoConfigureWebClient(registerRestTemplate = true)
+ *
  */
 
 @Slf4j
@@ -47,6 +57,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 //@Transactional
 //@AutoConfigureCache
 @AutoConfigureDataJpa
+@AutoConfigureWebClient(registerRestTemplate = true)
 //@AutoConfigureTestDatabase
 //@AutoConfigureTestEntityManager
 ////@TestPropertySource({
@@ -56,13 +67,18 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 //		, "classpath:abstract-oauth2-tests.properties"})
 public class ReactBackendAppTests {
 
-	@MockBean
+    @MockBean
 //    @SpyBean
 //    @Autowired
-	private OAuth2ClientProperties oAuth2ClientProperties;
+    private OAuth2ClientProperties oAuth2ClientProperties;
 
-	@Test
-	void contextLoads() {
-	}
+    // not working, start
+//    @MockBean
+//    private TestRestTemplate oauth2ClientRestTemplate;
+    // not working, end
+
+    @Test
+    void contextLoads() {
+    }
 
 }

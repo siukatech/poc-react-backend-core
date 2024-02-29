@@ -2,21 +2,23 @@ package com.siukatech.poc.react.backend.parent.web.controller;
 
 import com.siukatech.poc.react.backend.parent.AbstractWebTests;
 import com.siukatech.poc.react.backend.parent.business.dto.MyKeyDto;
-import com.siukatech.poc.react.backend.parent.business.dto.UserPermissionDto;
 import com.siukatech.poc.react.backend.parent.business.dto.UserDto;
+import com.siukatech.poc.react.backend.parent.business.dto.UserPermissionDto;
 import com.siukatech.poc.react.backend.parent.business.service.UserService;
 import com.siukatech.poc.react.backend.parent.security.authentication.MyAuthenticationToken;
+import com.siukatech.poc.react.backend.parent.security.provider.AuthorizationDataProvider;
 import com.siukatech.poc.react.backend.parent.web.annotation.v1.ProtectedApiV1Controller;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.client.AutoConfigureWebClient;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -26,6 +28,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.lang.reflect.Method;
@@ -45,6 +48,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Slf4j
 @WebMvcTest(controllers = {MyController.class})
 @AutoConfigureMockMvc(addFilters = false)
+//@AutoConfigureWebClient
 public class MyControllerTests extends AbstractWebTests {
 
     /**
@@ -52,7 +56,7 @@ public class MyControllerTests extends AbstractWebTests {
      * https://stackoverflow.com/a/72086318
      * https://docs.spring.io/spring-security/reference/servlet/test/mockmvc/setup.html#test-mockmvc-setup
      * https://docs.spring.io/spring-security/reference/servlet/test/mockmvc/authentication.html
-     *
+     * <p>
      * When we inject authentication or other security related bean to our controller methods.
      * The spring-security must be set up during the MockMvc creation.
      * We need to inject the WebApplicationContext for the custom MockMvc creation.
@@ -64,6 +68,10 @@ public class MyControllerTests extends AbstractWebTests {
     private WebApplicationContext webApplicationContext;
     @MockBean
     private UserService userService;
+//    @MockBean
+//    private RestTemplateBuilder restTemplateBuilder;
+//    @MockBean
+//    private RestTemplate oauth2ClientRestTemplate;
 
 
     private UserDto prepareUserDto_basic() {
@@ -155,7 +163,9 @@ public class MyControllerTests extends AbstractWebTests {
 
         // when
         RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .post(ProtectedApiV1Controller.REQUEST_MAPPING_URI_PREFIX
+//                .post(ProtectedApiV1Controller.REQUEST_MAPPING_URI_PREFIX
+//                        + "/my/public-key")
+                .get(ProtectedApiV1Controller.REQUEST_MAPPING_URI_PREFIX
                         + "/my/public-key")
 //                .with(authentication(prepareUsernamePasswordAuthenticationToken_basic()))
                 .with(authentication(prepareMyAuthenticationToken_basic()))
@@ -183,7 +193,9 @@ public class MyControllerTests extends AbstractWebTests {
 
         // when
         RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .post(ProtectedApiV1Controller.REQUEST_MAPPING_URI_PREFIX
+//                .post(ProtectedApiV1Controller.REQUEST_MAPPING_URI_PREFIX
+//                        + "/my/key-info")
+                .get(ProtectedApiV1Controller.REQUEST_MAPPING_URI_PREFIX
                         + "/my/key-info")
                 .with(authentication(prepareUsernamePasswordAuthenticationToken_basic()))
                 .with(csrf())
@@ -208,7 +220,9 @@ public class MyControllerTests extends AbstractWebTests {
 
         // when
         RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .post(ProtectedApiV1Controller.REQUEST_MAPPING_URI_PREFIX
+//                .post(ProtectedApiV1Controller.REQUEST_MAPPING_URI_PREFIX
+//                        + "/my/user-info")
+                .get(ProtectedApiV1Controller.REQUEST_MAPPING_URI_PREFIX
                         + "/my/user-info")
                 .with(authentication(prepareUsernamePasswordAuthenticationToken_basic()))
                 .with(csrf())
