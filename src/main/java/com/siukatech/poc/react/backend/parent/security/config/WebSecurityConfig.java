@@ -1,22 +1,18 @@
 package com.siukatech.poc.react.backend.parent.security.config;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
+import com.siukatech.poc.react.backend.parent.business.service.UserService;
+import com.siukatech.poc.react.backend.parent.global.config.ParentAppProp;
 import com.siukatech.poc.react.backend.parent.security.converter.KeycloakJwtAuthenticationConverter;
+import com.siukatech.poc.react.backend.parent.security.filter.AuthorizationDataFilter;
 import com.siukatech.poc.react.backend.parent.security.handler.KeycloakLogoutHandler;
-import com.siukatech.poc.react.backend.parent.security.interceptor.OAuth2ClientHttpRequestInterceptor;
 import com.siukatech.poc.react.backend.parent.web.annotation.base.PublicController;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.converter.FormHttpMessageConverter;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -29,17 +25,21 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 import org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatchers;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+/**
+ * Some beans have higher priority.
+ * They are restructured to {@link AuthorizationDataProviderConfig}.
+ *
+ */
 @Slf4j
 @Configuration
 @EnableWebSecurity
@@ -47,21 +47,33 @@ import java.util.stream.Collectors;
 //@ConditionalOnProperty(name = "", havingValue = "http", matchIfMissing = true)
 public class WebSecurityConfig {
 
-    private final ObjectMapper objectMapper;
 
+//    private final ObjectMapper objectMapper;
+//    private final UserService userService;
+//    private final ParentAppProp parentAppProp;
     private final KeycloakLogoutHandler keycloakLogoutHandler;
-    private final OAuth2ResourceServerProperties oAuth2ResourceServerProperties;
+//    private final OAuth2ResourceServerProperties oAuth2ResourceServerProperties;
     private final KeycloakJwtAuthenticationConverter keycloakJwtAuthenticationConverter;
+    private final AuthorizationDataFilter authorizationDataFilter;
 
-    public WebSecurityConfig(ObjectMapper objectMapper
-            , KeycloakLogoutHandler keycloakLogoutHandler
-            , OAuth2ResourceServerProperties oAuth2ResourceServerProperties
+
+    public WebSecurityConfig(
+//            ObjectMapper objectMapper
+//            , UserService userService
+//            , ParentAppProp parentAppProp
+//            ,
+            KeycloakLogoutHandler keycloakLogoutHandler
+//            , OAuth2ResourceServerProperties oAuth2ResourceServerProperties
             , KeycloakJwtAuthenticationConverter keycloakJwtAuthenticationConverter
-    ) {
-        this.objectMapper = objectMapper;
+            , AuthorizationDataFilter authorizationDataFilter) {
+//        this.objectMapper = objectMapper;
+//        this.userService = userService;
+//        this.parentAppProp = parentAppProp;
+        this.authorizationDataFilter = authorizationDataFilter;
         this.keycloakLogoutHandler = keycloakLogoutHandler;
-        this.oAuth2ResourceServerProperties = oAuth2ResourceServerProperties;
+//        this.oAuth2ResourceServerProperties = oAuth2ResourceServerProperties;
         this.keycloakJwtAuthenticationConverter = keycloakJwtAuthenticationConverter;
+        log.debug("constructor");
     }
 
     @Bean
@@ -69,65 +81,64 @@ public class WebSecurityConfig {
         return new RegisterSessionAuthenticationStrategy(new SessionRegistryImpl());
     }
 
-    @Bean
-    public RestTemplate oauth2ClientRestTemplate() {
-        // This is not working
-//        RestTemplateBuilder restTemplateBuilder = new RestTemplateBuilder();
-//        restTemplateBuilder.additionalInterceptors(new ClientHttpRequestInterceptor() {
-////            private final Logger log = LoggerFactory.getLogger(this.getClass());
-//            private final Logger log = LoggerFactory.getLogger(WebSecurityConfig.class);
-//
-//            @Override
-//            public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
-//                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//                log.debug("oauth2ClientRestTemplate - RestTemplateBuilder - ClientHttpRequestInterceptor - intercept - "
-//                                + "authentication.getName: [{}], authentication.getCredentials: [{}]"
-//                        , authentication.getName(), authentication.getCredentials());
-////                String jwtToken = authentication.getCredentials().toString();
-////                request.getHeaders().set(HttpHeaders.AUTHORIZATION, jwtToken);
-////                return null;
-//                return execution.execute(request, body);
+//    @Bean
+//    public RestTemplate oauth2ClientRestTemplate() {
+//        // This is not working - start
+////        RestTemplateBuilder restTemplateBuilder = new RestTemplateBuilder();
+////        restTemplateBuilder.additionalInterceptors(new ClientHttpRequestInterceptor() {
+//////            private final Logger log = LoggerFactory.getLogger(this.getClass());
+////            private final Logger log = LoggerFactory.getLogger(WebSecurityConfig.class);
+////
+////            @Override
+////            public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
+////                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+////                log.debug("oauth2ClientRestTemplate - RestTemplateBuilder - ClientHttpRequestInterceptor - intercept - "
+////                                + "authentication.getName: [{}], authentication.getCredentials: [{}]"
+////                        , authentication.getName(), authentication.getCredentials());
+//////                String jwtToken = authentication.getCredentials().toString();
+//////                request.getHeaders().set(HttpHeaders.AUTHORIZATION, jwtToken);
+//////                return null;
+////                return execution.execute(request, body);
+////            }
+////        });
+////        RestTemplate restTemplate = restTemplateBuilder.build();
+//        RestTemplate restTemplate = new RestTemplate();
+//        AtomicInteger formHttpMessageConverterCount = new AtomicInteger();
+//        // This is not working - end
+////        restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter(this.objectMapper));
+//        restTemplate.getMessageConverters().stream().forEach(httpMessageConverter -> {
+//            if (httpMessageConverter instanceof MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter) {
+//////                ((MappingJackson2HttpMessageConverter) httpMessageConverter)
+////                ObjectMapper objectMapper =
+////                        mappingJackson2HttpMessageConverter
+////                                .getObjectMapper();
+////
+////                objectMapper = objectMapper
+////                        .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+////
+////                        // ignore unknown json properties to prevent HttpMessageNotReadableException
+////                        // https://stackoverflow.com/a/5455563
+////                        .configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false)
+//////                        .disable(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES)
+////                        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+//////                        .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+////                ;
+//                mappingJackson2HttpMessageConverter.setObjectMapper(objectMapper);
+//            }
+//            if (httpMessageConverter instanceof FormHttpMessageConverter) {
+//                formHttpMessageConverterCount.getAndIncrement();
 //            }
 //        });
-//        RestTemplate restTemplate = restTemplateBuilder.build();
-        RestTemplate restTemplate = new RestTemplate();
-        AtomicInteger formHttpMessageConverterCount = new AtomicInteger();
-        // This is not working
-//        restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter(this.objectMapper));
-        restTemplate.getMessageConverters().stream().forEach(httpMessageConverter -> {
-            if (httpMessageConverter instanceof MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter) {
-////                ((MappingJackson2HttpMessageConverter) httpMessageConverter)
-//                ObjectMapper objectMapper =
-//                        mappingJackson2HttpMessageConverter
-//                                .getObjectMapper();
-//
-//                objectMapper = objectMapper
-//                        .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
-//
-//                        // ignore unknown json properties to prevent HttpMessageNotReadableException
-//                        // https://stackoverflow.com/a/5455563
-//                        .configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false)
-////                        .disable(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES)
-//                        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-////                        .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-//                ;
-                mappingJackson2HttpMessageConverter.setObjectMapper(objectMapper);
-            }
-            if (httpMessageConverter instanceof FormHttpMessageConverter) {
-                formHttpMessageConverterCount.getAndIncrement();
-            }
-        });
-        if (formHttpMessageConverterCount.get() == 0) {
-            restTemplate.getMessageConverters().add(new FormHttpMessageConverter());
-        }
-        restTemplate.getInterceptors().add(new OAuth2ClientHttpRequestInterceptor());
-        log.debug("oauth2ClientRestTemplate - formHttpMessageConverterCount.get: [{}]"
-                        + ", restTemplate.toString: [{}]"
-                , formHttpMessageConverterCount.get(), restTemplate.toString()
-        );
-        return restTemplate;
-    }
-
+//        if (formHttpMessageConverterCount.get() == 0) {
+//            restTemplate.getMessageConverters().add(new FormHttpMessageConverter());
+//        }
+//        restTemplate.getInterceptors().add(new OAuth2ClientHttpRequestInterceptor());
+//        log.debug("oauth2ClientRestTemplate - formHttpMessageConverterCount.get: [{}]"
+//                        + ", restTemplate.toString: [{}]"
+//                , formHttpMessageConverterCount.get(), restTemplate.toString()
+//        );
+//        return restTemplate;
+//    }
 
     /**
      * Configure corsConfigurationSource instead of corsFilter
@@ -275,6 +286,9 @@ public class WebSecurityConfig {
                                 .jwtAuthenticationConverter(keycloakJwtAuthenticationConverter)
                         )
         );
+
+        http.addFilterAfter(authorizationDataFilter, BasicAuthenticationFilter.class);
+
         http.sessionManagement(sessionManagementConfigurer ->
                 sessionManagementConfigurer
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -283,7 +297,7 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    public JwtDecoder jwtDecoder() {
+    public JwtDecoder jwtDecoder(OAuth2ResourceServerProperties oAuth2ResourceServerProperties) {
         NimbusJwtDecoder jwtDecoder = JwtDecoders.fromOidcIssuerLocation(
                 oAuth2ResourceServerProperties.getJwt().getIssuerUri()
         );
@@ -299,6 +313,21 @@ public class WebSecurityConfig {
         return jwtDecoder;
     }
 
+//
+//    @Bean("authorizationDataProvider")
+//    @ConditionalOnProperty("app.api.my-user-info")
+//    public AuthorizationDataProvider remoteAuthorizationDataProvider() {
+//        log.debug("remoteAuthorizationDataProvider");
+////        return new DatabaseAuthorizationDataProvider(userService);
+//        return new RemoteAuthorizationDataProvider(oauth2ClientRestTemplate(), parentAppProp);
+//    }
+//
+//    @Bean("authorizationDataProvider")
+//    @ConditionalOnMissingBean
+//    public AuthorizationDataProvider databaseAuthorizationDataProvider() {
+//        log.debug("databaseAuthorizationDataProvider");
+//        return new DatabaseAuthorizationDataProvider(userService);
+//    }
 
 }
 
