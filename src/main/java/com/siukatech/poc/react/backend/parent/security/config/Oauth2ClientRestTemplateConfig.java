@@ -55,10 +55,11 @@ public class Oauth2ClientRestTemplateConfig {
 //                return execution.execute(request, body);
 //            }
 //        });
+        // This is not working - end
+
         RestTemplate restTemplate = restTemplateBuilder.build();
 //        RestTemplate restTemplate = new RestTemplate();
         AtomicInteger formHttpMessageConverterCount = new AtomicInteger();
-        // This is not working - end
 
 //        restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter(this.objectMapper));
         restTemplate.getMessageConverters().stream().forEach(httpMessageConverter -> {

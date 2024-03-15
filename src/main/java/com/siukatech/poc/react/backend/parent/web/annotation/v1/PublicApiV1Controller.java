@@ -15,6 +15,7 @@ import java.lang.annotation.*;
 @ApiV1Controller
 @RequestMapping(PublicApiV1Controller.REQUEST_MAPPING_URI_PREFIX)
 public @interface PublicApiV1Controller {
+
     String REQUEST_MAPPING_URI_PREFIX = ApiV1Controller.REQUEST_MAPPING_API_VERSION + PublicController.REQUEST_MAPPING_URI_PREFIX;
 
 }

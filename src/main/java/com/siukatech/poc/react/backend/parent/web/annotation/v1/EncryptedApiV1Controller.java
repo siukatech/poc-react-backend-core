@@ -16,6 +16,7 @@ import java.lang.annotation.*;
 @ApiV1Controller
 @RequestMapping(EncryptedApiV1Controller.REQUEST_MAPPING_URI_PREFIX)
 public @interface EncryptedApiV1Controller {
+
     String REQUEST_MAPPING_URI_PREFIX = ApiV1Controller.REQUEST_MAPPING_API_VERSION + EncryptedController.REQUEST_MAPPING_URI_PREFIX;
 
 }
