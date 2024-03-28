@@ -131,7 +131,7 @@ Login Nexus Repository Manager
 Goto -> Security -> Realms  
 Add `npm Bearer Token Realm` from Available to Active.  
 Click `Save` after the above configuration.  
-![Nexus Realms 01](./assets/nexus-01-realms-config-01.png)
+![Nexus Realms 01](assets/image/nexus-01-realms-config-01.png)
 
 
 
@@ -145,7 +145,7 @@ Role Name: nx-deployer-maven
 Role Description: Deployer role maven  
 Privileges: `nx-repository-view-maven2-*-*` (This role can view all nexus maven repositories.)  
 Click `Save` after the above configuration.  
-![Nexus Roles 01](./assets/nexus-02-roles-config-01.png)
+![Nexus Roles 01](assets/image/nexus-02-roles-config-01.png)
 
 
 
@@ -162,7 +162,7 @@ Confirm password: xxxxxx
 Status: Active  
 Roles: nx-deployer-maven  
 Click `Create local user` after the above configuration.  
-![Nexus Users 01](./assets/nexus-03-users-config-01.png)
+![Nexus Users 01](assets/image/nexus-03-users-config-01.png)
 
 
 
@@ -234,7 +234,7 @@ Snippet of ~/.gradle/gradle.properties
 After the setup of above configuration, our gradle task list will be updated.  
 New folder `publishing` is added. Tasks `publishXXX` are used to publish the artifacts to maven repository.  
 The `[repository-name]` on screen-capture is `platformSnapshot`.  
-![Gradle Publishing 01](./assets/gradle-01-publishing-01.png)
+![Gradle Publishing 01](assets/image/gradle-01-publishing-01.png)
 
 Once `publishToMavenLocal` is clicked, the artifact will be published to your maven local. (~/.m2/repository/)  
 
@@ -345,20 +345,179 @@ Two encryption algorithms are used for the solution.
 
 
 ## Sequence flow after login
-1. frontend gets `user-public-key` from backend (/v1/protected/my/public-key)
-2. frontend encrypts `original-payload-str` by `crypto-js` (AES/CBC/PKCS5Padding) to `aes-cbc-str`
-3. frontend encrypts ~~`aes-cbc-str` and~~ `aes-key` by `jsencrypt` with `user-public-key` to `aes-key-rsa`  
-4. frontend combines `aes-cbc-str` and `aes-key-rsa` to `request-body-str`
-5. backend spits `request-body-str` into `aes-cbc-str` and `aes-key-rsa` in `RequestBodyAdviceAdapter.beforeBodyRead`
-6. backend decrypts `aes-key-rsa` by `user-private-key` to `aes-key`
-7. backend decrypts `aes-cbc-str` by `aes-key` (AES/CBC/PKCS5Padding) to `original-payload-str`
-8. backend passes `original-payload-str` to controller through the return of `RequestBodyAdviceAdapter.beforeBodyRead`
-9. backend encrypts `original-response-entity` by `aes-key` to ~~`aes-ecb-str`~~ `aes-cbc-str` (~~AES/ECB/PKCS7Padding~~ AES/CBC/PKCS7Padding)
-10. backend returns ~~`aes-ecb-str`~~ `aes-cbc-str` as response through `ResponseBodyAdvice.beforeBodyWrite`
-11. frontend receives ~~`aes-ecb-str`~~ `aes-cbc-str` from response
-12. frontend decrypts ~~`aes-ecb-str`~~ `aes-cbc-str` by `crypto-js` (~~AES/ECB/PKCS7Padding~~ AES/CBC/PKCS7Padding) to `response-entity-str`
-13. frontend parses `response-entity-str` to `response-entity` by `JSON.parse`
+1 & 2 `frontend: AxiosInterceptor` requests `user-public-key` from `backend` (/v1/protected/my/public-key)
 
+3 & 4 `frontend: AxiosInterceptor` generates `aes-key` by `CryptoJs` (SHA3)
+
+5 & 6 `frontend: AxiosInterceptor` encrypts `original-payload-str` by `CryptoJs` (AES/CBC/PKCS5Padding) to `aes-cbc-str`
+
+7 & 8 `frontend: AxiosInterceptor` encrypts ~~`aes-cbc-str` and~~ `aes-key` by `Jsencrypt` with `user-public-key` to `aes-key-rsa`
+
+9 `frontend: AxiosInterceptor` combines `aes-cbc-str` and `aes-key-rsa` to `request-body-str`
+
+10 `frontend: AxiosInterceptor` sends `request-body-str` to `backend`
+
+11 `backend: RestControllerAdvice` splits `request-body-str` into `aes-cbc-str` and `aes-key-rsa` in `RequestBodyAdviceAdapter.beforeBodyRead`
+
+12 & 13 `backend: EncryptedRequestBodyAdvice` decrypts `aes-key-rsa` by `user-private-key` to `aes-key`
+
+14 `backend: EncryptedBodyAdviceHelper` decrypts `aes-cbc-str` by `aes-key` (AES/CBC/PKCS5Padding) to `original-payload-str`
+
+15 `backend: EncryptedBodyAdviceHelper` passes `original-payload-str` to controller through the return of `RequestBodyAdviceAdapter.beforeBodyRead`
+
+16 `backend: RestControllerAdvice` encrypts `original-response-entity` by `aes-key` to ~~`aes-ecb-str`~~ `aes-cbc-str` (~~AES/ECB/PKCS7Padding~~ AES/CBC/PKCS7Padding)
+
+17 `backend: EncryptedRequestBodyAdvice` returns ~~`aes-ecb-str`~~ `aes-cbc-str` as response through `ResponseBodyAdvice.beforeBodyWrite`
+
+18 `backend: RestControllerAdvice` Sends ~~`aes-ecb-str`~~ `aes-cbc-str` as response
+
+19 & 20 `frontend: AxiosInterceptor` decrypts ~~`aes-ecb-str`~~ `aes-cbc-str` by `crypto-js` (~~AES/ECB/PKCS7Padding~~ AES/CBC/PKCS7Padding) to `response-entity-str`
+
+21 & 22 `frontend: AxiosInterceptor` parses `response-entity-str` to `response-entity` by `JSON.parse`
+
+
+Original plan is using plantuml but mermaid looks having a better support on Github.  
+**Reference:**  
+https://plantuml.com/sequence-diagram  
+https://mermaid.js.org/syntax/sequenceDiagram.html  
+
+```mermaid
+---
+title: E2EE sequence diagram
+---
+sequenceDiagram
+    autonumber
+
+    participant AxiosInterceptor as frontend: <br/>AxiosInterceptor
+    participant JSON as frontend: <br/>JSON
+    participant CryptoJs as frontend: <br/>CryptoJs
+    participant Jsencrypt as frontend: <br/>Jsencrypt
+    participant RestControllerAdvice as backend: <br/>@RestControllerAdvice
+    participant EncryptedRequestBodyAdvice as backend: <br/>EncryptedRequestBodyAdvice
+    participant EncryptedBodyAdviceHelper as backend: <br/>EncryptedBodyAdviceHelper
+
+    %%1
+    AxiosInterceptor ->> RestControllerAdvice: Request /v1/protected/my/public-key
+    %%2
+    RestControllerAdvice -->> AxiosInterceptor: Reply `user-public-key`
+
+    %%3
+    AxiosInterceptor ->> CryptoJs: Generate `aes-key` (SHA3)
+    %%4
+    CryptoJs -->> AxiosInterceptor : Reply `aes-key`
+
+    %%5
+    AxiosInterceptor ->> CryptoJs: Encrypt `original-payload-str` <br/>with `aes-key` <br/>(AES/CBC/PKCS5Padding)
+    %%6
+    CryptoJs -->> AxiosInterceptor: Reply `aes-cbc-str`
+
+    %%7
+    AxiosInterceptor ->> Jsencrypt: Encrypt `aes-key` with `user-public-key`
+    %%8
+    Jsencrypt -->> AxiosInterceptor: Reply `aes-key-rsa`
+
+    %%9
+    AxiosInterceptor ->> AxiosInterceptor: Combine `aes-cbc-str` <br/>and `aes-key-rsa` <br/>to `request-body-str`
+
+    %%10
+    %% https://mermaid.js.org/syntax/sequenceDiagram.html#activations
+    %% ++ / -- Shortcut syntax for activation, deactivation, creation
+    AxiosInterceptor ->> +RestControllerAdvice: Send `request-body-str`
+
+    %%11
+    RestControllerAdvice ->> EncryptedRequestBodyAdvice: Split `request-body-str` into <br/>`aes-cbc-str` and `aes-key-rsa` in <br/>`RequestBodyAdviceAdapter.beforeBodyRead`
+
+    %%12
+    EncryptedRequestBodyAdvice ->> EncryptedBodyAdviceHelper: Decrypt `aes-key-rsa` <br/>by `user-private-key` <br/>to `aes-key` by <br/>`EncryptedBodyAdviceHelper.ecryptDataBase64ToBodyDetail`
+    %%13
+    EncryptedBodyAdviceHelper -->> EncryptedRequestBodyAdvice: Reply `aes-key`
+
+    %%14
+    EncryptedBodyAdviceHelper ->> EncryptedBodyAdviceHelper: Decrypt `aes-cbc-str` <br/>by `aes-key` <br/>(AES/CBC/PKCS5Padding) to <br/>`original-payload-str`
+
+    %%15
+    EncryptedBodyAdviceHelper ->> RestControllerAdvice: Pass `original-payload-str` to controller <br/>through the return of <br/>`RequestBodyAdviceAdapter.beforeBodyRead`
+
+    %%16
+    %% ~~`aes-ecb-str`~~
+    %% ~~AES/ECB/PKCS7Padding~~
+    RestControllerAdvice ->> EncryptedRequestBodyAdvice: Encrypt `original-response-entity` <br/>by `aes-key` to `aes-cbc-str` <br/>(AES/CBC/PKCS7Padding)
+
+    %%17
+    %% ~~`aes-ecb-str`~~
+    EncryptedRequestBodyAdvice -->> RestControllerAdvice: Reply `aes-cbc-str` <br/>as response through <br/>`ResponseBodyAdvice.beforeBodyWrite`
+
+    %%18
+    %% ~~`aes-ecb-str`~~
+    RestControllerAdvice -->> -AxiosInterceptor: Reply `aes-cbc-str` as response
+
+    %%19
+    %% ~~`aes-ecb-str`~~
+    %% ~~AES/ECB/PKCS7Padding~~
+    AxiosInterceptor ->> CryptoJs: Decrypt `aes-cbc-str` <br/>by `crypto-js` (AES/CBC/PKCS7Padding) <br/>to `response-entity-str`
+    %%20
+    CryptoJs -->> AxiosInterceptor: Reply `response-entity-str`
+
+    %%21
+    AxiosInterceptor ->> JSON: Parse `response-entity-str` to <br/>`response-entity` by `JSON.parse`
+    %%22
+    JSON -->> AxiosInterceptor: Reply `response-entity`
+
+
+```
+
+```mermaid
+---
+title: E2EE class diagram
+---
+classDiagram
+    RequestBodyAdviceAdapter <|.. EncryptedRequestBodyAdvice: implement
+    EncryptedRequestBodyAdvice ..> EncryptedBodyAdviceHelper: use
+    ResponseBodyAdvice <|.. EncryptedResponseBodyAdvice: implement
+    EncryptedResponseBodyAdvice ..> EncryptedBodyAdviceHelper: use
+    EncryptedResponseBodyAdvice ..> EncryptedBodyContext: use
+
+    class RequestBodyAdviceAdapter {
+        +support()
+        +beforeBodyRead()
+        +afterBodyRead()
+        +handleEmptyBody()
+    }
+    class EncryptedRequestBodyAdvice {
+%%        -EncryptedBodyContext encryptedBodyContext
+%%        -EncryptedBodyAdviceHelper encryptedBodyAdviceHelper
+        +supports()
+        +beforeBodyRead()
+        +afterBodyRead()
+        +handleEmptyBody()
+    }
+    class ResponseBodyAdvice {
+        +support()
+        +beforeBodyWrite()
+    }
+    class EncryptedResponseBodyAdvice {
+%%        -EncryptedBodyContext encryptedBodyContext
+%%        -EncryptedBodyAdviceHelper encryptedBodyAdviceHelper
+        +support()
+        +beforeBodyWrite()
+    }
+    class EncryptedBodyAdviceHelper {
+%%        -ObjectMapper objectMapper
+%%        -RestTemplate oauth2ClientRestTemplate
+%%        -ParentAppProp parentAppProp
+        +decryptRsaDataBase64ToBodyDetail()
+        +encryptBodyToDataBase64()
+        +resolveRsaInfoAesContent()
+        +decryptDataBase64ToBodyDetail()
+        +resolveMyKeyInfo()
+        +isEncryptedApiController()
+    }
+    class EncryptedBodyContext {
+        -MyKeyDto myKeyDto
+        -EncryptedDetail encryptedDetail
+    }
+
+```
 
 
 ## Prerequisite
