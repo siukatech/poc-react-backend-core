@@ -1,5 +1,6 @@
 package com.siukatech.poc.react.backend.parent.util;
 
+import com.siukatech.poc.react.backend.parent.AbstractUnitTests;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,12 +13,12 @@ import java.util.Base64;
 
 import static org.springframework.test.util.AssertionErrors.assertEquals;
 
-//@Slf4j
+////@Slf4j
 //@SpringBootTest()
 //public class EncryptionUtilTests extends ReactBackendParentApplicationTests {
-public class EncryptionUtilsTests {
+public class EncryptionUtilsTests extends AbstractUnitTests {
 
-    private static final Logger log = LoggerFactory.getLogger(EncryptionUtilsTests.class);
+//    private static final Logger log = LoggerFactory.getLogger(EncryptionUtilsTests.class);
 
     @Test
     void contextLoads() {

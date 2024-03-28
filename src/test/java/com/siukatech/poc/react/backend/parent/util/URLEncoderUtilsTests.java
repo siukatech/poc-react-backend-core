@@ -1,5 +1,6 @@
 package com.siukatech.poc.react.backend.parent.util;
 
+import com.siukatech.poc.react.backend.parent.AbstractUnitTests;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.core5.http.NameValuePair;
 import org.apache.hc.core5.http.message.BasicNameValuePair;
@@ -10,8 +11,8 @@ import java.util.List;
 
 import static org.springframework.test.util.AssertionErrors.assertEquals;
 
-@Slf4j
-public class URLEncoderUtilsTests {
+//@Slf4j
+public class URLEncoderUtilsTests extends AbstractUnitTests {
 
     @Test
     void contextLoads() {
@@ -34,7 +35,9 @@ public class URLEncoderUtilsTests {
         String queryString = URLEncoderUtils.encodeToQueryString(nameValuePairList);
         String queryStringExpected = "name1=https%3A%2F%2Fwww.google.com%2F"
                 + "&" + "name2=https%3A%2F%2Fwww.google.com%2F"
-                + "&" + "name3=https%3A%2F%2Fwww.google.com%2F";
+                + "&" + "name3=https%3A%2F%2Fwww.google.com%2F"
+                ;
+        log.debug("test_urlEncoderUtils_encodeToQueryString - queryStringExpected: [{}]", queryStringExpected);
         assertEquals("queryString should be encoded", queryString, queryStringExpected);
     }
 
