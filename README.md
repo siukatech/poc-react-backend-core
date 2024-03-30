@@ -8,6 +8,7 @@ End-to-End-Encryption (E2EE) is also introduced in this project.
 
 # Setup
 ## Gradle
+### java-library
 Gradle is the dependency manager for these poc projects.  
 The `java-library` is the plugins in build.gradle file, NOT the `java-platform`.
 
@@ -87,6 +88,34 @@ dependencyManagement {
 		mavenBom org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES
 	}
 }
+```
+
+
+### gradlew upgrade
+#### wrapper
+```shell
+#gradle wrapper --gradle-version [version no, e.g. 7.6.1, 8.7]
+gradle wrapper --gradle-version 8.7
+```
+
+
+
+#### build.gradle
+```groovy
+//from 17 to 21
+...
+java {
+//	sourceCompatibility = "17"
+  sourceCompatibility = "21"
+}
+//targetCompatibility = JavaVersion.VERSION_17
+targetCompatibility = JavaVersion.VERSION_21
+...
+//	api 'org.projectlombok:lombok:1.18.24'
+//	annotationProcessor 'org.projectlombok:lombok:1.18.24'
+api 'org.projectlombok:lombok:1.18.30'
+annotationProcessor 'org.projectlombok:lombok:1.18.30'
+...
 ```
 
 
