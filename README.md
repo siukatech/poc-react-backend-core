@@ -410,6 +410,18 @@ Original plan is using plantuml but mermaid looks having a better support on Git
 https://plantuml.com/sequence-diagram  
 https://mermaid.js.org/syntax/sequenceDiagram.html  
 
+
+```plantuml
+'The plantuml `visible markdown` (```) is not working for github markdown syntax (.md file).
+@startuml
+    autonumber
+
+    participant AxiosInterceptor as "frontend: \nAxiosInterceptor"
+    control JSON as "frontend: \nJSON"
+@enduml
+```
+
+
 ```mermaid
 ---
 title: E2EE sequence diagram
@@ -495,18 +507,21 @@ sequenceDiagram
 
 ```
 
+
 ```mermaid
 ---
 title: E2EE class diagram
 ---
 classDiagram
-    RequestBodyAdviceAdapter <|.. EncryptedRequestBodyAdvice: implement
+    RequestBodyAdviceAdapter <|-- EncryptedRequestBodyAdvice: extend
     EncryptedRequestBodyAdvice ..> EncryptedBodyAdviceHelper: use
     ResponseBodyAdvice <|.. EncryptedResponseBodyAdvice: implement
     EncryptedResponseBodyAdvice ..> EncryptedBodyAdviceHelper: use
     EncryptedResponseBodyAdvice ..> EncryptedBodyContext: use
+    HttpInputMessage <|.. DecodeHttpInputMessage: implement
 
     class RequestBodyAdviceAdapter {
+        <<abstract>>
         +support()
         +beforeBodyRead()
         +afterBodyRead()
@@ -515,20 +530,21 @@ classDiagram
     class EncryptedRequestBodyAdvice {
 %%        -EncryptedBodyContext encryptedBodyContext
 %%        -EncryptedBodyAdviceHelper encryptedBodyAdviceHelper
-        +supports()
-        +beforeBodyRead()
-        +afterBodyRead()
-        +handleEmptyBody()
+%%        +supports()
+%%        +beforeBodyRead()
+%%        +afterBodyRead()
+%%        +handleEmptyBody()
     }
     class ResponseBodyAdvice {
+        <<interface>>
         +support()
         +beforeBodyWrite()
     }
     class EncryptedResponseBodyAdvice {
 %%        -EncryptedBodyContext encryptedBodyContext
 %%        -EncryptedBodyAdviceHelper encryptedBodyAdviceHelper
-        +support()
-        +beforeBodyWrite()
+%%        +support()
+%%        +beforeBodyWrite()
     }
     class EncryptedBodyAdviceHelper {
 %%        -ObjectMapper objectMapper
@@ -545,8 +561,55 @@ classDiagram
         -MyKeyDto myKeyDto
         -EncryptedDetail encryptedDetail
     }
+    class HttpInputMessage {
+        <<interface>>
+        getBody()
+        getHeaders()
+    }
 
 ```
+
+
+```mermaid
+---
+title: ReactBackend initialization state
+---
+stateDiagram-v2
+    [*] --> EnableReactBackend
+    EnableReactBackend --> GlobalConfigImport
+    EnableReactBackend --> WebConfigImport
+    EnableReactBackend --> SecurityConfigImport
+
+    EnableReactBackend --> [*]
+
+    state EnableReactBackend {
+        [*] --> GlobalConfigImport
+        GlobalConfigImport --> WebConfigImport
+        WebConfigImport --> SecurityConfigImport
+        SecurityConfigImport --> [*]
+    }
+    state GlobalConfigImport {
+        [*] --> ParentAppProp
+        ParentAppProp --> MapperConfig
+        MapperConfig --> PostAppConfig
+        PostAppConfig --> [*]
+    }
+    state WebConfigImport {
+        [*] --> DataConfig
+        DataConfig --> WebComponentConfig
+        WebComponentConfig --> NoopTracingConfig
+        NoopTracingConfig --> WebMvcConfig
+        WebMvcConfig --> [*]
+    }
+    state SecurityConfigImport {
+        [*] --> Oauth2ClientRestTemplateConfig
+        Oauth2ClientRestTemplateConfig --> AuthorizationDataProviderConfig
+        AuthorizationDataProviderConfig --> WebSecurityConfig
+        WebSecurityConfig --> [*]
+    }
+
+```
+
 
 
 ## Prerequisite
