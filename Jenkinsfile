@@ -2,15 +2,15 @@
 
 /* Requires the Docker Pipeline plugin */
 pipeline {
-//      agent {
-//         docker {
-// //             image 'alpine/git:2.43.0'
-// //             image 'openjdk:17-ea-oraclelinux8'
-// //             image 'gradle:8-jdk17-focal'
-//             image 'gradle:8.7-jdk17-focal'
-//         }
-//     }
-    agent any
+     agent {
+        docker {
+//             image 'alpine/git:2.43.0'
+//             image 'openjdk:17-ea-oraclelinux8'
+//             image 'gradle:8-jdk17-focal'
+            image 'gradle:8.7-jdk17-focal'
+        }
+    }
+//     agent any
 
     tools {
         // Install the Gradle version configured as "gradle-8.0.2" and add it to the path.
