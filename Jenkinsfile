@@ -4,40 +4,59 @@ pipeline {
         docker {
 //             image 'alpine/git:2.43.0'
 //             image 'openjdk:17-ea-oraclelinux8'
-            image 'gradle:8-jdk17-focal'
+//             image 'gradle:8-jdk17-focal'
+            image 'gradle:8.7-jdk17-focal'
         }
     }
 //     agent any
 
     tools {
         // Install the Gradle version configured as "gradle-8.0.2" and add it to the path.
-        gradle "gradle-8.0.2"
+//         gradle "gradle-8.0.2"
+        gradle "gradle-8.7"
     }
 
     // https://e.printstacktrace.blog/jenkins-pipeline-environment-variables-the-definitive-guide/
     // https://www.cnblogs.com/bymo/p/7601519.html
     // https://www.unix.com/shell-programming-and-scripting/98834-search-replace-using-awk-variables.html#2
-    environment {
-        // some variables have been put to Jenkins -> System -> Environment variables
-//         NEXUS_CREDENTIALS_ID = 'nexus3-deployer-maven'
-        // NEXUS_CREDENTIALS_ID = 'nexus3-admin'
-
-        // NEXUS_HOSTNAME = 'localhost:38081'
-//         NEXUS_HOSTNAME = 'nexus3:8081'
-
-//         GITHUB_CREDENTIALS_ID = 'github-siukatech'
-        GITHUB_PROJECT_NAME = 'poc-react-backend-parent'
-        GITHUB_PROJECT_URL = "https://github.com/siukatech/poc-react-backend-parent.git"
-//         GITHUB_PROJECT_URL = "${GIT_URL}"
-
-//         GIT_USERNAME = 'siukatech'
-//         GIT_REPO_NAME = 'poc-react-backend-parent'
-
-    }
+//     environment {
+//         // some variables have been put to Jenkins -> System -> Environment variables
+// //         NEXUS_CREDENTIALS_ID = 'nexus3-deployer-maven'
+//         // NEXUS_CREDENTIALS_ID = 'nexus3-admin'
+//
+//         // NEXUS_HOSTNAME = 'localhost:38081'
+// //         NEXUS_HOSTNAME = 'nexus3:8081'
+//
+// //         GITHUB_CREDENTIALS_ID = 'github-siukatech'
+//         GITHUB_PROJECT_NAME = 'poc-react-backend-parent'
+//         GITHUB_PROJECT_URL = "https://github.com/siukatech/poc-react-backend-parent.git"
+// //         GITHUB_PROJECT_URL = "${GIT_URL}"
+//
+// //         GIT_USERNAME = 'siukatech'
+// //         GIT_REPO_NAME = 'poc-react-backend-parent'
+//
+//     }
 
     stages {
         stage('set-up') {
             steps {
+                script {
+                    def userInput = input(
+                        id: 'userInput', message: 'Github Project Name and Url',
+                        parameters: [
+                                string(defaultValue: "poc-react-backend-parent",
+                                        description: 'Project Name',
+                                        name: 'ProjectName'),
+                                string(defaultValue: "https://github.com/siukatech/poc-react-backend-parent.git",
+                                        description: 'Project Url',
+                                        name: 'ProjectUrl'),
+                        ])
+
+                    // Save to variables. Default to empty string if not found.
+                    GITHUB_PROJECT_NAME = userInput.ProjectName?:''
+                    GITHUB_PROJECT_URL = userInput.ProjectUrl?:''
+                }
+
                 sh '''
                     printenv
                 '''
