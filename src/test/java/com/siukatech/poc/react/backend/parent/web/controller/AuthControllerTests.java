@@ -131,9 +131,9 @@ public class AuthControllerTests extends AbstractWebTests {
      * As a see, an Exception will be thrown at this stage.
      *
      */
-    @MockBean
-//    @Autowired
-    private InMemoryClientRegistrationRepository clientRegistrationRepository;
+//    @MockBean
+////    @Autowired
+//    private InMemoryClientRegistrationRepository clientRegistrationRepository;
 
     private final String CLIENT_NAME = "keycloak";
 

@@ -1,9 +1,11 @@
 package com.siukatech.poc.react.backend.parent;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.siukatech.poc.react.backend.parent.security.authentication.MyAuthenticationToken;
 import com.siukatech.poc.react.backend.parent.security.provider.AuthorizationDataProvider;
 import com.siukatech.poc.react.backend.parent.web.context.EncryptedBodyContext;
 import com.siukatech.poc.react.backend.parent.web.helper.EncryptedBodyAdviceHelper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -13,13 +15,26 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.oidc.StandardClaimNames;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+
 public abstract class AbstractWebTests extends AbstractUnitTests {
+
+    @Autowired
+    protected MockMvc mockMvc;
+    @Autowired
+    protected WebApplicationContext webApplicationContext;
+    @Autowired
+    protected ObjectMapper objectMapper;
+
     @SpyBean
     protected EncryptedBodyContext encryptedBodyContext;
     @MockBean
@@ -27,7 +42,14 @@ public abstract class AbstractWebTests extends AbstractUnitTests {
 //    @MockBean
 //    private InMemoryClientRegistrationRepository clientRegistrationRepository;
     @MockBean
-    private AuthorizationDataProvider authorizationDataProvider;
+    protected AuthorizationDataProvider authorizationDataProvider;
+
+    protected MockMvc prepareMockMvc() {
+        return MockMvcBuilders
+                .webAppContextSetup(webApplicationContext)
+                .apply(springSecurity())
+                .build();
+    }
 
     protected UsernamePasswordAuthenticationToken prepareUsernamePasswordAuthenticationToken(String username) {
         List<GrantedAuthority> convertedAuthorities = new ArrayList<GrantedAuthority>();

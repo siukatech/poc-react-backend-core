@@ -4,6 +4,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.test.context.TestPropertySource;
 
 @Slf4j
+//@TestPropertySource(properties = {
+//        "spring.jpa.show-sql: true"
+//        , "spring.jpa.properties.hibernate.format_sql: true"
+//        , "spring.jpa.properties.hibernate.dialect: org.hibernate.dialect.H2Dialect"
+//        , "logging.level.org.springframework.data: TRACE"
+//})
 @TestPropertySource(
 //        properties = {
 ////        "logging.level.org.springframework.web=TRACE"

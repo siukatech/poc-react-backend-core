@@ -1,7 +1,5 @@
 package com.siukatech.poc.react.backend.parent.security.config;
 
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-
 //@Configuration
 //@EnableWebSecurity
 //@EnableMethodSecurity

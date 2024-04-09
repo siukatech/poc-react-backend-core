@@ -8,9 +8,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.boot.test.autoconfigure.web.client.AutoConfigureWebClient;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.mock.mockito.SpyBean;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 
 /**
  * <pre>
@@ -65,7 +62,7 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 ////})
 //@TestPropertySource({"classpath:abstract-jpa-tests.properties"
 //		, "classpath:abstract-oauth2-tests.properties"})
-public class ReactBackendAppTests {
+public class ReactBackendParentTests {
 
     @MockBean
 //    @SpyBean
