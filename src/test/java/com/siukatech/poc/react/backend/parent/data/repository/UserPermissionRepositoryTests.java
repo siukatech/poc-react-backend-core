@@ -22,7 +22,7 @@ public class UserPermissionRepositoryTests extends AbstractJpaTests {
     @Autowired
     public UserPermissionRepository userPermissionRepository;
 
-    @BeforeEach()
+    @BeforeEach
     public void setup(TestInfo testInfo) {
     }
 

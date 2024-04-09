@@ -40,7 +40,7 @@ public class UserRepositoryTests extends AbstractJpaTests {
      * Reference:
      * https://stackoverflow.com/a/58623532
      */
-    @BeforeEach()
+    @BeforeEach
     public void setup(TestInfo testInfo) {
         Method method = testInfo.getTestMethod().get();
         log.debug("setup - testInfo: [" + testInfo
