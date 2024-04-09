@@ -7,7 +7,6 @@ import com.siukatech.poc.react.backend.parent.business.form.auth.RefreshTokenFor
 import com.siukatech.poc.react.backend.parent.business.form.auth.TokenRes;
 import com.siukatech.poc.react.backend.parent.business.service.AuthService;
 import com.siukatech.poc.react.backend.parent.business.service.UserService;
-import com.siukatech.poc.react.backend.parent.security.provider.AuthorizationDataProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

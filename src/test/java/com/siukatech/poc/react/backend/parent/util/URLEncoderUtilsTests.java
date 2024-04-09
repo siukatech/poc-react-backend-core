@@ -1,7 +1,6 @@
 package com.siukatech.poc.react.backend.parent.util;
 
 import com.siukatech.poc.react.backend.parent.AbstractUnitTests;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.core5.http.NameValuePair;
 import org.apache.hc.core5.http.message.BasicNameValuePair;
 import org.junit.jupiter.api.Test;

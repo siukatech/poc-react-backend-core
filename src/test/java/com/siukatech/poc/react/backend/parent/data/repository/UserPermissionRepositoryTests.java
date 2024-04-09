@@ -1,6 +1,6 @@
 package com.siukatech.poc.react.backend.parent.data.repository;
 
-import com.siukatech.poc.react.backend.parent.AbstractJpaTests;
+import com.siukatech.poc.react.backend.parent.AbstractUnitTests;
 import com.siukatech.poc.react.backend.parent.data.entity.UserEntity;
 import com.siukatech.poc.react.backend.parent.data.entity.UserPermissionEntity;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +14,7 @@ import java.util.Optional;
 
 @Slf4j
 @DataJpaTest
-public class UserPermissionRepositoryTests extends AbstractJpaTests {
+public class UserPermissionRepositoryTests extends AbstractUnitTests {
 
     @Autowired
     public UserRepository userRepository;

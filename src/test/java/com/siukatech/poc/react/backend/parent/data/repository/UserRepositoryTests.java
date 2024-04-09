@@ -1,6 +1,6 @@
 package com.siukatech.poc.react.backend.parent.data.repository;
 
-import com.siukatech.poc.react.backend.parent.AbstractJpaTests;
+import com.siukatech.poc.react.backend.parent.AbstractUnitTests;
 import com.siukatech.poc.react.backend.parent.data.entity.UserEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
@@ -20,7 +20,7 @@ import java.lang.reflect.Method;
 //                , "logging.level.org.springframework.data: TRACE"
 //        })
 ////@TestPropertySource("classpath:application.yml")
-public class UserRepositoryTests extends AbstractJpaTests {
+public class UserRepositoryTests extends AbstractUnitTests {
 
     @Autowired
     public UserRepository userRepository;
