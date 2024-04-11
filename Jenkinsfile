@@ -40,31 +40,60 @@ pipeline {
 //     }
 
     stages {
-        stage('set-up') {
+        // Reference:
+        // https://devopscube.com/declarative-pipeline-parameters/
+        stage('parameter') {
             steps {
                 script {
-                    def userInput = input(
-                        id: 'userInput', message: 'Github Project Name and Url',
-                        parameters: [
-                                string(defaultValue: "poc-react-backend-parent",
-                                        description: 'Project Name',
-                                        name: 'ProjectName'),
-                                string(defaultValue: "https://github.com/siukatech/poc-react-backend-parent.git",
-                                        description: 'Project Url',
-                                        name: 'ProjectUrl'),
+                    properties([
+                        parameters([
+                            string(
+                                defaultValue: 'poc-react-backend-parent',
+                                name: 'PROJECT_NAME',
+                                description: 'Project Name',
+                                trim: true
+                            ),
+                            string(
+                                defaultValue: 'https://github.com/siukatech/poc-react-backend-parent.git',
+                                name: 'PROJECT_URL',
+                                description: 'Project Url',
+                                trim: true
+                            )
                         ])
-
+                    ])
                     // Save to variables. Default to empty string if not found.
-                    GITHUB_PROJECT_NAME = userInput.ProjectName?:''
-                    GITHUB_PROJECT_URL = userInput.ProjectUrl?:''
+                    env.GITHUB_PROJECT_NAME = params.PROJECT_NAME
+                    env.GITHUB_PROJECT_URL = params.PROJECT_URL
                 }
+                echo "[${STAGE_NAME}] GITHUB_PROJECT_NAME: ${GITHUB_PROJECT_NAME}"
+                echo "[${STAGE_NAME}] GITHUB_PROJECT_URL: ${GITHUB_PROJECT_URL}"
+            }
+        }
+        stage('set-up') {
+            steps {
+//                 script {
+//                     def userInput = input(
+//                         id: 'userInput', message: 'Github Project Name and Url',
+//                         parameters: [
+//                                 string(defaultValue: "poc-react-backend-parent",
+//                                         description: 'Project Name',
+//                                         name: 'ProjectName'),
+//                                 string(defaultValue: "https://github.com/siukatech/poc-react-backend-parent.git",
+//                                         description: 'Project Url',
+//                                         name: 'ProjectUrl'),
+//                         ])
+//
+//                     // Save to variables. Default to empty string if not found.
+//                     env.GITHUB_PROJECT_NAME = userInput.ProjectName?:''
+//                     env.GITHUB_PROJECT_URL = userInput.ProjectUrl?:''
+//                 }
 
                 sh '''
                     printenv
                 '''
 
-                echo "WORKSPACE: ${WORKSPACE}"
-                echo "BUILD_NUMBER: ${BUILD_NUMBER}"
+                echo "[${STAGE_NAME}] WORKSPACE: ${WORKSPACE}"
+                echo "[${STAGE_NAME}] BUILD_NUMBER: ${BUILD_NUMBER}"
 
                 // Get some code from a GitHub repository
                 git(
@@ -77,16 +106,16 @@ pipeline {
                 )
 
                 script {
-                    def versionInfo = sh(script: "./gradlew properties | grep 'version' | awk '{print \$2}'",
+                    def versionInfo = sh(script: "./gradlew properties | grep 'version' | head -1 | awk '{print \$2}'",
                         returnStdout: true)?.trim()
                     env.versionInfo = versionInfo
                     // echo "versionInfo: ${versionInfo}"
 
-                    def artifactId = sh(script: "./gradlew properties | grep 'name' | awk '{print \$2}'",
+                    def artifactId = sh(script: "./gradlew properties | grep 'name' | head -1 | awk '{print \$2}'",
                         returnStdout: true)?.trim()
                     env.artifactId = artifactId
 
-                    env.groupId = sh(script: "./gradlew properties | grep 'group' | awk '{print \$2}'",
+                    env.groupId = sh(script: "./gradlew properties | grep 'group' | head -1 | awk '{print \$2}'",
                         returnStdout: true)?.trim()
                     // env.groupId = groupId
 
@@ -128,25 +157,25 @@ pipeline {
 
                 }
 
-                echo "currentStage: ${STAGE_NAME}"
-                echo "groupId: ${groupId}"
-                echo "artifactId: ${artifactId}"
-                echo "versionInfo: ${versionInfo}"
-                echo "tagSuffix: ${tagSuffix}"
-                echo "gitUsername: ${gitUsername}"
-//                 echo "projectName: ${projectName}"
-//                 echo "projectUrl: ${projectUrl}"
-//                 echo "nexusUsername: ${nexusUsername}"
-//                 echo "nexusPassword: ${nexusPassword}"
+                echo "[${STAGE_NAME}] currentStage: ${STAGE_NAME}"
+                echo "[${STAGE_NAME}] groupId: ${groupId}"
+                echo "[${STAGE_NAME}] artifactId: ${artifactId}"
+                echo "[${STAGE_NAME}] versionInfo: ${versionInfo}"
+                echo "[${STAGE_NAME}] tagSuffix: ${tagSuffix}"
+                echo "[${STAGE_NAME}] gitUsername: ${gitUsername}"
+//                 echo "[${STAGE_NAME}] projectName: ${projectName}"
+//                 echo "[${STAGE_NAME}] projectUrl: ${projectUrl}"
+//                 echo "[${STAGE_NAME}] nexusUsername: ${nexusUsername}"
+//                 echo "[${STAGE_NAME}] nexusPassword: ${nexusPassword}"
             }
         }
 
         stage('build') {
             steps {
-//                 echo "currentStage: ${STAGE_NAME}"
-//                 echo "groupId: ${groupId}"
-//                 echo "artifactId: ${artifactId}"
-//                 echo "versionInfo: ${versionInfo}"
+//                 echo "[${STAGE_NAME}] currentStage: ${STAGE_NAME}"
+//                 echo "[${STAGE_NAME}] groupId: ${groupId}"
+//                 echo "[${STAGE_NAME}] artifactId: ${artifactId}"
+//                 echo "[${STAGE_NAME}] versionInfo: ${versionInfo}"
 
                 // Run gradle on a Unix agent.
                 sh "./gradlew build"
@@ -183,23 +212,23 @@ pipeline {
                 sh "ls -la ${WORKSPACE}/build/*.jar"
                 // sh "ls -la ${WORKSPACE}/build/**/*.jar"
 
-//                 echo "currentStage: ${STAGE_NAME}"
-//                 echo "groupId: ${groupId}"
-//                 echo "artifactId: ${artifactId}"
-//                 echo "versionInfo: ${versionInfo}"
+//                 echo "[${STAGE_NAME}] currentStage: ${STAGE_NAME}"
+//                 echo "[${STAGE_NAME}] groupId: ${groupId}"
+//                 echo "[${STAGE_NAME}] artifactId: ${artifactId}"
+//                 echo "[${STAGE_NAME}] versionInfo: ${versionInfo}"
 
                 // script {
                 //     // Find built artifact under target folder
                 //     def filesByGlob = findFiles(glob: "build/**/*.jar");
                 //     // Print some info from the artifact found
-                //     echo "${filesByGlob[0].name} ${filesByGlob[0].path} ${filesByGlob[0].directory} ${filesByGlob[0].length} ${filesByGlob[0].lastModified}"
+                //     echo "[${STAGE_NAME}] ${filesByGlob[0].name} ${filesByGlob[0].path} ${filesByGlob[0].directory} ${filesByGlob[0].length} ${filesByGlob[0].lastModified}"
                 //     // Extract the path from the File found
                 //     env.artifactPath = filesByGlob[0].path;
                 //     // Assign to a boolean response verifying If the artifact name exists
                 //     env.artifactExists = fileExists artifactPath;
                 // }
-                // echo "artifactPath: ${artifactPath}"
-                // echo "artifactExists: ${artifactExists}"
+                // echo "[${STAGE_NAME}] artifactPath: ${artifactPath}"
+                // echo "[${STAGE_NAME}] artifactExists: ${artifactExists}"
 
                 nexusArtifactUploader (
                     artifacts: [
@@ -207,6 +236,10 @@ pipeline {
                         classifier: '',
                         file: 'build/' + artifactId + '-' + versionInfo + '.jar',
                         // file: artifactPath,
+                        type: 'jar'],
+                        [artifactId: artifactId,
+                        classifier: 'test-fixtures',
+                        file: 'build/' + artifactId + '-' + versionInfo + '-' + 'test-fixtures' + '.jar',
                         type: 'jar']
                     ],
                     credentialsId: NEXUS_CREDENTIALS_ID,
@@ -223,8 +256,11 @@ pipeline {
         stage('tag') {
             steps {
                 script {
+                    echo "[${STAGE_NAME}] GITHUB_PROJECT_NAME: ${GITHUB_PROJECT_NAME}"
+                    echo "[${STAGE_NAME}] GITHUB_PROJECT_URL: ${GITHUB_PROJECT_URL}"
+
                     env.tagName = 'release-' + "${versionInfo}" + '-' + "${tagSuffix}" + '-' + "${BUILD_NUMBER}"
-                    echo "tagName: ${tagName}"
+                    echo "[${STAGE_NAME}] tagName: ${tagName}"
 
                     withCredentials([
                         usernamePassword(
