@@ -14,10 +14,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.URISyntaxException;
 
@@ -49,22 +46,14 @@ public class AuthController {
 
 
     @GetMapping(value = "/auth/login/{clientName}")
-    public void doAuthCodeLogin(HttpServletResponse response, @PathVariable String clientName) {
-        String authCodeLoginUrl = this.authService.getAuthCodeLoginUrl(clientName);
-        log.debug("doAuthCodeLogin - clientName: [{}], authCodeLoginUrl: [{}]"
-                , clientName, authCodeLoginUrl);
+    public void doAuthCodeLogin(
+            HttpServletResponse response, @PathVariable String clientName
+            , @RequestParam(required = false) String codeChallenge) {
+        String authCodeLoginUrl = this.authService.getAuthCodeLoginUrl(clientName, codeChallenge);
+        log.debug("doAuthCodeLogin - clientName: [{}], authCodeLoginUrl: [{}], codeChallenge: [{}]"
+                , clientName, authCodeLoginUrl, codeChallenge);
         response.setHeader(HttpHeaders.LOCATION, authCodeLoginUrl);
         response.setStatus(HttpStatus.FOUND.value());
-    }
-
-    @PostMapping(value = "/auth/token/{clientName}/{code}")
-    public ResponseEntity<?> doAuthCodeToken(@PathVariable String clientName, @PathVariable String code) {
-        TokenRes tokenRes = this.authService.resolveAuthCodeTokenRes(clientName, code);
-        log.debug("doAuthCodeToken - clientName: [" + clientName
-                + "], code: [" + code
-                + "], tokenRes: [" + tokenRes
-                + "]");
-        return ResponseEntity.ok(tokenRes);
     }
 
     @PostMapping(value = "/auth/login/{clientName}")
@@ -74,6 +63,20 @@ public class AuthController {
         log.debug("doPasswordLogin - clientName: [" + clientName
                 + "], loginForm.getUsername: [" + loginForm.getUsername()
                 + "], tokenRes: [" + tokenRes
+                + "]");
+        return ResponseEntity.ok(tokenRes);
+    }
+
+    @PostMapping(value = "/auth/token/{clientName}/{code}")
+    public ResponseEntity<?> doAuthCodeToken(
+            @PathVariable String clientName, @PathVariable String code
+            , @RequestParam(required = false) String codeVerifier
+    ) {
+        TokenRes tokenRes = this.authService.resolveAuthCodeTokenRes(clientName, code, codeVerifier);
+        log.info("doAuthCodeToken - clientName: [" + clientName
+                + "], code: [" + code
+                + "], tokenRes: [" + tokenRes
+                + "], codeVerifier: [" + codeVerifier
                 + "]");
         return ResponseEntity.ok(tokenRes);
     }

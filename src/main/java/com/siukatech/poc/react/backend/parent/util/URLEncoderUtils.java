@@ -18,10 +18,12 @@ public class URLEncoderUtils {
         List<String> queryList = nameValuePairList.stream().map(nameValuePair -> {
                     String str = "";
                     try {
-                        str = URLEncoder.encode(nameValuePair.getName(), StandardCharsets.UTF_8.name())
-                                + "="
-                                + URLEncoder.encode(nameValuePair.getValue(), StandardCharsets.UTF_8.name()
-                        );
+                        if (nameValuePair.getValue() != null) {
+                            str = URLEncoder.encode(nameValuePair.getName(), StandardCharsets.UTF_8.name())
+                                    + "="
+                                    + URLEncoder.encode(nameValuePair.getValue(), StandardCharsets.UTF_8.name())
+                            ;
+                        }
                     } catch (UnsupportedEncodingException e) {
                         throw new RuntimeException(e);
                     }

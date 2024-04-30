@@ -7,13 +7,12 @@ import com.siukatech.poc.react.backend.parent.util.URLEncoderUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.core5.http.NameValuePair;
 import org.apache.hc.core5.http.message.BasicNameValuePair;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.security.oauth2.client.OAuth2ClientProperties;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
@@ -30,6 +29,7 @@ public class AuthService {
     private final RestTemplate oauth2ClientRestTemplate;
     //    private final ParentAppProp parentAppProp;
     private final ObjectMapper objectMapper;
+    private AuthReq authCodeReq;
 
     public AuthService(OAuth2ClientProperties oAuth2ClientProperties
             , RestTemplate oauth2ClientRestTemplate
@@ -71,24 +71,41 @@ public class AuthService {
 //        return myKeyDto;
 //    }
 
-    public String getAuthCodeLoginUrl(String clientName) {
+    public String getAuthCodeLoginUrl(String clientName, String codeChallenge) {
         OAuth2ClientProperties.Registration registration = this.oAuth2ClientProperties.getRegistration().get(clientName);
         OAuth2ClientProperties.Provider provider = this.oAuth2ClientProperties.getProvider().get(clientName);
 //        response_type=code&client_id=react-backend-client-01&scope=openid&redirect_uri=http://localhost:3000/redirect
 
-        AuthReq authReq = new AuthReq(
-                "code"
-                , registration.getClientId()
-                , String.join(",", registration.getScope())
-                , registration.getRedirectUri()
+        log.debug("getAuthCodeLoginUrl - registration: [{}]", registration);
+        log.debug("getAuthCodeLoginUrl - registration.getScope().size: [{}]"
+                        + ", registration.getScope: [{}]"
+                , (registration == null ? "NULL" : registration.getScope().size())
+                , (registration == null ? "NULL" : registration.getScope())
         );
-//        Map authReqMap = this.objectMapper.convertValue(authReq, Map.class);
-//        List<Map.Entry<String, String>> entryList = authReqMap.entrySet().stream().toList();
+
+        AuthCodeReq.AuthCodeReqBuilder authCodeReqBuilder = AuthCodeReq.builder()
+                .responseType(AuthReq.RESPONSE_TYPE_CODE)
+                .clientId(registration.getClientId())
+
+                // the separator of scope is space " ", not comma
+//                .scope(String.join(",", registration.getScope()))
+                .scope(String.join(" ", registration.getScope()))
+
+                .redirectUri(registration.getRedirectUri());
+        if (StringUtils.hasText(codeChallenge)) {
+            authCodeReqBuilder = authCodeReqBuilder
+                    .codeChallenge(codeChallenge)
+                    .codeChallengeMethod(AuthReq.CODE_CHALLENGE_METHOD)
+            ;
+        }
+        AuthReq authCodeReq = authCodeReqBuilder.build();
+//        Map authCodeReqMap = this.objectMapper.convertValue(authCodeReq, Map.class);
+//        List<Map.Entry<String, String>> entryList = authCodeReqMap.entrySet().stream().toList();
 //        List<NameValuePair> nameValuePairList = entryList.stream()
 //                .map(entry -> new BasicNameValuePair(entry.getKey(), entry.getValue()))
 //                .collect(Collectors.toList());
-        Map<String, String> authReqMap = this.objectMapper.convertValue(authReq, Map.class);
-        List<NameValuePair> nameValuePairList = authReqMap.entrySet().stream()
+        Map<String, String> authCodeReqMap = this.objectMapper.convertValue(authCodeReq, Map.class);
+        List<NameValuePair> nameValuePairList = authCodeReqMap.entrySet().stream()
                 .map(entry -> new BasicNameValuePair(entry.getKey(), entry.getValue()))
                 .collect(Collectors.toList());
         // https://stackoverflow.com/a/2810434
@@ -104,7 +121,9 @@ public class AuthService {
 //                .append("&")
 //                .append("client_id").append("=").append(registration.getClientId())
 //                .append("&")
-//                .append("scope").append("=").append(String.join(",", registration.getScope()))
+//                .append("scope").append("=")
+////                .append(String.join(",", registration.getScope()))
+//                .append(String.join(" ", registration.getScope()))
 //                .append("&")
 //                .append("redirect_uri").append("=").append(registration.getRedirectUri())
                 .append(queryString)
@@ -137,27 +156,33 @@ public class AuthService {
 
         log.debug("resolveOAuth2TokenRes - clientName: [" + clientName
                 + "], tokenReq: [" + tokenReq
+                + "], tokenReqMap: [" + tokenReqMap
                 + "], httpHeaders: [" + httpHeaders
                 + "], oauth2ClientRestTemplate.toString: [" + oauth2ClientRestTemplate.toString()
                 + "], oauth2ClientRestTemplate.getMessageConverters.size: [" + oauth2ClientRestTemplate.getMessageConverters().size()
                 + "]");
-        oauth2ClientRestTemplate.getMessageConverters().stream().forEach(httpMessageConverter -> {
-            log.debug("resolveOAuth2TokenRes - httpMessageConverter.getClass.getName: [" + httpMessageConverter.getClass().getName() + "]");
-        });
+//        oauth2ClientRestTemplate.getMessageConverters().stream().forEach(httpMessageConverter -> {
+//            log.debug("resolveOAuth2TokenRes - httpMessageConverter.getClass.getName: [" + httpMessageConverter.getClass().getName() + "]");
+//        });
 
-        ResponseEntity<TokenRes> responseEntity = oauth2ClientRestTemplate.exchange(tokenUrl
-                , HttpMethod.POST, httpEntity, TokenRes.class);
+        try {
+            ResponseEntity<TokenRes> responseEntity = oauth2ClientRestTemplate.exchange(tokenUrl
+                    , HttpMethod.POST, httpEntity, TokenRes.class);
 
-        TokenRes tokenRes = responseEntity.getBody();
-        log.debug("resolveOAuth2TokenRes - clientName: [" + clientName
-                + "], tokenReq: [" + tokenReq
-                + "], responseEntity: [" + responseEntity
-                + "]");
+            TokenRes tokenRes = responseEntity.getBody();
+            log.debug("resolveOAuth2TokenRes - responseEntity: [" + responseEntity
+                    + "], clientName: [" + clientName
+                    + "], tokenReq: [" + tokenReq
+                    + "]");
+            return tokenRes;
 
-        return tokenRes;
+        } catch (Exception e) {
+            log.error(e.getMessage(), e.fillInStackTrace());
+            throw e;
+        }
     }
 
-    public TokenRes resolveAuthCodeTokenRes(String clientName, String code) {
+    public TokenRes resolveAuthCodeTokenRes(String clientName, String code, String codeVerifier) {
         OAuth2ClientProperties.Registration registration = this.oAuth2ClientProperties.getRegistration().get(clientName);
 //        OAuth2ClientProperties.Provider provider = this.oAuth2ClientProperties.getProvider().get(clientName);
 
@@ -176,13 +201,17 @@ public class AuthService {
 //        tokenReqMap.add("grant_type", registration.getAuthorizationGrantType());
 //        tokenReqMap.add("redirect_uri", registration.getRedirectUri());
 //        tokenReqMap.add("code", code);
-        TokenReq tokenCodeReq = TokenCodeReq.builder()
+        TokenCodeReq.TokenCodeReqBuilder tokenCodeReqBuilder = TokenCodeReq.builder()
                 .clientId(registration.getClientId())
                 .clientSecret(registration.getClientSecret())
                 .grantType(registration.getAuthorizationGrantType())
                 .redirectUri(registration.getRedirectUri())
-                .code(code)
-                .build();
+                .code(code);
+        if (StringUtils.hasText(codeVerifier)) {
+            tokenCodeReqBuilder = tokenCodeReqBuilder
+                    .codeVerifier(codeVerifier);
+        }
+        TokenReq tokenCodeReq = tokenCodeReqBuilder.build();
 //        Map<String, String> tokenReqMap = this.objectMapper.convertValue(tokenCodeReq, Map.class);
 //        //
 //        // IllegalArgumentException with message below will be thrown if converting to MultiValueMap directly

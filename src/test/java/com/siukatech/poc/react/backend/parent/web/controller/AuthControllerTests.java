@@ -7,6 +7,7 @@ import com.siukatech.poc.react.backend.parent.business.form.auth.RefreshTokenFor
 import com.siukatech.poc.react.backend.parent.business.form.auth.TokenRes;
 import com.siukatech.poc.react.backend.parent.business.service.AuthService;
 import com.siukatech.poc.react.backend.parent.business.service.UserService;
+import com.siukatech.poc.react.backend.parent.util.EncryptionUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -176,11 +177,15 @@ public class AuthControllerTests extends AbstractWebTests {
     public void doAuthCodeLogin_basic() throws Exception {
         // given
         String clientName = CLIENT_NAME;
+        String codeChallenge = null;
+        String codeVerifier = EncryptionUtils.generateCodeVerifier();
+        codeChallenge = EncryptionUtils.generateCodeChallenge(codeVerifier);
 
-
-        // when
+                // when
         RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/v1/public" + "/auth/login/{clientName}", clientName)
+                .get("/v1/public" + "/auth/login/{clientName}"
+                        , clientName)
+                .queryParam("codeChallenge", codeChallenge)
                 .with(csrf())
                 ;
 
@@ -199,14 +204,19 @@ public class AuthControllerTests extends AbstractWebTests {
         // given
         String clientName = CLIENT_NAME;
         String code = "this-is-an-unit-test-code";
+        String codeVerifier = null;
+        codeVerifier = EncryptionUtils.generateCodeVerifier();
 //        when(oauth2ClientRestTemplate.exchange(anyString()
 //                , eq(HttpMethod.POST), any(HttpEntity.class), eq(TokenRes.class)))
 //                .thenReturn(ResponseEntity.ok(prepareTokenRes()));
-        when(authService.resolveAuthCodeTokenRes(clientName, code)).thenReturn(prepareTokenRes());
+        when(authService.resolveAuthCodeTokenRes(clientName, code, codeVerifier))
+                .thenReturn(prepareTokenRes());
 
         // when
         RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .post("/v1/public" + "/auth/token/{clientName}/{code}", clientName, code)
+                .post("/v1/public" + "/auth/token/{clientName}/{code}"
+                        , clientName, code)
+                .param("codeVerifier", codeVerifier)
                 .with(csrf())
                 ;
 
@@ -285,7 +295,8 @@ public class AuthControllerTests extends AbstractWebTests {
     @Test
     public void doAuthLogout_basic() throws Exception {
         // given
-        when(authService.doAuthLogout(anyString())).thenReturn(HttpStatusCode.valueOf(HttpStatus.OK.value()));
+        when(authService.doAuthLogout(anyString()))
+                .thenReturn(HttpStatusCode.valueOf(HttpStatus.OK.value()));
 
         // when
         RequestBuilder requestBuilder = MockMvcRequestBuilders

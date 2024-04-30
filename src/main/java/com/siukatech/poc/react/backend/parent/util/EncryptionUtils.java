@@ -6,12 +6,14 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.security.spec.EncodedKeySpec;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
+
 
 /**
  * https://4youngpadawans.com/end-to-end-encryption-between-react-and-spring/
@@ -25,6 +27,7 @@ public class EncryptionUtils {
     public static final String TRANSFORMATION_AES_CBC_PKCS5PADDING = "AES/CBC/PKCS5Padding";
     public static final String TRANSFORMATION_AES_ECB_PKCS5PADDING = "AES/ECB/PKCS5Padding";
     public static final String TRANSFORMATION_AES_GCM_NOPADDING = "AES/GCM/NoPadding";
+
     private EncryptionUtils() {
     }
 
@@ -145,6 +148,45 @@ public class EncryptionUtils {
         Cipher cipher = Cipher.getInstance("RSA");
         cipher.init(Cipher.DECRYPT_MODE, getRsaPublicKey(rsaPublicKeyBase64));
         return cipher.doFinal(data);
+    }
+
+    /**
+     * Reference:
+     * https://auth0.com/docs/get-started/authentication-and-authorization-flow/authorization-code-flow-with-pkce/call-your-api-using-the-authorization-code-flow-with-pkce#java-sample
+     *
+     * @return
+     */
+    public static String generateCodeVerifier() {
+        // Dependency: Apache Commons Codec
+        // https://commons.apache.org/proper/commons-codec/
+        // Import the Base64 class.
+        // import org.apache.commons.codec.binary.Base64;
+        SecureRandom sr = new SecureRandom();
+        byte[] code = new byte[32];
+        sr.nextBytes(code);
+        String verifier = Base64.getUrlEncoder().withoutPadding().encodeToString(code);
+        return verifier;
+    }
+
+    /**
+     * Reference:
+     * https://auth0.com/docs/get-started/authentication-and-authorization-flow/authorization-code-flow-with-pkce/call-your-api-using-the-authorization-code-flow-with-pkce#java-sample
+     *
+     * @param verifier
+     * @return
+     */
+    public static String generateCodeChallenge(String verifier)
+            throws UnsupportedEncodingException, NoSuchAlgorithmException {
+        // Dependency: Apache Commons Codec
+        // https://commons.apache.org/proper/commons-codec/
+        // Import the Base64 class.
+        // import org.apache.commons.codec.binary.Base64;
+        byte[] bytes = verifier.getBytes("US-ASCII");
+        MessageDigest md = MessageDigest.getInstance("SHA-256");
+        md.update(bytes, 0, bytes.length);
+        byte[] digest = md.digest();
+        String challenge = org.apache.commons.codec.binary.Base64.encodeBase64URLSafeString(digest);
+        return challenge;
     }
 
 }

@@ -134,7 +134,8 @@ public class AuthServiceTests extends AbstractUnitTests {
         TokenRes tokenRes = new TokenRes("accessToken"
                 , "refreshToken", "expiresIn"
                 , "refreshExpiresIn", "tokenType"
-                , 1, "sessionState", "scope");
+                , 1, "sessionState", "scope"
+        );
         return tokenRes;
     }
 
@@ -211,6 +212,7 @@ public class AuthServiceTests extends AbstractUnitTests {
     public void getAuthCodeLoginUrl_basic() {
         // given
         String clientName = CLIENT_NAME;
+        String codeChallenge = null;
 ////        when(this.oAuth2ClientProperties.getRegistration())
 ////                .thenReturn(prepareRegistration(clientName));
 ////        when(this.oAuth2ClientProperties.getProvider())
@@ -228,7 +230,7 @@ public class AuthServiceTests extends AbstractUnitTests {
         );
 
         // when
-        String authCodeLoginUrl = this.authService.getAuthCodeLoginUrl(clientName);
+        String authCodeLoginUrl = this.authService.getAuthCodeLoginUrl(clientName, codeChallenge);
 
         // then
         assertThat(authCodeLoginUrl).contains("response_type");
@@ -239,6 +241,7 @@ public class AuthServiceTests extends AbstractUnitTests {
         // given
         String clientName = CLIENT_NAME;
         String code = "this-is-an-unit-test-code";
+        String codeVerifier = null;
 //        doReturn(prepareRegistration(clientName))
 //                .when(this.oAuth2ClientProperties).getRegistration();
 //        doReturn(prepareProvider(clientName))
@@ -251,12 +254,12 @@ public class AuthServiceTests extends AbstractUnitTests {
         doReturn(oAuth2ClientPropertiesForTests.getProvider())
                 .when(oAuth2ClientProperties).getProvider();
         doReturn(ResponseEntity.ok(prepareTokenRes()))
-                .when(this.oauth2ClientRestTemplate).exchange(anyString()
+                .when(oauth2ClientRestTemplate).exchange(anyString()
                         , eq(HttpMethod.POST), any(HttpEntity.class), eq(TokenRes.class))
         ;
 
         // when
-        TokenRes tokenRes = this.authService.resolveAuthCodeTokenRes(clientName, code);
+        TokenRes tokenRes = this.authService.resolveAuthCodeTokenRes(clientName, code, codeVerifier);
 
         // then
         assertThat(tokenRes)
