@@ -70,3 +70,5 @@ generated.proto/
 ### Mac ###
 .DS_Store
 
+### local properties ###
+*-local.properties
