@@ -25,7 +25,7 @@ public class URLEncoderUtilsTests extends AbstractUnitTests {
      * @throws Exception
      */
     @Test
-    void test_urlEncoderUtils_encodeToQueryString() throws Exception {
+    void urlEncoderUtils_encodeToQueryString_basic() throws Exception {
         List<NameValuePair> nameValuePairList = Arrays.asList(
                 new BasicNameValuePair("name1", "https://www.google.com/")
                 , new BasicNameValuePair("name2", "https://www.google.com/")

@@ -266,7 +266,7 @@ public class AuthServiceTests extends AbstractUnitTests {
                 .hasFieldOrProperty("accessToken")
                 .has(new Condition<>(x -> {
                     return "accessToken".equals(x.accessToken());
-                }, "Has value:%s", List.of("accessToken")))
+                }, "Has value: %s", List.of("accessToken")))
         ;
     }
 
@@ -294,7 +294,7 @@ public class AuthServiceTests extends AbstractUnitTests {
                 .hasFieldOrProperty("accessToken")
                 .has(new Condition<>(x -> {
                     return "accessToken".equals(x.accessToken());
-                }, "Has value:%s", List.of("accessToken")))
+                }, "Has value: %s", List.of("accessToken")))
         ;
     }
 
@@ -322,7 +322,7 @@ public class AuthServiceTests extends AbstractUnitTests {
                 .hasFieldOrProperty("accessToken")
                 .has(new Condition<>(x -> {
                     return "accessToken".equals(x.accessToken());
-                }, "Has value:%s", List.of("accessToken")))
+                }, "Has value: %s", List.of("accessToken")))
         ;
     }
 

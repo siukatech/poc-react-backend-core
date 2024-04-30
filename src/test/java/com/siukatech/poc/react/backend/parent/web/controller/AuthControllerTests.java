@@ -19,7 +19,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
-import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -136,7 +135,7 @@ public class AuthControllerTests extends AbstractWebTests {
 ////    @Autowired
 //    private InMemoryClientRegistrationRepository clientRegistrationRepository;
 
-    private final String CLIENT_NAME = "keycloak";
+    private final String CLIENT_NAME_KEYCLOAK = "keycloak";
 
 
     private TokenRes prepareTokenRes() {
@@ -176,7 +175,7 @@ public class AuthControllerTests extends AbstractWebTests {
     @Test
     public void doAuthCodeLogin_basic() throws Exception {
         // given
-        String clientName = CLIENT_NAME;
+        String clientName = CLIENT_NAME_KEYCLOAK;
         String codeChallenge = null;
         String codeVerifier = EncryptionUtils.generateCodeVerifier();
         codeChallenge = EncryptionUtils.generateCodeChallenge(codeVerifier);
@@ -202,7 +201,7 @@ public class AuthControllerTests extends AbstractWebTests {
     @Test
     public void doAuthCodeToken_basic() throws Exception {
         // given
-        String clientName = CLIENT_NAME;
+        String clientName = CLIENT_NAME_KEYCLOAK;
         String code = "this-is-an-unit-test-code";
         String codeVerifier = null;
         codeVerifier = EncryptionUtils.generateCodeVerifier();
@@ -233,7 +232,7 @@ public class AuthControllerTests extends AbstractWebTests {
     @Test
     public void doPasswordLogin_basic() throws Exception {
         // given
-        String clientName = CLIENT_NAME;
+        String clientName = CLIENT_NAME_KEYCLOAK;
         LoginForm loginForm = new LoginForm();
         loginForm.setUsername("username");
         loginForm.setPassword("password");
@@ -264,7 +263,7 @@ public class AuthControllerTests extends AbstractWebTests {
     @Test
     public void doAuthTokenRefresh_basic() throws Exception {
         // given
-        String clientName = CLIENT_NAME;
+        String clientName = CLIENT_NAME_KEYCLOAK;
         RefreshTokenForm refreshTokenForm = new RefreshTokenForm();
         refreshTokenForm.setAccessToken("app-user-01");
         refreshTokenForm.setRefreshToken("keycloak");
