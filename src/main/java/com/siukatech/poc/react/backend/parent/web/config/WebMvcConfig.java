@@ -1,16 +1,25 @@
 package com.siukatech.poc.react.backend.parent.web.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.siukatech.poc.react.backend.parent.security.interceptor.AuthorizationDataInterceptor;
 import com.siukatech.poc.react.backend.parent.security.provider.AuthorizationDataProvider;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 
@@ -46,17 +55,28 @@ public class WebMvcConfig implements WebMvcConfigurer {
         log.debug("addCorsMappings - end");
     }
 
-//    private static final String dateFormat = "yyyy-MM-dd";
-//    private static final String dateTimeFormat = "yyyy-MM-dd HH:mm:ss";
-//
-//    @Bean
-//    public Jackson2ObjectMapperBuilderCustomizer jsonCustomizer() {
-//        return builder -> {
-//            builder.simpleDateFormat(dateTimeFormat);
-//            builder.serializers(new LocalDateSerializer(DateTimeFormatter.ofPattern(dateFormat)));
-//            builder.serializers(new LocalDateTimeSerializer(DateTimeFormatter.ofPattern(dateTimeFormat)));
-//        };
-//    }
+    /**
+     * Reference:
+     * https://baeldung.com/spring-boot-formatting-json-dates
+     */
+    @Bean
+    @ConditionalOnProperty(value = "spring.jackson.date-format", matchIfMissing = true, havingValue = "none")
+    public Jackson2ObjectMapperBuilderCustomizer jackson2ObjectMapperBuilderCustomizer() {
+        return builder -> {
+            log.debug("jackson2ObjectMapperBuilderCustomizer - start");
+            String dateFormat = "yyyy-MM-dd";
+            String dateTimeFormat = "yyyy-MM-dd HH:mm:ss";
+
+            builder.simpleDateFormat(dateTimeFormat);
+            // deserializers
+            builder.deserializers(new LocalDateDeserializer(DateTimeFormatter.ofPattern(dateFormat)));
+            builder.deserializers(new LocalDateTimeDeserializer(DateTimeFormatter.ofPattern(dateTimeFormat)));
+            builder.serializers(new LocalDateSerializer(DateTimeFormatter.ofPattern(dateFormat)));
+            builder.serializers(new LocalDateTimeSerializer(DateTimeFormatter.ofPattern(dateTimeFormat)));
+
+            log.debug("jackson2ObjectMapperBuilderCustomizer - end");
+        };
+    }
 
     /**
      * Reference:

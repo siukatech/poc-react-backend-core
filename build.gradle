@@ -86,6 +86,9 @@ dependencies {
     api 'org.apache.commons:commons-lang3:3.12.0'
     api 'commons-io:commons-io:2.15.1'
 
+    // No need to define JsonFormat for LocalDateTime
+    // Reference:
+    // https://stackoverflow.com/a/29959842
     api 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
 //	api 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.15.2'
 
