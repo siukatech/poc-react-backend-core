@@ -5,8 +5,10 @@ import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.Version;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
@@ -23,6 +25,8 @@ import java.time.LocalDateTime;
 @Slf4j
 @Getter
 @Setter
+@ToString
+//@EqualsAndHashCode(callSuper = true)
 //@Entity
 //@Inheritance
 @MappedSuperclass
