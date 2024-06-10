@@ -3,6 +3,7 @@ package com.siukatech.poc.react.backend.parent.web.controller;
 import com.siukatech.poc.react.backend.parent.business.dto.MyKeyDto;
 import com.siukatech.poc.react.backend.parent.business.dto.UserDto;
 import com.siukatech.poc.react.backend.parent.business.dto.UserPermissionDto;
+import com.siukatech.poc.react.backend.parent.business.dto.UserViewDto;
 import com.siukatech.poc.react.backend.parent.business.service.UserService;
 import com.siukatech.poc.react.backend.parent.util.HttpHeaderUtils;
 import com.siukatech.poc.react.backend.parent.web.annotation.v1.ProtectedApiV1Controller;
@@ -77,6 +78,19 @@ public class MyController {
                 .findPermissionsByLoginId(loginId);
 
         return ResponseEntity.ok(userPermissionDtoList);
+    }
+
+    @GetMapping("/my/user-view")
+    public ResponseEntity<?> getUserView(@RequestHeader HttpHeaders httpHeaders
+            , Authentication authentication) {
+        Authentication authenticationInSc = SecurityContextHolder.getContext().getAuthentication();
+        HttpHeaderUtils.logHttpHeaders(httpHeaders);
+        log.debug("getUserView - authentication: [{}], authenticationInSc: [{}]"
+                , authentication, authenticationInSc);
+        String loginId = authentication.getName();
+        UserViewDto userViewDto = this.userService.findViewByLoginId(loginId);
+
+        return ResponseEntity.ok(userViewDto);
     }
 
 }

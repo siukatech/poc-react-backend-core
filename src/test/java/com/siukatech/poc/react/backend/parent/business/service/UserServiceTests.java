@@ -3,10 +3,13 @@ package com.siukatech.poc.react.backend.parent.business.service;
 import com.siukatech.poc.react.backend.parent.AbstractUnitTests;
 import com.siukatech.poc.react.backend.parent.business.dto.UserDto;
 import com.siukatech.poc.react.backend.parent.business.dto.UserPermissionDto;
+import com.siukatech.poc.react.backend.parent.business.dto.UserViewDto;
 import com.siukatech.poc.react.backend.parent.data.entity.UserEntity;
 import com.siukatech.poc.react.backend.parent.data.entity.UserPermissionEntity;
+import com.siukatech.poc.react.backend.parent.data.entity.UserViewEntity;
 import com.siukatech.poc.react.backend.parent.data.repository.UserPermissionRepository;
 import com.siukatech.poc.react.backend.parent.data.repository.UserRepository;
+import com.siukatech.poc.react.backend.parent.data.repository.UserViewRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,6 +40,8 @@ public class UserServiceTests extends AbstractUnitTests {
     private UserRepository userRepository;
     @Mock
     private UserPermissionRepository userPermissionRepository;
+    @Mock
+    private UserViewRepository userViewRepository;
 
     @BeforeAll
     public static void init() {
@@ -95,15 +100,30 @@ public class UserServiceTests extends AbstractUnitTests {
         return userPermissionEntityList;
     }
 
-    @Test
-    public void findByLoginId_basic() {
-        // given
+    private UserEntity prepareUserEntity_basic() {
         UserEntity userEntity = new UserEntity();
         userEntity.setLoginId("app-user-01");
         userEntity.setName("App-User-01");
         userEntity.setPublicKey("public-key");
         userEntity.setPrivateKey("private-key");
         userEntity.setVersionNo(1L);
+        return userEntity;
+    }
+
+    private UserViewEntity prepareUserViewEntity_basic() {
+        UserViewEntity userViewEntity = new UserViewEntity();
+        userViewEntity.setLoginId("app-user-01");
+        userViewEntity.setName("App-User-01");
+        userViewEntity.setPublicKey("public-key");
+        userViewEntity.setPrivateKey("private-key");
+        userViewEntity.setVersionNo(1L);
+        return userViewEntity;
+    }
+
+    @Test
+    public void findByLoginId_basic() {
+        // given
+        UserEntity userEntity = this.prepareUserEntity_basic();
         when(this.userRepository.findByLoginId(anyString())).thenReturn(Optional.of(userEntity));
 
         // when
@@ -124,6 +144,19 @@ public class UserServiceTests extends AbstractUnitTests {
 
         // then / verify
         assertThat(userPermissionDtoListActual.get(0).getLoginId()).isEqualTo("app-user-01");
+    }
+
+    @Test
+    public void findViewByLoginId_basic() {
+        // given
+        UserViewEntity userViewEntity = this.prepareUserViewEntity_basic();
+        when(this.userViewRepository.findByLoginId(anyString())).thenReturn(Optional.of(userViewEntity));
+
+        // when
+        UserViewDto userViewDtoActual = this.userService.findViewByLoginId("app-user-01");
+
+        // then / verify
+        assertThat(userViewDtoActual.getLoginId()).isEqualTo("app-user-01");
     }
 
 }

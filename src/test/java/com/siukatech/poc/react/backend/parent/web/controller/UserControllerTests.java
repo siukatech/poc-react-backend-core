@@ -1,6 +1,7 @@
 package com.siukatech.poc.react.backend.parent.web.controller;
 
 import com.siukatech.poc.react.backend.parent.business.dto.UserDto;
+import com.siukatech.poc.react.backend.parent.business.dto.UserViewDto;
 import com.siukatech.poc.react.backend.parent.business.service.UserService;
 import com.siukatech.poc.react.backend.parent.security.provider.AuthorizationDataProvider;
 import com.siukatech.poc.react.backend.parent.web.annotation.v1.ProtectedApiV1Controller;
@@ -97,6 +98,15 @@ public class UserControllerTests {
         return userDto;
     }
 
+    private UserViewDto prepareUserViewDto_basic() {
+        UserViewDto userViewDto = new UserViewDto();
+        userViewDto.setLoginId("app-user-01");
+        userViewDto.setName("App-User-01");
+        userViewDto.setPublicKey("public-key");
+//        userViewDto.setPrivateKey("private-key");
+        return userViewDto;
+    }
+
     private UsernamePasswordAuthenticationToken prepareAuthenticationToken_basic() {
         List<GrantedAuthority> convertedAuthorities = new ArrayList<GrantedAuthority>();
         UserDetails userDetails = new User("app-user-01", "", convertedAuthorities);
@@ -165,13 +175,18 @@ public class UserControllerTests {
     @Test
     public void getUserInfo_basic() throws Exception {
         // given
-        UserDto userDto = this.prepareUserDto_basic();
-        when(userService.findByLoginId(anyString())).thenReturn(userDto);
+//        UserDto userDto = this.prepareUserDto_basic();
+//        when(userService.findByLoginId(anyString())).thenReturn(userDto);
+        UserViewDto userViewDto = this.prepareUserViewDto_basic();
+        when(userService.findByLoginId(anyString())).thenReturn(userViewDto);
 
         // when
         RequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post(ProtectedApiV1Controller.REQUEST_MAPPING_URI_PREFIX
-                        + "/users/{targetLoginId}/user-info", userDto.getLoginId())
+                        + "/users/{targetLoginId}/user-info"
+//                        , userDto.getLoginId()
+                        , userViewDto.getLoginId()
+                )
                 .with(authentication(prepareAuthenticationToken_basic()))
                 .with(csrf())
                 .accept(MediaType.APPLICATION_JSON);

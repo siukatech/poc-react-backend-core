@@ -4,6 +4,7 @@ import com.siukatech.poc.react.backend.parent.AbstractWebTests;
 import com.siukatech.poc.react.backend.parent.business.dto.MyKeyDto;
 import com.siukatech.poc.react.backend.parent.business.dto.UserDto;
 import com.siukatech.poc.react.backend.parent.business.dto.UserPermissionDto;
+import com.siukatech.poc.react.backend.parent.business.dto.UserViewDto;
 import com.siukatech.poc.react.backend.parent.business.service.UserService;
 import com.siukatech.poc.react.backend.parent.security.authentication.MyAuthenticationToken;
 import com.siukatech.poc.react.backend.parent.web.annotation.v1.ProtectedApiV1Controller;
@@ -76,6 +77,15 @@ public class MyControllerTests extends AbstractWebTests {
         userDto.setPublicKey("public-key");
 //        userDto.setPrivateKey("private-key");
         return userDto;
+    }
+
+    private UserViewDto prepareUserViewDto_basic() {
+        UserViewDto userViewDto = new UserViewDto();
+        userViewDto.setLoginId("app-user-01");
+        userViewDto.setName("App-User-01");
+        userViewDto.setPublicKey("public-key");
+//        userDto.setPrivateKey("private-key");
+        return userViewDto;
     }
 
     private MyKeyDto prepareMyKeyDto_basic() {
@@ -256,6 +266,31 @@ public class MyControllerTests extends AbstractWebTests {
 
         // result
         log.debug("getUserPermissions_basic - end - mvcResult.getResponse.getContentAsString: [" + mvcResult.getResponse().getContentAsString() + "]");
+    }
+
+    @Test
+    public void getUserView_basic() throws Exception {
+        // given
+        UserViewDto userViewDto = this.prepareUserViewDto_basic();
+        when(userService.findViewByLoginId(anyString())).thenReturn(userViewDto);
+
+        // when
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get(ProtectedApiV1Controller.REQUEST_MAPPING_URI_PREFIX
+                        + "/my/user-view")
+                .with(authentication(prepareUsernamePasswordAuthenticationToken_basic()))
+                .with(csrf())
+                .accept(MediaType.APPLICATION_JSON);
+
+        // then / verify
+        MvcResult mvcResult = this.mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andExpect(content().json("{loginId: \"app-user-01\"}"))
+                .andReturn();
+
+        // result
+        log.debug("getUserView_basic - end - mvcResult.getResponse.getContentAsString: [" + mvcResult.getResponse().getContentAsString() + "]");
+
     }
 
 }
