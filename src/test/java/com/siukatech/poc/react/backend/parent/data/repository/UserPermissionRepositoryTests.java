@@ -34,12 +34,13 @@ public class UserPermissionRepositoryTests extends AbstractUnitTests {
     @Test
     @Sql(scripts = {
             "/scripts/users/01-setup.sql"
-//            , "/scripts/users/02-data-01-find-by-login-id.sql"
+            , "/scripts/users/02-setup-view.sql"
+//            , "/scripts/users/11-data-01-find-by-login-id.sql"
             , "/scripts/applications/01-setup.sql"
-            , "/scripts/applications/02-data-01-find-all.sql"
+            , "/scripts/applications/11-data-01-find-all.sql"
             ,
             "/scripts/user-permissions/01-setup.sql"
-            , "/scripts/user-permissions/02-data-01-find-by-login-id.sql"
+            , "/scripts/user-permissions/11-data-01-find-by-login-id.sql"
     })
     public void findUserPermissionByLoginId_basic() {
         Optional<UserEntity> userEntityOptional = userRepository.findByLoginId("app-user-02");

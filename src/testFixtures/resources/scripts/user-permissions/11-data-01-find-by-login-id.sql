@@ -47,6 +47,9 @@ values ('role-user-01', 'frontend-app', 'menu.shops', 'view', 'admin', 'admin', 
 insert into user_role_permissions (user_role_mid, app_mid, resource_mid, access_right, created_by, last_modified_by, version_no)
 values ('role-user-01', 'frontend-app', 'menu.merchants', 'view', 'admin', 'admin', 1)
 ;
+insert into user_role_permissions (user_role_mid, app_mid, resource_mid, access_right, created_by, last_modified_by, version_no)
+values ('role-user-01', 'frontend-app', 'menu.lang', 'view', 'admin', 'admin', 1)
+;
 
 insert into user_role_users (user_role_id, user_id, created_by, last_modified_by, version_no)
 values (

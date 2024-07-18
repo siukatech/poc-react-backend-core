@@ -97,7 +97,6 @@ dependencies {
     api 'org.apache.httpcomponents.core5:httpcore5:5.2.4'
     api 'org.apache.httpcomponents.client5:httpclient5:5.3.1'
 
-
     api 'commons-codec:commons-codec:1.17.0'
 
     api 'org.reflections:reflections:0.10.2'
@@ -218,4 +217,3 @@ publishing {
 //	println("fatJar")
 //	with jar
 //}
-

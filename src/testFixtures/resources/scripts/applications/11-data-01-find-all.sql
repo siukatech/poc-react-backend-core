@@ -18,5 +18,8 @@ values ('menu.merchants', 'Menu Merchants', 'frontend-app', 'view', 'admin', 'ad
 insert into app_resources (mid, name, app_mid, access_right, created_by, last_modified_by, version_no)
 values ('menu.i18n', 'Menu i18n', 'frontend-app', 'view', 'admin', 'admin', 1)
 ;
+insert into app_resources (mid, name, app_mid, access_right, created_by, last_modified_by, version_no)
+values ('menu.lang', 'Menu Lang', 'frontend-app', 'view', 'admin', 'admin', 1)
+;
 
 
