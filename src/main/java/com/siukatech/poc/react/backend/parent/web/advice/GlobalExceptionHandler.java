@@ -4,6 +4,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -129,7 +130,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleHttpMessageNotReadable(
             HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
 
-        log.error("handleEntityNotFoundException - ex: [" + ex
+        log.error("handleHttpMessageNotReadable - ex: [" + ex
                 + "], ex.getClass.getName: [" + ex.getClass().getName()
                 + "], ex.getMessage: [" + ex.getMessage()
                 + "], ex.fillInStackTrace: ", ex.fillInStackTrace());
@@ -137,6 +138,23 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         String defaultDetail = ex.getMessage();
         ProblemDetail body = createProblemDetail(ex, status
 //                , "Failed to read request"
+                , defaultDetail
+                , null, null, request);
+        return handleExceptionInternal(ex, body, headers, status, request);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleHttpMessageNotWritable(
+            HttpMessageNotWritableException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+
+        log.error("handleHttpMessageNotWritable - ex: [" + ex
+                + "], ex.getClass.getName: [" + ex.getClass().getName()
+                + "], ex.getMessage: [" + ex.getMessage()
+                + "], ex.fillInStackTrace: ", ex.fillInStackTrace());
+
+        String defaultDetail = ex.getMessage();
+        ProblemDetail body = createProblemDetail(ex, status
+//                , "Failed to write request"
                 , defaultDetail
                 , null, null, request);
         return handleExceptionInternal(ex, body, headers, status, request);
@@ -154,10 +172,28 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 //        return this.handleExceptionInternal(ex, null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
         log.error("handleEntityNotFoundException - ex: [" + ex
                 + "], ex.getClass.getName: [" + ex.getClass().getName()
-                + "]");
+                + "], ex.getMessage: [" + ex.getMessage()
+                + "], ex.fillInStackTrace: ", ex.fillInStackTrace());
+
         HttpStatus status = HttpStatus.NOT_FOUND;
         String defaultDetail = "" + ex.getMessage();
         ProblemDetail body = createProblemDetail(ex, status, defaultDetail, null, null, request);
+        return handleExceptionInternal(ex, body, new HttpHeaders(), status, request);
+    }
+
+    @ExceptionHandler(value = RuntimeException.class)
+    protected ResponseEntity<?> handleRuntimeException(RuntimeException ex, WebRequest request) {
+
+        log.error("handleRuntimeException - ex: [" + ex
+                + "], ex.getClass.getName: [" + ex.getClass().getName()
+                + "], ex.getMessage: [" + ex.getMessage()
+                + "], ex.fillInStackTrace: ", ex.fillInStackTrace());
+
+        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+        Object[] args = {ex.getClass().getName()};
+        String defaultDetail = "" + ex.getMessage()
+                ;
+        ProblemDetail body = createProblemDetail(ex, status, defaultDetail, null, args, request);
         return handleExceptionInternal(ex, body, new HttpHeaders(), status, request);
     }
 
