@@ -46,12 +46,13 @@ public class UserPermissionRepositoryTests extends AbstractUnitTests {
         Optional<UserEntity> userEntityOptional = userRepository.findByLoginId("app-user-02");
         log.debug("findUserPermissionByLoginId_basic - userEntityOptional.get: [" + userEntityOptional.get() + "]");
         List<UserPermissionEntity> userPermissionEntityList = userPermissionRepository
-                .findUserPermissionByLoginId("app-user-02");
+                .findUserPermissionByLoginIdAndAppMid("app-user-02", "frontend-app");
 
         log.debug("findUserPermissionByLoginId_basic - userPermissionEntityList.size: [" + userPermissionEntityList.size()
                 + "], userPermissionEntityList: [" + userPermissionEntityList
                 + "]");
         Assertions.assertEquals(userPermissionEntityList.get(0).getLoginId(), "app-user-02");
+        Assertions.assertEquals(userPermissionEntityList.get(0).getAppMid(), "frontend-app");
     }
 
 

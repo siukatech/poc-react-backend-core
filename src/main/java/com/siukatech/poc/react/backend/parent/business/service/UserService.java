@@ -62,9 +62,9 @@ public class UserService {
         return myKeyDto;
     }
 
-    public List<UserPermissionDto> findPermissionsByLoginId(String targetLoginId) {
+    public List<UserPermissionDto> findPermissionsByLoginIdAndAppMid(String targetLoginId, String appMid) {
 //        List<UserPermissionDto> userPermissionDtoList = this.userRepository.findUserPermissionByLoginId(targetLoginId);
-        List<UserPermissionEntity> userPermissionEntityList = this.userPermissionRepository.findUserPermissionByLoginId(targetLoginId);
+        List<UserPermissionEntity> userPermissionEntityList = this.userPermissionRepository.findUserPermissionByLoginIdAndAppMid(targetLoginId, appMid);
         List<UserPermissionDto> userPermissionDtoList = userPermissionEntityList.stream()
                 .map(userPermissionEntity -> this.modelMapper
                         .map(userPermissionEntity, UserPermissionDto.class))

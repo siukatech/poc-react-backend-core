@@ -134,16 +134,17 @@ public class UserServiceTests extends AbstractUnitTests {
     }
 
     @Test
-    public void findUserPermissionByLoginId_basic() {
+    public void findUserPermissionByLoginIdAndAppMid_basic() {
         // given
         List<UserPermissionEntity> userPermissionEntityListTemp = prepareUserPermissions_basic();
-        when(this.userPermissionRepository.findUserPermissionByLoginId(anyString())).thenReturn(userPermissionEntityListTemp);
+        when(this.userPermissionRepository.findUserPermissionByLoginIdAndAppMid(anyString(), anyString())).thenReturn(userPermissionEntityListTemp);
 
         // when
-        List<UserPermissionDto> userPermissionDtoListActual = this.userService.findPermissionsByLoginId("app-user-01");
+        List<UserPermissionDto> userPermissionDtoListActual = this.userService.findPermissionsByLoginIdAndAppMid("app-user-01", "frontend-app");
 
         // then / verify
         assertThat(userPermissionDtoListActual.get(0).getLoginId()).isEqualTo("app-user-01");
+        assertThat(userPermissionDtoListActual.get(0).getAppMid()).isEqualTo("frontend-app");
     }
 
     @Test
