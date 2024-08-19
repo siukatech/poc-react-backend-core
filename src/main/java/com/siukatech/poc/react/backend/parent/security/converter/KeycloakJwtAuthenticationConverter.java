@@ -1,7 +1,10 @@
 package com.siukatech.poc.react.backend.parent.security.converter;
 
 import com.siukatech.poc.react.backend.parent.business.dto.UserDto;
+import com.siukatech.poc.react.backend.parent.business.dto.UserPermissionDto;
+import com.siukatech.poc.react.backend.parent.global.config.ParentAppProp;
 import com.siukatech.poc.react.backend.parent.security.authentication.MyAuthenticationToken;
+import com.siukatech.poc.react.backend.parent.security.authority.MyGrantedAuthority;
 import com.siukatech.poc.react.backend.parent.security.provider.AuthorizationDataProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.convert.converter.Converter;
@@ -58,16 +61,26 @@ public class KeycloakJwtAuthenticationConverter implements Converter<Jwt, Abstra
 //                = new UsernamePasswordAuthenticationToken(userDetails
 //                , source.getTokenValue(), userDetails.getAuthorities());
 
-        Map<String, Object> attributeMap = new HashMap<>();
-        attributeMap.put(StandardClaimNames.PREFERRED_USERNAME, loginId);
-        attributeMap.put(MyAuthenticationToken.ATTR_TOKEN_VALUE, tokenValue);
-
 //        // Todo
         UserDto userDto = null;
 //        if (SecurityContextHolder.getContext().getAuthentication() != null) {
 //        userDto = userService.findByLoginId(loginId);
             userDto = authorizationDataProvider.findByLoginIdAndTokenValue(loginId, tokenValue);
-            attributeMap.put(MyAuthenticationToken.ATTR_USER_ID, userDto.getId());
+
+        List<UserPermissionDto> userPermissionDtoList = authorizationDataProvider.findPermissionsByLoginId(loginId, tokenValue);
+        userPermissionDtoList.stream().forEach(userPermissionDto -> {
+            convertedAuthorities.add(MyGrantedAuthority.builder()
+                            .userRoleMid(userPermissionDto.getUserRoleMid())
+                            .appMid(userPermissionDto.getAppMid())
+                            .resourceMid(userPermissionDto.getResourceMid())
+                            .accessRight(userPermissionDto.getAccessRight())
+                    .build());
+        });
+
+        Map<String, Object> attributeMap = new HashMap<>();
+        attributeMap.put(StandardClaimNames.PREFERRED_USERNAME, loginId);
+        attributeMap.put(MyAuthenticationToken.ATTR_TOKEN_VALUE, tokenValue);
+        attributeMap.put(MyAuthenticationToken.ATTR_USER_ID, userDto.getId());
         attributeMap.put(MyAuthenticationToken.ATTR_PUBLIC_KEY, userDto.getPublicKey());
 //        }
 
@@ -77,10 +90,10 @@ public class KeycloakJwtAuthenticationConverter implements Converter<Jwt, Abstra
         return authenticationToken;
     }
 
-    //    @Override
-    //    public <U> Converter<Jwt, U> andThen(Converter<? super AbstractAuthenticationToken, ? extends U> after) {
-    //        return Converter.super.andThen(after);
-    //    }
+//    @Override
+//    public <U> Converter<Jwt, U> andThen(Converter<? super AbstractAuthenticationToken, ? extends U> after) {
+//        return Converter.super.andThen(after);
+//    }
 
 }
 
