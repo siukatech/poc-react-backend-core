@@ -12,6 +12,9 @@ import java.util.Optional;
 @Slf4j
 @Component
 public class CorrelationIdHandler {
+
+    public final static String HEADER_X_CORRELATION_ID = "X-Correlation-Id";
+
     private final Tracer tracer;
 
     public CorrelationIdHandler(Tracer tracer) {
@@ -31,8 +34,14 @@ public class CorrelationIdHandler {
         return Optional.of(tracer)
                 .map(t -> t.currentTraceContext())
                 .map(tc -> tc.context())
-//                .map(cxt -> cxt.traceId())
-                .map(cxt -> cxt.toString())
+                .map(cxt -> {
+                    String correlationId = String.format("%s-%s"
+                            , cxt.traceId()
+                            , cxt.spanId()
+                    );
+                    return correlationId;
+                })
+//                .map(cxt -> cxt.toString())
                 .orElse("")
                 ;
     }
