@@ -21,6 +21,7 @@ public class ParentAppProp {
     private String hostName;
     //    private App app;
     private Api api;
+    private String appMid;
 
     public String getMyUserInfoUrl() {
         String myUserInfoUrl = null;
@@ -51,6 +52,20 @@ public class ParentAppProp {
         return myKeyInfoUrl;
     }
 
+    public String getMyUserPermissionInfoUrl() {
+        String myUserPermissionInfoUrl = null;
+        if ( StringUtils.isNotEmpty(this.getHostName())
+                && (this.getApi() != null && StringUtils.isNotEmpty(this.getApi().getMyUserPermissionInfo())) ) {
+            myUserPermissionInfoUrl = this.getHostName() + this.getApi().getMyUserPermissionInfo();
+        }
+        log.debug("getMyUserPermissionInfoUrl - getHostName: [{}], getMyUserPermissionInfo: [{}], myUserPermissionInfoUrl: [{}]"
+                , this.getHostName()
+                , (this.getApi() == null ? "NULL" : this.getApi().getMyUserPermissionInfo())
+                , myUserPermissionInfoUrl
+        );
+        return myUserPermissionInfoUrl;
+    }
+
 //    @Data
 //    public static class App {
 //        private String hostName;
@@ -61,5 +76,6 @@ public class ParentAppProp {
     public static class Api {
         private String myUserInfo;
         private String myKeyInfo;
+        private String myUserPermissionInfo;
     }
 }
