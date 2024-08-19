@@ -58,9 +58,10 @@ public class AuthorizationDataProviderConfig {
     @ConditionalOnMissingBean
     public AuthorizationDataProvider databaseAuthorizationDataProvider(
             UserService userService
+            , ParentAppProp parentAppProp
     ) {
         log.debug("databaseAuthorizationDataProvider");
-        return new DatabaseAuthorizationDataProvider(userService);
+        return new DatabaseAuthorizationDataProvider(userService, parentAppProp);
     }
 
 }
