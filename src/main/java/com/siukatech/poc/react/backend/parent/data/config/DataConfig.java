@@ -17,8 +17,10 @@ import java.util.Optional;
 ////@AutoConfigureAfter(JpaRepositoriesAutoConfiguration.class)
 ////@EnableTransactionManagement(proxyTargetClass = true)
 @EnableJpaAuditing(auditorAwareRef = "auditorAware")
-@EntityScan(basePackages = {"com.siukatech.poc.react.backend.parent.data.entity"})
-@EnableJpaRepositories("com.siukatech.poc.react.backend.parent.data.repository")
+//@EntityScan(basePackages = {"com.siukatech.poc.react.backend.parent.data.entity"})
+//@EnableJpaRepositories("com.siukatech.poc.react.backend.parent.data.repository")
+@EntityScan(basePackages = {"com.siukatech.**.data.entity"})  // "**" means all packages
+@EnableJpaRepositories("com.siukatech.**.data.repository")    // "**" means all packages
 //@ComponentScan(basePackages = { "com.siukatech.poc.react.backend.parent.data" })
 ////@Import(StarterEntityRegistrar.class)
 public class DataConfig {
