@@ -1,4 +1,4 @@
-package com.siukatech.poc.react.backend.parent.web.advice;
+package com.siukatech.poc.react.backend.parent.web.advice.handler;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpInputMessage;

@@ -1,7 +1,13 @@
-package com.siukatech.poc.react.backend.parent.web.advice;
+package com.siukatech.poc.react.backend.parent.web.advice.handler;
 
+import com.siukatech.poc.react.backend.parent.security.exception.NoSuchPermissionException;
+import com.siukatech.poc.react.backend.parent.web.advice.mapper.ProblemDetailExtMapper;
+import com.siukatech.poc.react.backend.parent.web.advice.model.ProblemDetailExt;
+import com.siukatech.poc.react.backend.parent.web.micrometer.CorrelationIdHandler;
+import io.micrometer.tracing.Tracer;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
+import org.mapstruct.factory.Mappers;
 import org.springframework.http.*;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
@@ -18,9 +24,26 @@ import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
-@Component
+//@Component
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
+
+//    private final Tracer tracer;
+    private final CorrelationIdHandler correlationIdHandler;
+    private final ProblemDetailExtMapper problemDetailExtMapper;
+
+    public GlobalExceptionHandler(
+//            Tracer tracer
+//            ,
+            CorrelationIdHandler correlationIdHandler
+            , ProblemDetailExtMapper problemDetailExtMapper
+    ) {
+//        this.tracer = tracer;
+        this.correlationIdHandler = correlationIdHandler;
+        this.problemDetailExtMapper = problemDetailExtMapper;
+//        this.problemDetailExtMapper = Mappers.getMapper(ProblemDetailExtMapper.class);
+    }
+
 
     /**
      * This is exception handler of IllegalArgumentException
@@ -181,6 +204,26 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(ex, body, new HttpHeaders(), status, request);
     }
 
+    @ExceptionHandler(value = NoSuchPermissionException.class)
+    protected ResponseEntity<?> handleNoSuchPermissionException(NoSuchPermissionException ex, WebRequest request) {
+
+        log.error("handleNoSuchPermissionException - ex: [" + ex
+                + "], ex.getClass.getName: [" + ex.getClass().getName()
+                + "], ex.getMessage: [" + ex.getMessage()
+                + "], request.getHeader: [" + request.getHeader("")
+                + "], ex.fillInStackTrace: ", ex.fillInStackTrace()
+        );
+
+        HttpStatus status = HttpStatus.FORBIDDEN;
+        Object[] args = {ex.getClass().getName()};
+        String defaultDetail = ""
+//                + ex.getMessage()  // should not expose the exception detail
+                ;
+        ProblemDetail body = createProblemDetail(ex, status, defaultDetail, null, args, request);
+        ProblemDetailExt bodyExt = createProblemDetailExt(body);
+        return handleExceptionInternal(ex, bodyExt, new HttpHeaders(), status, request);
+    }
+
     @ExceptionHandler(value = RuntimeException.class)
     protected ResponseEntity<?> handleRuntimeException(RuntimeException ex, WebRequest request) {
 
@@ -195,6 +238,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 ;
         ProblemDetail body = createProblemDetail(ex, status, defaultDetail, null, args, request);
         return handleExceptionInternal(ex, body, new HttpHeaders(), status, request);
+    }
+
+    protected ProblemDetailExt createProblemDetailExt(ProblemDetail body) {
+        ProblemDetailExt bodyExt = problemDetailExtMapper.convertProblemDetailToExtWithoutCorrelationId(body);
+        bodyExt.setCorrelationId(this.correlationIdHandler.getCorrelationId());
+        return bodyExt;
     }
 
 }

@@ -1,4 +1,4 @@
-package com.siukatech.poc.react.backend.parent.web.advice;
+package com.siukatech.poc.react.backend.parent.web.advice.handler;
 
 import com.siukatech.poc.react.backend.parent.business.dto.MyKeyDto;
 import com.siukatech.poc.react.backend.parent.business.form.encrypted.EncryptedDetail;

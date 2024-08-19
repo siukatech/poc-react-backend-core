@@ -1,4 +1,4 @@
-package com.siukatech.poc.react.backend.parent.web.advice;
+package com.siukatech.poc.react.backend.parent.web.advice.handler;
 
 import com.siukatech.poc.react.backend.parent.business.dto.MyKeyDto;
 import com.siukatech.poc.react.backend.parent.business.form.encrypted.EncryptedDetail;
@@ -29,7 +29,7 @@ public class EncryptedResponseBodyAdvice implements ResponseBodyAdvice {
     // https://stackoverflow.com/a/3561399
     // Prefix "X-" IS NOT a recommendation for custom http header name.
     // Custom header name is just sensible without the "X-" prefix.
-    private final static String HEADER_X_DATA_ENC_INFO = "X-DATA-ENC-INFO";
+    private final static String HEADER_X_DATA_ENC_INFO = "X-Data-Enc-Info";
     private final EncryptedBodyContext encryptedBodyContext;
 //    private final UserRepository userRepository;
 //    private final ObjectMapper objectMapper;
