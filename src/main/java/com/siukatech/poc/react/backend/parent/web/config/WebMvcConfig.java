@@ -6,14 +6,14 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.siukatech.poc.react.backend.parent.security.interceptor.AuthorizationDataInterceptor;
-import com.siukatech.poc.react.backend.parent.security.provider.AuthorizationDataProvider;
+import com.siukatech.poc.react.backend.parent.security.interceptor.PermissionControlInterceptor;
+import com.siukatech.poc.react.backend.parent.web.interceptor.CorrelationIdInterceptor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -29,10 +29,16 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     private final ObjectMapper objectMapper;
     private final AuthorizationDataInterceptor authorizationDataInterceptor;
+    private final PermissionControlInterceptor permissionControlInterceptor;
+    private final CorrelationIdInterceptor correlationIdInterceptor;
 
-    public WebMvcConfig(ObjectMapper objectMapper, AuthorizationDataInterceptor authorizationDataInterceptor) {
+    public WebMvcConfig(ObjectMapper objectMapper
+            , AuthorizationDataInterceptor authorizationDataInterceptor
+            , PermissionControlInterceptor permissionControlInterceptor, CorrelationIdInterceptor correlationIdInterceptor) {
         this.objectMapper = objectMapper;
         this.authorizationDataInterceptor = authorizationDataInterceptor;
+        this.permissionControlInterceptor = permissionControlInterceptor;
+        this.correlationIdInterceptor = correlationIdInterceptor;
     }
 
     @Override
@@ -120,9 +126,20 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     public void addInterceptors(InterceptorRegistry registry) {
         log.debug("addInterceptors - start");
+        //
+        // "/auth/**" is the oauth2 login flow url
+        List<String> excludedPathPatternList = List.of("/auth/**", "/logout");
+        registry.addInterceptor(correlationIdInterceptor)
+                .addPathPatterns("/**")
+        ;
         registry.addInterceptor(authorizationDataInterceptor)
                 .addPathPatterns("/**")
-                .excludePathPatterns("/auth/**", "/logout")
+//                .excludePathPatterns("/auth/**", "/logout")
+                .excludePathPatterns(excludedPathPatternList.toArray(String[]::new))
+        ;
+        registry.addInterceptor(permissionControlInterceptor)
+                .addPathPatterns("/**")
+                .excludePathPatterns(excludedPathPatternList.toArray(String[]::new))
         ;
         log.debug("addInterceptors - end");
     }
