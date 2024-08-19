@@ -1,6 +1,7 @@
 package com.siukatech.poc.react.backend.parent.web.controller;
 
 
+import com.siukatech.poc.react.backend.parent.security.annotation.PermissionControl;
 import com.siukatech.poc.react.backend.parent.web.annotation.v1.PublicApiV1Controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -22,6 +23,7 @@ public class WebController {
     }
 
     @GetMapping(path = "/authorized")
+    @PermissionControl(resourceMid = "parent.web.authorized", accessRight = "view")
     public String authorized(Principal principal, Model model) {
         //addCustomers();
         //model.addAttribute("customers", customerDAO.findAll());
