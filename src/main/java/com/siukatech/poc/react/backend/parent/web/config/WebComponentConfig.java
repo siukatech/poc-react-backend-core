@@ -6,7 +6,8 @@ import org.springframework.context.annotation.FilterType;
 
 @Configuration
 // https://www.concretepage.com/spring/spring-component-scan-include-and-exclude-filter-example
-@ComponentScan(value = {"com.siukatech.poc.react.backend.parent.web"
+@ComponentScan(value = {
+        "com.siukatech.poc.react.backend.parent.web"
         , "com.siukatech.poc.react.backend.parent.data"
         , "com.siukatech.poc.react.backend.parent.business"
 }

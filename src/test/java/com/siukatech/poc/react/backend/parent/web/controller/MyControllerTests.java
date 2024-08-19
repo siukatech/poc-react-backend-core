@@ -1,11 +1,9 @@
 package com.siukatech.poc.react.backend.parent.web.controller;
 
 import com.siukatech.poc.react.backend.parent.AbstractWebTests;
-import com.siukatech.poc.react.backend.parent.business.dto.MyKeyDto;
-import com.siukatech.poc.react.backend.parent.business.dto.UserDto;
-import com.siukatech.poc.react.backend.parent.business.dto.UserPermissionDto;
-import com.siukatech.poc.react.backend.parent.business.dto.UserViewDto;
+import com.siukatech.poc.react.backend.parent.business.dto.*;
 import com.siukatech.poc.react.backend.parent.business.service.UserService;
+import com.siukatech.poc.react.backend.parent.global.config.ParentAppProp;
 import com.siukatech.poc.react.backend.parent.security.authentication.MyAuthenticationToken;
 import com.siukatech.poc.react.backend.parent.web.annotation.v1.ProtectedApiV1Controller;
 import lombok.extern.slf4j.Slf4j;
@@ -64,6 +62,8 @@ public class MyControllerTests extends AbstractWebTests {
     private WebApplicationContext webApplicationContext;
     @MockBean
     private UserService userService;
+//    @MockBean
+//    private ParentAppProp parentAppProp;
 //    @MockBean
 //    private RestTemplateBuilder restTemplateBuilder;
 //    @MockBean
@@ -248,11 +248,11 @@ public class MyControllerTests extends AbstractWebTests {
     public void getUserPermissions_basic() throws Exception {
         // given
         List<UserPermissionDto> userPermissionDtoList = this.prepareUserPermissions_basic();
-        when(userService.findPermissionsByLoginId(anyString())).thenReturn(userPermissionDtoList);
+        when(userService.findPermissionsByLoginIdAndAppMid(anyString(), anyString())).thenReturn(userPermissionDtoList);
 
         // when
         RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get(ProtectedApiV1Controller.REQUEST_MAPPING_URI_PREFIX + "/my/permissions")
+                .get(ProtectedApiV1Controller.REQUEST_MAPPING_URI_PREFIX + "/my/permissions?appMid={appMid}", "frontend-app")
                 .with(authentication(prepareUsernamePasswordAuthenticationToken_basic()))
                 .with(csrf())
                 .accept(MediaType.APPLICATION_JSON);
@@ -266,6 +266,31 @@ public class MyControllerTests extends AbstractWebTests {
 
         // result
         log.debug("getUserPermissions_basic - end - mvcResult.getResponse.getContentAsString: [" + mvcResult.getResponse().getContentAsString() + "]");
+    }
+
+    @Test
+    public void getUserPermissionInfo_basic() throws Exception {
+        // given
+        List<UserPermissionDto> userPermissionDtoList = this.prepareUserPermissions_basic();
+        when(userService.findPermissionsByLoginIdAndAppMid(anyString(), anyString())).thenReturn(userPermissionDtoList);
+
+        // when
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get(ProtectedApiV1Controller.REQUEST_MAPPING_URI_PREFIX + "/my/permission-info?appMid={appMid}", "frontend-app")
+                .with(authentication(prepareUsernamePasswordAuthenticationToken_basic()))
+                .with(csrf())
+                .accept(MediaType.APPLICATION_JSON);
+
+        // then
+        MvcResult mvcResult = this.mockMvc.perform(requestBuilder)
+                .andDo(print())
+                .andExpect(status().isOk())
+//                .andExpect(content().json())
+                .andExpect(content().string(containsString("resourceMid")))
+                .andReturn();
+
+        // result
+        log.debug("getUserPermissionInfo_basic - end - mvcResult.getResponse.getContentAsString: [" + mvcResult.getResponse().getContentAsString() + "]");
     }
 
     @Test

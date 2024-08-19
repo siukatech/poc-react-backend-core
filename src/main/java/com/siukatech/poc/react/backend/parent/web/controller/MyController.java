@@ -1,9 +1,6 @@
 package com.siukatech.poc.react.backend.parent.web.controller;
 
-import com.siukatech.poc.react.backend.parent.business.dto.MyKeyDto;
-import com.siukatech.poc.react.backend.parent.business.dto.UserDto;
-import com.siukatech.poc.react.backend.parent.business.dto.UserPermissionDto;
-import com.siukatech.poc.react.backend.parent.business.dto.UserViewDto;
+import com.siukatech.poc.react.backend.parent.business.dto.*;
 import com.siukatech.poc.react.backend.parent.business.service.UserService;
 import com.siukatech.poc.react.backend.parent.util.HttpHeaderUtils;
 import com.siukatech.poc.react.backend.parent.web.annotation.v1.ProtectedApiV1Controller;
@@ -14,6 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -68,16 +66,36 @@ public class MyController {
 
     @GetMapping("/my/permissions")
     public ResponseEntity<?> getUserPermissions(@RequestHeader HttpHeaders httpHeaders
+            , @RequestParam(required = true) String appMid
             , Authentication authentication) {
         Authentication authenticationInSc = SecurityContextHolder.getContext().getAuthentication();
         HttpHeaderUtils.logHttpHeaders(httpHeaders);
-        log.debug("getUserPermissions - authentication: [{}], authenticationInSc: [{}]"
-                , authentication, authenticationInSc);
+        log.debug("getUserPermissions - authentication: [{}], authenticationInSc: [{}], appMid: [{}]"
+                , authentication, authenticationInSc, appMid);
         String loginId = authentication.getName();
         List<UserPermissionDto> userPermissionDtoList = this.userService
-                .findPermissionsByLoginId(loginId);
+                .findPermissionsByLoginIdAndAppMid(loginId, appMid);
 
         return ResponseEntity.ok(userPermissionDtoList);
+    }
+
+    @GetMapping("/my/permission-info")
+    public ResponseEntity<?> getUserPermissionInfo(@RequestHeader HttpHeaders httpHeaders
+            , @RequestParam(required = true) String appMid
+            , Authentication authentication) {
+        Authentication authenticationInSc = SecurityContextHolder.getContext().getAuthentication();
+        HttpHeaderUtils.logHttpHeaders(httpHeaders);
+        log.debug("getUserPermissions - authentication: [{}], authenticationInSc: [{}], appMid: [{}]"
+                , authentication, authenticationInSc, appMid);
+        String loginId = authentication.getName();
+        List<UserPermissionDto> userPermissionDtoList = this.userService
+                .findPermissionsByLoginIdAndAppMid(loginId, appMid);
+        UserPermissionInfoDto userPermissionInfoDto = UserPermissionInfoDto.builder()
+                .loginId(loginId)
+                .userPermissionList(userPermissionDtoList)
+                .build();
+
+        return ResponseEntity.ok(userPermissionInfoDto);
     }
 
     @GetMapping("/my/user-view")

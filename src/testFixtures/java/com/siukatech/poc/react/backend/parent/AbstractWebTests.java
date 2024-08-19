@@ -1,10 +1,16 @@
 package com.siukatech.poc.react.backend.parent;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.siukatech.poc.react.backend.parent.global.config.ParentAppProp;
 import com.siukatech.poc.react.backend.parent.security.authentication.MyAuthenticationToken;
+import com.siukatech.poc.react.backend.parent.security.evaluator.PermissionControlEvaluator;
 import com.siukatech.poc.react.backend.parent.security.provider.AuthorizationDataProvider;
+import com.siukatech.poc.react.backend.parent.web.advice.mapper.ProblemDetailExtMapper;
+import com.siukatech.poc.react.backend.parent.web.advice.model.ProblemDetailExt;
 import com.siukatech.poc.react.backend.parent.web.context.EncryptedBodyContext;
 import com.siukatech.poc.react.backend.parent.web.helper.EncryptedBodyAdviceHelper;
+import com.siukatech.poc.react.backend.parent.web.micrometer.CorrelationIdHandler;
+import io.micrometer.tracing.Tracer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
@@ -43,6 +49,16 @@ public abstract class AbstractWebTests extends AbstractUnitTests {
 //    private InMemoryClientRegistrationRepository clientRegistrationRepository;
     @MockBean
     protected AuthorizationDataProvider authorizationDataProvider;
+    @MockBean
+    protected ParentAppProp parentAppProp;
+    @MockBean
+    protected PermissionControlEvaluator permissionControlEvaluator;
+//    @MockBean
+//    protected Tracer tracer;
+    @MockBean
+    protected CorrelationIdHandler correlationIdHandler;
+    @MockBean
+    protected ProblemDetailExtMapper problemDetailExtMapper;
 
     protected MockMvc prepareMockMvc() {
         return MockMvcBuilders
