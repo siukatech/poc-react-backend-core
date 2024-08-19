@@ -30,4 +30,5 @@ public class AuthorizationDataFilter extends OncePerRequestFilter {
 
         log.debug("doFilterInternal - end");
     }
+
 }

@@ -26,15 +26,14 @@ public class AuthorizationDataInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response
             , Object handler) throws Exception {
         log.debug("preHandle - start");
-
-        log.debug("preHandle - request: [${}]", request);
+        log.debug("preHandle - request.getRequestURI: [${}]", request.getRequestURI());
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication instanceof MyAuthenticationToken myAuthenticationToken) {
 //            myAuthenticationToken.getName();
         }
-        log.debug("preHandle - authentication.: [{}]"
-                , authentication == null ? "" : authentication.getName()
+        log.debug("preHandle - authentication.name: [{}]"
+                , authentication == null ? "NULL" : authentication.getName()
         );
 
 
