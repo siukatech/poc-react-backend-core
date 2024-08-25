@@ -1,9 +1,9 @@
 package com.siukatech.poc.react.backend.parent;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.test.context.TestPropertySource;
 
-@Slf4j
+// Should not annotate the Slf4j here, that will cause a "private access in AbstractJpaTests" issue
+//@Slf4j
 //@TestPropertySource(properties = {
 //        "spring.jpa.show-sql: true"
 //        , "spring.jpa.properties.hibernate.format_sql: true"
