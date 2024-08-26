@@ -1,3 +1,6 @@
+import com.siukatech.poc.react.backend.plugin.ReactBackendPlugin
+import com.siukatech.poc.react.backend.plugin.ReactBackendUtil
+
 plugins {
 ////	id 'java'
 //	id 'application'
@@ -5,17 +8,44 @@ plugins {
     id 'java-library'
     id 'java-test-fixtures'
     id 'maven-publish'
-//	id 'org.springframework.boot' version '3.1.0' apply false
-//	id 'io.spring.dependency-management' version '1.1.0'
-    id 'org.springframework.boot' version '3.2.1' apply false
+////	id 'org.springframework.boot' version '3.1.0' apply false
+////	id 'io.spring.dependency-management' version '1.1.0'
+//    id 'org.springframework.boot' version '3.2.1' apply false
+//}
+//apply plugin: 'io.spring.dependency-management'
+//
+//// https://stackoverflow.com/a/55731664
+//dependencyManagement {
+//    imports {
+//        mavenBom org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES
+//    }
+//}
+    id 'io.spring.dependency-management' version '1.1.0'
+    id 'com.siukatech.poc.react-backend-plugin' version '0.0.1-SNAPSHOT'
 }
-apply plugin: 'io.spring.dependency-management'
 
-// https://stackoverflow.com/a/55731664
+////def springBootVersionStr = "${com.siukatech.poc.react.backend.plugin.ReactBackendUtil.extractSpringBootVersion(org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES)}"
+//////def springBootVersionStr = "${com.siukatech.poc.react.backend.plugin.ReactBackendUtil.extractSpringBootVersion(this.project)}"
+////println("build.gradle - springBootVersionStr: [${springBootVersionStr}], org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES: [${org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES}]")
+//def springBootVersionStr = "${com.siukatech.poc.react.backend.plugin.ReactBackendUtil.extraSpringBootVersion()}"
+
 dependencyManagement {
     imports {
         mavenBom org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES
+//        mavenBom "org.springframework.boot:spring-boot-dependencies:3.2.1"
     }
+}
+
+ext {
+    mapstructVersion = '1.6.0.RC1'
+//    springBootVersion = '3.2.1'
+//    springSecurityVersion = '6.2.1'
+//    springBootVersion = "${ReactBackendPlugin.SPRING_BOOT_VERSION}"
+//    springSecurityVersion = "${ReactBackendPlugin.SPRING_SECURITY_VERSION}"
+//    openapiGeneratorVersion = "${ReactBackendPlugin.OPENAPI_GENERATOR_VERSION}"
+    springBootVersion = "${ReactBackendUtil.extractSpringBootVersion()}"
+    springSecurityVersion = "${ReactBackendUtil.extractSpringSecurityVersion()}"
+    openapiGeneratorVersion = "${ReactBackendUtil.extractOpenapiGeneratorVersion()}"
 }
 
 group = 'com.siukatech.poc'
@@ -26,10 +56,6 @@ java {
 //    sourceCompatibility = JavaVersion.VERSION_21
     targetCompatibility = JavaVersion.VERSION_17
 //    targetCompatibility = JavaVersion.VERSION_21
-}
-
-ext {
-    mapstructVersion = '1.6.0.RC1'
 }
 
 repositories {
@@ -129,8 +155,10 @@ dependencies {
     api "org.mapstruct:mapstruct:${mapstructVersion}"
     annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
 
-    testFixturesApi 'org.springframework.boot:spring-boot-starter-test'
-    testFixturesApi 'org.springframework.security:spring-security-test'
+//    testFixturesApi 'org.springframework.boot:spring-boot-starter-test'
+//    testFixturesApi 'org.springframework.security:spring-security-test'
+    testFixturesApi "org.springframework.boot:spring-boot-starter-test:${springBootVersion}"
+    testFixturesApi "org.springframework.security:spring-security-test:${springSecurityVersion}"
     testFixturesApi 'com.h2database:h2:2.1.214'
 
 //	testImplementation 'org.springframework.boot:spring-boot-starter-test'
