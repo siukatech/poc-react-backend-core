@@ -27,6 +27,11 @@ public class EncryptionUtils {
     public static final String TRANSFORMATION_AES_CBC_PKCS5PADDING = "AES/CBC/PKCS5Padding";
     public static final String TRANSFORMATION_AES_ECB_PKCS5PADDING = "AES/ECB/PKCS5Padding";
     public static final String TRANSFORMATION_AES_GCM_NOPADDING = "AES/GCM/NoPadding";
+    public static final Integer AES_GCM_SECRET_LENGTH_MIN = 16;
+    public static final String HASHING_ALGORITHM_SHA_512 = "SHA-512";
+    public static final String HASHING_ALGORITHM_SHA_265 = "SHA-256";
+    public static final String HASHING_ALGORITHM_MD5 = "MD5";
+
 
     private EncryptionUtils() {
     }
@@ -124,13 +129,19 @@ public class EncryptionUtils {
      * @return
      * @throws Exception
      */
+    private static void assertSecretLength(byte[] secret, int len) {
+        // secret length MUST be a multiple of 16, like 16, 32, 48
+        assert (secret.length % len == 0);
+    }
     public static byte[] encryptWithAesGcmSecret(String str, byte[] secret, byte[] iv) throws Exception {
+        assertSecretLength(secret, AES_GCM_SECRET_LENGTH_MIN);
         Cipher cipher = Cipher.getInstance(TRANSFORMATION_AES_GCM_NOPADDING);
         cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(secret, ALGORITHM_AES)
                 , new GCMParameterSpec(16 * 8, iv));
         return cipher.doFinal(str.getBytes(StandardCharsets.UTF_8));
     }
     public static byte[] decryptWithAesGcmSecret(byte[] data, byte[] secret, byte[] iv) throws Exception {
+        assertSecretLength(secret, AES_GCM_SECRET_LENGTH_MIN);
         Cipher cipher = Cipher.getInstance(TRANSFORMATION_AES_GCM_NOPADDING);
         cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(secret, ALGORITHM_AES)
                 , new GCMParameterSpec(16 * 8, iv));
@@ -139,13 +150,13 @@ public class EncryptionUtils {
 
 
     public static byte[] encryptWithRsaPrivateKey(String text, String rsaPrivateKeyBase64) throws Exception {
-        Cipher cipher = Cipher.getInstance("RSA");
+        Cipher cipher = Cipher.getInstance(ALGORITHM_RSA);
         cipher.init(Cipher.ENCRYPT_MODE, getRsaPrivateKey(rsaPrivateKeyBase64));
         return cipher.doFinal(text.getBytes());
     }
 
     public static byte[] decryptWithRsaPublicKey(byte[] data, String rsaPublicKeyBase64) throws Exception {
-        Cipher cipher = Cipher.getInstance("RSA");
+        Cipher cipher = Cipher.getInstance(ALGORITHM_RSA);
         cipher.init(Cipher.DECRYPT_MODE, getRsaPublicKey(rsaPublicKeyBase64));
         return cipher.doFinal(data);
     }
@@ -181,8 +192,9 @@ public class EncryptionUtils {
         // https://commons.apache.org/proper/commons-codec/
         // Import the Base64 class.
         // import org.apache.commons.codec.binary.Base64;
-        byte[] bytes = verifier.getBytes("US-ASCII");
-        MessageDigest md = MessageDigest.getInstance("SHA-256");
+//        byte[] bytes = verifier.getBytes("US-ASCII");
+        byte[] bytes = verifier.getBytes(StandardCharsets.US_ASCII);
+        MessageDigest md = MessageDigest.getInstance(HASHING_ALGORITHM_SHA_265);
         md.update(bytes, 0, bytes.length);
         byte[] digest = md.digest();
         String challenge = org.apache.commons.codec.binary.Base64.encodeBase64URLSafeString(digest);

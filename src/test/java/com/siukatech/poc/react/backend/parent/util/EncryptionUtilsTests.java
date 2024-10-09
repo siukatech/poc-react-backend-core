@@ -46,7 +46,7 @@ public class EncryptionUtilsTests extends AbstractUnitTests {
         PublicKey publicKey = keyPair.getPublic();
         String privateKeyBase64 = Base64.getEncoder().encodeToString(privateKey.getEncoded());
         String publicKeyBase64 = Base64.getEncoder().encodeToString(publicKey.getEncoded());
-        System.out.println("test_encryptionUtils_rsaKeyPair - privateKeyBase64: [" + privateKeyBase64 + "], publicKeyBase64: [" + publicKeyBase64 + "]");
+//        System.out.println("test_encryptionUtils_rsaKeyPair - privateKeyBase64: [" + privateKeyBase64 + "], publicKeyBase64: [" + publicKeyBase64 + "]");
         log.debug("test_encryptionUtils_rsaKeyPair - privateKeyBase64: [" + privateKeyBase64 + "], publicKeyBase64: [" + publicKeyBase64 + "]");
         PrivateKey privateKeyAfter = EncryptionUtils.getRsaPrivateKey(privateKeyBase64);
         PublicKey publicKeyAfter = EncryptionUtils.getRsaPublicKey(publicKeyBase64);
@@ -68,7 +68,7 @@ public class EncryptionUtilsTests extends AbstractUnitTests {
         dataStr = "CH/1IKmYog+cQkUb3ta/plmEQy7rfEpDf1xoFV/OqHmmRlAAPb9gpihufEkDIAreDR3vt1zObm0SGKJnfVSGeGEQqGCHCH6jcG9XIj6TFuShvSvVizkxcSwtXZBYI8czI5Hak85ecWuomthEUC7BeeBKXXCS0jCjRbYerglVh+UNhcw+IWVJjopcbjo+3LDjC+ggMojHAGMPpxhHJecnAK7REApCftS1imCy5egn12a5brTPYTrcNDAljmQ1FP4nhxowwwkWdxEIxz6FRtrcHDxxRuTUQ085LCpIWhtshhGkSfe2Ee/bHOVptXqeJ+hI/EN0Qxt5So+Rsbh9+ts7vQ==";
         byte[] decryptedData = EncryptionUtils.decryptWithRsaPrivateKey(Base64.getDecoder().decode(dataStr), privateKeyBase64);
         String decryptedStr = new String(decryptedData);
-        System.out.println("test_cryptoUtil_rsaContent - decryptedStr: [" + decryptedStr + "]");
+//        System.out.println("test_cryptoUtil_rsaContent - decryptedStr: [" + decryptedStr + "]");
         log.debug("test_cryptoUtil_rsaContent - decryptedStr: [" + decryptedStr + "]");
     }
 
@@ -83,8 +83,8 @@ public class EncryptionUtilsTests extends AbstractUnitTests {
         byte[] decryptedData = EncryptionUtils.decryptWithRsaPublicKey(encryptedData, publicKeyBase64);
         String decryptedStr = new String(decryptedData);
         //
-        System.out.println("test_cryptoUtil_rsaContent_2 - encryptedDataBase64: [" + encryptedDataBase64 + "]");
-        System.out.println("test_cryptoUtil_rsaContent_2 - decryptedStr: [" + decryptedStr + "]");
+//        System.out.println("test_cryptoUtil_rsaContent_2 - encryptedDataBase64: [" + encryptedDataBase64 + "]");
+//        System.out.println("test_cryptoUtil_rsaContent_2 - decryptedStr: [" + decryptedStr + "]");
         log.debug("test_cryptoUtil_rsaContent_2 - encryptedDataBase64: [" + encryptedDataBase64 + "]");
         log.debug("test_cryptoUtil_rsaContent_2 - decryptedStr: [" + decryptedStr + "]");
     }
@@ -103,9 +103,11 @@ public class EncryptionUtilsTests extends AbstractUnitTests {
         byte[] decryptedData = EncryptionUtils.decryptWithAesCbcSecret(data, key, iv);
         String decryptedStr = new String(decryptedData);
         //
-        System.out.println("test_cryptoUtil_aesContent_cbc - dataStr: [" + dataStr
-                + "], decryptedStr: [" + decryptedStr
-                + "]");
+//        System.out.println("test_cryptoUtil_aesContent_cbc - dataStr: [" + dataStr
+//                + "], decryptedStr: [" + decryptedStr
+//                + "]");
+        log.debug("test_cryptoUtil_aesContent_cbc - key.length: [" + key.length + "]");
+        log.debug("test_cryptoUtil_aesContent_cbc - iv.length: [" + iv.length + "]");
         log.debug("test_cryptoUtil_aesContent_cbc - dataStr: [" + dataStr
                 + "], decryptedStr: [" + decryptedStr
                 + "]");
@@ -118,8 +120,9 @@ public class EncryptionUtilsTests extends AbstractUnitTests {
         String message = "안녕하세요";
         byte[] encryptedData = EncryptionUtils.encryptWithAesEcbSecret(message, keyArr);
         String encryptedDataBase64 = Base64.getEncoder().encodeToString(encryptedData);
-        System.out.println(keyArrBase64);
-        System.out.println(encryptedDataBase64);
+//        System.out.println("test_cryptoUtil_aesContent2_ecb - keyArrBase64: [" + keyArrBase64 + "]");
+//        System.out.println("test_cryptoUtil_aesContent2_ecb - encryptedDataBase64: [" + encryptedDataBase64 + "]");
+        log.debug("test_cryptoUtil_aesContent2_ecb - keyArr.length: [" + keyArr.length + "]");
         log.debug("test_cryptoUtil_aesContent2_ecb - keyArrBase64: [" + keyArrBase64 + "]");
         log.debug("test_cryptoUtil_aesContent2_ecb - encryptedDataBase64: [" + encryptedDataBase64 + "]");
     }
@@ -135,11 +138,11 @@ public class EncryptionUtilsTests extends AbstractUnitTests {
         String ivStr = new String(iv);
         byte[] encryptedData = EncryptionUtils.encryptWithAesCbcSecret(dataStr, key, iv);
         String encryptedDataBase64 = Base64.getEncoder().encodeToString(encryptedData);
-        System.out.println("test_cryptoUtil_aesContent2_cbc - keyBase64: [" + keyBase64 + "]");
-        System.out.println("test_cryptoUtil_aesContent2_cbc - ivStr: [" + ivStr + "]");
-        System.out.println("test_cryptoUtil_aesContent2_cbc - encryptedDataBase64: [" + encryptedDataBase64 + "]");
-        log.debug("test_cryptoUtil_aesContent2_cbc - keyBase64: [" + keyBase64 + "]");
-        log.debug("test_cryptoUtil_aesContent2_cbc - ivStr: [" + ivStr + "]");
+//        System.out.println("test_cryptoUtil_aesContent2_cbc - key.length: [" + key.length + "], keyBase64: [" + keyBase64 + "]");
+//        System.out.println("test_cryptoUtil_aesContent2_cbc - iv.length: [" + iv.length + "], ivStr: [" + ivStr + "]");
+//        System.out.println("test_cryptoUtil_aesContent2_cbc - encryptedDataBase64: [" + encryptedDataBase64 + "]");
+        log.debug("test_cryptoUtil_aesContent2_cbc - key.length: [" + key.length + "], keyBase64: [" + keyBase64 + "]");
+        log.debug("test_cryptoUtil_aesContent2_cbc - iv.length: [" + iv.length + "], ivStr: [" + ivStr + "]");
         log.debug("test_cryptoUtil_aesContent2_cbc - encryptedDataBase64: [" + encryptedDataBase64 + "]");
     }
 
@@ -159,12 +162,12 @@ public class EncryptionUtilsTests extends AbstractUnitTests {
         byte[] decryptedData = EncryptionUtils.decryptWithAesGcmSecret(data, key, iv);
         String decryptedStr = new String(decryptedData);
         //
-        System.out.println("test_cryptoUtil_aesContent2_gcm - keyBase64: [" + keyBase64 + "]");
-        System.out.println("test_cryptoUtil_aesContent2_gcm - ivStr: [" + ivStr + "]");
-        System.out.println("test_cryptoUtil_aesContent2_gcm - encryptedDataBase64: [" + encryptedDataBase64 + "]");
-        System.out.println("test_cryptoUtil_aesContent2_gcm - decryptedStr: [" + decryptedStr + "]");
-        log.debug("test_cryptoUtil_aesContent2_gcm - keyBase64: [" + keyBase64 + "]");
-        log.debug("test_cryptoUtil_aesContent2_gcm - ivStr: [" + ivStr + "]");
+//        System.out.println("test_cryptoUtil_aesContent2_gcm - key.length: [" + key.length + "], keyBase64: [" + keyBase64 + "]");
+//        System.out.println("test_cryptoUtil_aesContent2_gcm - iv.length: [" + iv.length + "], ivStr: [" + ivStr + "]");
+//        System.out.println("test_cryptoUtil_aesContent2_gcm - encryptedDataBase64: [" + encryptedDataBase64 + "]");
+//        System.out.println("test_cryptoUtil_aesContent2_gcm - decryptedStr: [" + decryptedStr + "]");
+        log.debug("test_cryptoUtil_aesContent2_gcm - key.length: [" + key.length + "], keyBase64: [" + keyBase64 + "]");
+        log.debug("test_cryptoUtil_aesContent2_gcm - iv.length: [" + iv.length + "], ivStr: [" + ivStr + "]");
         log.debug("test_cryptoUtil_aesContent2_gcm - encryptedDataBase64: [" + encryptedDataBase64 + "]");
         log.debug("test_cryptoUtil_aesContent2_gcm - decryptedStr: [" + decryptedStr + "]");
     }
@@ -177,9 +180,10 @@ public class EncryptionUtilsTests extends AbstractUnitTests {
         String message = "{\"versionNo\":null,\"id\":40,\"title\":null,\"purchasedDate\":null,\"createdBy\":null,\"createdDatetime\":null,\"lastModifiedBy\":null,\"lastModifiedDatetime\":null}";
         byte[] encryptedData = EncryptionUtils.encryptWithAesEcbSecret(message, keyArr);
         String encryptedDataBase64 = Base64.getEncoder().encodeToString(encryptedData);
-        System.out.println("test_cryptoUtil_aesContent3_ecb - keyBase64: [" + keyBase64 + "]");
-        System.out.println("test_cryptoUtil_aesContent3_ecb - keyArrBase64: [" + keyArrBase64 + "]");
-        System.out.println("test_cryptoUtil_aesContent3_ecb - encryptedDataBase64: [" + encryptedDataBase64 + "]");
+//        System.out.println("test_cryptoUtil_aesContent3_ecb - keyBase64: [" + keyBase64 + "]");
+//        System.out.println("test_cryptoUtil_aesContent3_ecb - keyArrBase64: [" + keyArrBase64 + "]");
+//        System.out.println("test_cryptoUtil_aesContent3_ecb - encryptedDataBase64: [" + encryptedDataBase64 + "]");
+        log.debug("test_cryptoUtil_aesContent3_ecb - keyArr.length: [" + keyArr.length + "]");
         log.debug("test_cryptoUtil_aesContent3_ecb - keyBase64: [" + keyBase64 + "]");
         log.debug("test_cryptoUtil_aesContent3_ecb - keyArrBase64: [" + keyArrBase64 + "]");
         log.debug("test_cryptoUtil_aesContent3_ecb - encryptedDataBase64: [" + encryptedDataBase64 + "]");
