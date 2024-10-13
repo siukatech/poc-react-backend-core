@@ -26,10 +26,10 @@ public class RemoteAuthorizationDataProvider implements AuthorizationDataProvide
     private final ParentAppProp parentAppProp;
 
     public RemoteAuthorizationDataProvider(
-            RestTemplate oauth2ClientRestTemplate
-            , ParentAppProp parentAppProp) {
-        this.oauth2ClientRestTemplate = oauth2ClientRestTemplate;
+            ParentAppProp parentAppProp
+            , RestTemplate oauth2ClientRestTemplate) {
         this.parentAppProp = parentAppProp;
+        this.oauth2ClientRestTemplate = oauth2ClientRestTemplate;
     }
 
     @Override
@@ -79,8 +79,7 @@ public class RemoteAuthorizationDataProvider implements AuthorizationDataProvide
         UserPermissionInfoDto userPermissionInfoDto = null;
         if (StringUtils.isNotEmpty(myUserPermissionInfoUrl)) {
             UriComponentsBuilder myUserPermissionInfoUriBuilder = UriComponentsBuilder.fromUriString(myUserPermissionInfoUrl)
-                    .queryParam("appMid", this.parentAppProp.getAppMid())
-                    ;
+                    .queryParam("appMid", this.parentAppProp.getAppMid());
             String myUserPermissionInfoUriTemplate = myUserPermissionInfoUriBuilder.encode().toUriString();
             // Special handling of adding token to oauth2ClientRestTemplate
             HttpHeaders httpHeaders = new HttpHeaders();
@@ -89,7 +88,8 @@ public class RemoteAuthorizationDataProvider implements AuthorizationDataProvide
             ResponseEntity<UserPermissionInfoDto> responseEntity = this.oauth2ClientRestTemplate.exchange(
                     myUserPermissionInfoUriTemplate, HttpMethod.GET
                     , httpEntity
-                    , new ParameterizedTypeReference<UserPermissionInfoDto>() {});
+                    , new ParameterizedTypeReference<UserPermissionInfoDto>() {
+                    });
             userPermissionInfoDto = responseEntity.getBody();
             log.debug("findPermissionsByLoginId - loginId: [{}], myUserPermissionInfoUriTemplate: [{}], userPermissionInfoDto.getLoginId: [{}], userPermissionDtoList.size: [{}]"
 //                + ", responseEntity.getBody.toString: [{}]"

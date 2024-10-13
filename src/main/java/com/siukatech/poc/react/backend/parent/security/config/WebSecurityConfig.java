@@ -1,8 +1,5 @@
 package com.siukatech.poc.react.backend.parent.security.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.siukatech.poc.react.backend.parent.business.service.UserService;
-import com.siukatech.poc.react.backend.parent.global.config.ParentAppProp;
 import com.siukatech.poc.react.backend.parent.security.converter.KeycloakJwtAuthenticationConverter;
 import com.siukatech.poc.react.backend.parent.security.filter.AuthorizationDataFilter;
 import com.siukatech.poc.react.backend.parent.security.handler.KeycloakLogoutHandler;

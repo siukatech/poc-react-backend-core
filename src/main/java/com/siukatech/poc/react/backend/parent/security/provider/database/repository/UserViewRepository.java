@@ -1,7 +1,6 @@
-package com.siukatech.poc.react.backend.parent.data.repository;
+package com.siukatech.poc.react.backend.parent.security.provider.database.repository;
 
-import com.siukatech.poc.react.backend.parent.data.entity.UserEntity;
-import com.siukatech.poc.react.backend.parent.data.entity.UserViewEntity;
+import com.siukatech.poc.react.backend.parent.security.provider.database.entity.UserViewEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

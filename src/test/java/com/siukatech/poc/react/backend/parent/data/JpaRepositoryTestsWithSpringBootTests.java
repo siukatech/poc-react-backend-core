@@ -1,5 +1,8 @@
 package com.siukatech.poc.react.backend.parent.data;
 
+import com.siukatech.poc.react.backend.parent.security.provider.database.repository.UserPermissionRepository;
+import com.siukatech.poc.react.backend.parent.security.provider.database.repository.UserRepository;
+import com.siukatech.poc.react.backend.parent.security.provider.database.repository.UserViewRepository;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +41,12 @@ public class JpaRepositoryTestsWithSpringBootTests {
     @SpyBean
 //    @Autowired
     private OAuth2ClientProperties oAuth2ClientProperties;
+    @MockBean
+    private UserRepository userRepository;
+    @MockBean
+    private UserPermissionRepository userPermissionRepository;
+    @MockBean
+    private UserViewRepository userViewRepository;
 
     // This is not working, start
 //    @MockBean

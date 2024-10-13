@@ -6,7 +6,7 @@ import com.siukatech.poc.react.backend.parent.business.form.auth.LoginForm;
 import com.siukatech.poc.react.backend.parent.business.form.auth.RefreshTokenForm;
 import com.siukatech.poc.react.backend.parent.business.form.auth.TokenRes;
 import com.siukatech.poc.react.backend.parent.business.service.AuthService;
-import com.siukatech.poc.react.backend.parent.business.service.UserService;
+import com.siukatech.poc.react.backend.parent.security.provider.database.service.UserService;
 import com.siukatech.poc.react.backend.parent.util.EncryptionUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;

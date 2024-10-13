@@ -1,12 +1,14 @@
-package com.siukatech.poc.react.backend.parent.data.repository;
+package com.siukatech.poc.react.backend.parent.security.provider.database.repository;
 
-import com.siukatech.poc.react.backend.parent.data.entity.UserPermissionEntity;
+import com.siukatech.poc.react.backend.parent.security.provider.database.entity.UserPermissionEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+//@Repository
 public interface UserPermissionRepository extends JpaRepository<UserPermissionEntity, Long> {
 
     // https://stackoverflow.com/a/73583022

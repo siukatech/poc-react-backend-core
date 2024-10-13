@@ -1,7 +1,7 @@
 package com.siukatech.poc.react.backend.parent.web.controller;
 
 import com.siukatech.poc.react.backend.parent.business.dto.UserDto;
-import com.siukatech.poc.react.backend.parent.business.service.UserService;
+import com.siukatech.poc.react.backend.parent.security.provider.database.service.UserService;
 import com.siukatech.poc.react.backend.parent.web.annotation.v1.ProtectedApiV1Controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

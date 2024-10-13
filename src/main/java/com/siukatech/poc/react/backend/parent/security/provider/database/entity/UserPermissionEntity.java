@@ -1,4 +1,4 @@
-package com.siukatech.poc.react.backend.parent.data.entity;
+package com.siukatech.poc.react.backend.parent.security.provider.database.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

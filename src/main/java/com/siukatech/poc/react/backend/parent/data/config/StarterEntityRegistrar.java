@@ -1,6 +1,6 @@
 package com.siukatech.poc.react.backend.parent.data.config;
 
-import com.siukatech.poc.react.backend.parent.data.repository.UserRepository;
+import com.siukatech.poc.react.backend.parent.security.provider.database.repository.UserRepository;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.boot.autoconfigure.AutoConfigurationPackages;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;

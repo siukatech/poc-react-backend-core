@@ -1,15 +1,14 @@
-package com.siukatech.poc.react.backend.parent.data.entity;
+package com.siukatech.poc.react.backend.parent.security.provider.database.entity;
 
+import com.siukatech.poc.react.backend.parent.data.entity.AbstractEntity;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.time.LocalDateTime;
-
 @Data
 //@EqualsAndHashCode(callSuper = true)
-@Entity(name = "users_view")
-public class UserViewEntity extends AbstractEntity<Long> {
+@Entity(name = "users")
+public class UserEntity extends AbstractEntity<Long> {
 
     @Column(name = "login_id")
     protected String loginId;
@@ -19,8 +18,6 @@ public class UserViewEntity extends AbstractEntity<Long> {
     protected String publicKey;
     @Column(name = "private_key")
     protected String privateKey;
-    @Column(name = "current_timestamp")
-    protected LocalDateTime dbDatetime;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

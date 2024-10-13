@@ -1,5 +1,10 @@
 package com.siukatech.poc.react.backend.parent;
 
+import com.siukatech.poc.react.backend.parent.security.provider.AuthorizationDataProvider;
+import com.siukatech.poc.react.backend.parent.security.provider.DatabaseAuthorizationDataProvider;
+import com.siukatech.poc.react.backend.parent.security.provider.database.repository.UserPermissionRepository;
+import com.siukatech.poc.react.backend.parent.security.provider.database.repository.UserRepository;
+import com.siukatech.poc.react.backend.parent.security.provider.database.repository.UserViewRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.security.oauth2.client.OAuth2ClientProperties;
@@ -68,6 +73,12 @@ public class ReactBackendParentTests {
 //    @SpyBean
 //    @Autowired
     private OAuth2ClientProperties oAuth2ClientProperties;
+    @MockBean
+    private UserRepository userRepository;
+    @MockBean
+    private UserPermissionRepository userPermissionRepository;
+    @MockBean
+    private UserViewRepository userViewRepository;
 
     // not working, start
 //    @MockBean

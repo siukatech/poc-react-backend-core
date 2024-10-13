@@ -1,7 +1,8 @@
 package com.siukatech.poc.react.backend.parent.data.repository;
 
 import com.siukatech.poc.react.backend.parent.AbstractUnitTests;
-import com.siukatech.poc.react.backend.parent.data.entity.UserEntity;
+import com.siukatech.poc.react.backend.parent.security.provider.database.entity.UserEntity;
+import com.siukatech.poc.react.backend.parent.security.provider.database.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
