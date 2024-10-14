@@ -29,7 +29,7 @@ public class EncryptedResponseBodyAdvice implements ResponseBodyAdvice {
     // https://stackoverflow.com/a/3561399
     // Prefix "X-" IS NOT a recommendation for custom http header name.
     // Custom header name is just sensible without the "X-" prefix.
-    private final static String HEADER_X_DATA_ENC_INFO = "X-Data-Enc-Info";
+    private static final String HEADER_X_DATA_ENC_INFO = "X-Data-Enc-Info";
     private final EncryptedBodyContext encryptedBodyContext;
 //    private final UserRepository userRepository;
 //    private final ObjectMapper objectMapper;

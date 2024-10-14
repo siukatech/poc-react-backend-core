@@ -13,7 +13,7 @@ import java.util.Optional;
 @Component
 public class CorrelationIdHandler {
 
-    public final static String HEADER_X_CORRELATION_ID = "X-Correlation-Id";
+    public static final String HEADER_X_CORRELATION_ID = "X-Correlation-Id";
 
     private final Tracer tracer;
 

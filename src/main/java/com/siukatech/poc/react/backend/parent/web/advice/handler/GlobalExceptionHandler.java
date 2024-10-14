@@ -53,7 +53,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
      * @return
      */
     @ExceptionHandler(value = {IllegalArgumentException.class})
-    protected ResponseEntity<?> handleIllegalArgument(RuntimeException ex, WebRequest request) {
+    protected ResponseEntity handleIllegalArgument(RuntimeException ex, WebRequest request) {
 //        return this.handleExceptionInternal(ex, "handle IllegalArgumentException", new HttpHeaders(), HttpStatus.CONFLICT, request);
         log.error("handleIllegalArgument - ex: [" + ex
                 + "], ex.getClass.getName: [" + ex.getClass().getName()
@@ -73,7 +73,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
      * @return
      */
     @ExceptionHandler(value = {ObjectOptimisticLockingFailureException.class})
-    protected ResponseEntity<?> handleObjectOptimisticLockingFailure(ObjectOptimisticLockingFailureException ex, WebRequest request) {
+    protected ResponseEntity handleObjectOptimisticLockingFailure(ObjectOptimisticLockingFailureException ex, WebRequest request) {
 //        return this.handleExceptionInternal(ex, null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
         log.error("handleObjectOptimisticLockingFailure - ex: [" + ex
                 + "], ex.getIdentifier.getClass.getName: [" + ex.getIdentifier().getClass().getName()
@@ -90,7 +90,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(
+    protected ResponseEntity handleMethodArgumentNotValid(
             MethodArgumentNotValidException ex, HttpHeaders headers
             , HttpStatusCode status, WebRequest request) {
 //        return handleExceptionInternal(ex, defaultDetailBuf.toString(), headers, status, request);
@@ -150,7 +150,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @Override
-    protected ResponseEntity<Object> handleHttpMessageNotReadable(
+    protected ResponseEntity handleHttpMessageNotReadable(
             HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
 
         log.error("handleHttpMessageNotReadable - ex: [" + ex
@@ -167,7 +167,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @Override
-    protected ResponseEntity<Object> handleHttpMessageNotWritable(
+    protected ResponseEntity handleHttpMessageNotWritable(
             HttpMessageNotWritableException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
 
         log.error("handleHttpMessageNotWritable - ex: [" + ex
@@ -191,7 +191,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
      * @return
      */
     @ExceptionHandler(value = {EntityNotFoundException.class})
-    protected ResponseEntity<?> handleEntityNotFoundException(EntityNotFoundException ex, WebRequest request) {
+    protected ResponseEntity handleEntityNotFoundException(EntityNotFoundException ex, WebRequest request) {
 //        return this.handleExceptionInternal(ex, null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
         log.error("handleEntityNotFoundException - ex: [" + ex
                 + "], ex.getClass.getName: [" + ex.getClass().getName()
@@ -205,7 +205,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(value = NoSuchPermissionException.class)
-    protected ResponseEntity<?> handleNoSuchPermissionException(NoSuchPermissionException ex, WebRequest request) {
+    protected ResponseEntity handleNoSuchPermissionException(NoSuchPermissionException ex, WebRequest request) {
 
         log.error("handleNoSuchPermissionException - ex: [" + ex
                 + "], ex.getClass.getName: [" + ex.getClass().getName()
@@ -225,7 +225,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(value = RuntimeException.class)
-    protected ResponseEntity<?> handleRuntimeException(RuntimeException ex, WebRequest request) {
+    protected ResponseEntity handleRuntimeException(RuntimeException ex, WebRequest request) {
 
         log.error("handleRuntimeException - ex: [" + ex
                 + "], ex.getClass.getName: [" + ex.getClass().getName()

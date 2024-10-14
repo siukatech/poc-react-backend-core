@@ -28,7 +28,7 @@ public class KeycloakJwtAuthenticationConverter implements Converter<Jwt, Abstra
 //    private final UserService userService;
     private final AuthorizationDataProvider authorizationDataProvider;
 
-    private KeycloakJwtAuthenticationConverter(
+    public KeycloakJwtAuthenticationConverter(
 //            UserService userService,
             AuthorizationDataProvider authorizationDataProvider) {
 //        this.userService = userService;
@@ -61,7 +61,6 @@ public class KeycloakJwtAuthenticationConverter implements Converter<Jwt, Abstra
 //                = new UsernamePasswordAuthenticationToken(userDetails
 //                , source.getTokenValue(), userDetails.getAuthorities());
 
-//        // Todo
         UserDto userDto = null;
 //        if (SecurityContextHolder.getContext().getAuthentication() != null) {
 //        userDto = userService.findByLoginId(loginId);

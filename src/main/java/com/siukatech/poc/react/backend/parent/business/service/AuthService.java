@@ -25,11 +25,13 @@ import java.util.stream.Collectors;
 @Service
 public class AuthService {
 
+    public static final String RESPONSE_TYPE_CODE = "code";
+    public static final String CODE_CHALLENGE_METHOD = "S256";
+
     private final OAuth2ClientProperties oAuth2ClientProperties;
     private final RestTemplate oauth2ClientRestTemplate;
     //    private final ParentAppProp parentAppProp;
     private final ObjectMapper objectMapper;
-    private AuthReq authCodeReq;
 
     public AuthService(OAuth2ClientProperties oAuth2ClientProperties
             , RestTemplate oauth2ClientRestTemplate
@@ -84,7 +86,7 @@ public class AuthService {
         );
 
         AuthCodeReq.AuthCodeReqBuilder authCodeReqBuilder = AuthCodeReq.builder()
-                .responseType(AuthReq.RESPONSE_TYPE_CODE)
+                .responseType(RESPONSE_TYPE_CODE)
                 .clientId(registration.getClientId())
 
                 // the separator of scope is space " ", not comma
@@ -95,7 +97,7 @@ public class AuthService {
         if (StringUtils.hasText(codeChallenge)) {
             authCodeReqBuilder = authCodeReqBuilder
                     .codeChallenge(codeChallenge)
-                    .codeChallengeMethod(AuthReq.CODE_CHALLENGE_METHOD)
+                    .codeChallengeMethod(CODE_CHALLENGE_METHOD)
             ;
         }
         AuthReq authCodeReq = authCodeReqBuilder.build();
@@ -107,7 +109,8 @@ public class AuthService {
         Map<String, String> authCodeReqMap = this.objectMapper.convertValue(authCodeReq, Map.class);
         List<NameValuePair> nameValuePairList = authCodeReqMap.entrySet().stream()
                 .map(entry -> new BasicNameValuePair(entry.getKey(), entry.getValue()))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList())
+                ;
         // https://stackoverflow.com/a/2810434
         // https://stackoverflow.com/a/16066990
         String queryString =
@@ -281,7 +284,7 @@ public class AuthService {
 
     public HttpStatusCode doAuthLogout(String logoutApi) throws URISyntaxException {
         ResponseEntity<Map> responseEntity = this.oauth2ClientRestTemplate.getForEntity(new URI(logoutApi), Map.class);
-        Map map = responseEntity.getBody();
+        Map<String, String> map = responseEntity.getBody();
         log.debug("doAuthLogout - map: [{}], responseEntity: [{}]"
                 , map, responseEntity);
         return responseEntity.getStatusCode();

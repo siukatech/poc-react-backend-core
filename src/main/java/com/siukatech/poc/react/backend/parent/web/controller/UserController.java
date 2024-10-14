@@ -19,7 +19,7 @@ public class UserController {
     }
 
     @PostMapping("/users/{targetLoginId}/user-info")
-    public ResponseEntity<?> getUserInfo(@PathVariable
+    public ResponseEntity getUserInfo(@PathVariable
 //                                                 // after upgrade to springboot >= 3.2.1
 //                                                 // this can be fixed by update build.gradle or adding maven plugin
 //                                                 // https://stackoverflow.com/a/77691302

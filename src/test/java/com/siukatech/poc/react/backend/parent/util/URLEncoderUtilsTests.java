@@ -13,7 +13,7 @@ import static org.springframework.test.util.AssertionErrors.assertEquals;
 //@Slf4j
 public class URLEncoderUtilsTests extends AbstractUnitTests {
 
-    @Test
+//    @Test
     void contextLoads() {
     }
 

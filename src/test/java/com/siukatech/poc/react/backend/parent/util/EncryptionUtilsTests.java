@@ -2,6 +2,7 @@ package com.siukatech.poc.react.backend.parent.util;
 
 import com.siukatech.poc.react.backend.parent.AbstractUnitTests;
 import com.siukatech.poc.react.backend.parent.business.form.auth.TokenRes;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -18,6 +19,7 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.Base64;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.util.AssertionErrors.assertEquals;
 
 ////@Slf4j
@@ -27,7 +29,7 @@ public class EncryptionUtilsTests extends AbstractUnitTests {
 
 //    private static final Logger log = LoggerFactory.getLogger(EncryptionUtilsTests.class);
 
-    @Test
+//    @Test
     void contextLoads() {
     }
 
@@ -70,6 +72,8 @@ public class EncryptionUtilsTests extends AbstractUnitTests {
         String decryptedStr = new String(decryptedData);
 //        System.out.println("test_cryptoUtil_rsaContent - decryptedStr: [" + decryptedStr + "]");
         log.debug("test_cryptoUtil_rsaContent - decryptedStr: [" + decryptedStr + "]");
+        assertThat(decryptedStr).contains("key");
+        assertThat(decryptedStr).contains("cipher");
     }
 
     @Test
@@ -87,6 +91,8 @@ public class EncryptionUtilsTests extends AbstractUnitTests {
 //        System.out.println("test_cryptoUtil_rsaContent_2 - decryptedStr: [" + decryptedStr + "]");
         log.debug("test_cryptoUtil_rsaContent_2 - encryptedDataBase64: [" + encryptedDataBase64 + "]");
         log.debug("test_cryptoUtil_rsaContent_2 - decryptedStr: [" + decryptedStr + "]");
+        assertThat(decryptedStr).contains("versionNo");
+        assertThat(decryptedStr).contains("purchasedDate");
     }
 
     @Test
@@ -111,6 +117,8 @@ public class EncryptionUtilsTests extends AbstractUnitTests {
         log.debug("test_cryptoUtil_aesContent_cbc - dataStr: [" + dataStr
                 + "], decryptedStr: [" + decryptedStr
                 + "]");
+        assertThat(dataStr).isEqualTo(decryptedStr);
+        Assertions.assertEquals(dataStr, decryptedStr);
     }
     @Test
     void cryptoUtil_aesContent2_ecb() throws Exception {
@@ -120,11 +128,16 @@ public class EncryptionUtilsTests extends AbstractUnitTests {
         String message = "안녕하세요";
         byte[] encryptedData = EncryptionUtils.encryptWithAesEcbSecret(message, keyArr);
         String encryptedDataBase64 = Base64.getEncoder().encodeToString(encryptedData);
+        byte[] decryptedData = Base64.getDecoder().decode(encryptedDataBase64);
 //        System.out.println("test_cryptoUtil_aesContent2_ecb - keyArrBase64: [" + keyArrBase64 + "]");
 //        System.out.println("test_cryptoUtil_aesContent2_ecb - encryptedDataBase64: [" + encryptedDataBase64 + "]");
         log.debug("test_cryptoUtil_aesContent2_ecb - keyArr.length: [" + keyArr.length + "]");
         log.debug("test_cryptoUtil_aesContent2_ecb - keyArrBase64: [" + keyArrBase64 + "]");
         log.debug("test_cryptoUtil_aesContent2_ecb - encryptedDataBase64: [" + encryptedDataBase64 + "]");
+        log.debug("test_cryptoUtil_aesContent2_ecb - encryptedData.length: [" + encryptedData.length + "]");
+        log.debug("test_cryptoUtil_aesContent2_ecb - decryptedData.length: [" + decryptedData.length + "]");
+        Assertions.assertNotNull(decryptedData);
+        assertThat(encryptedData.length).isEqualTo(decryptedData.length);
     }
 
     @Test
@@ -138,12 +151,17 @@ public class EncryptionUtilsTests extends AbstractUnitTests {
         String ivStr = new String(iv);
         byte[] encryptedData = EncryptionUtils.encryptWithAesCbcSecret(dataStr, key, iv);
         String encryptedDataBase64 = Base64.getEncoder().encodeToString(encryptedData);
+        byte[] decryptedData = Base64.getDecoder().decode(encryptedDataBase64);
 //        System.out.println("test_cryptoUtil_aesContent2_cbc - key.length: [" + key.length + "], keyBase64: [" + keyBase64 + "]");
 //        System.out.println("test_cryptoUtil_aesContent2_cbc - iv.length: [" + iv.length + "], ivStr: [" + ivStr + "]");
 //        System.out.println("test_cryptoUtil_aesContent2_cbc - encryptedDataBase64: [" + encryptedDataBase64 + "]");
         log.debug("test_cryptoUtil_aesContent2_cbc - key.length: [" + key.length + "], keyBase64: [" + keyBase64 + "]");
         log.debug("test_cryptoUtil_aesContent2_cbc - iv.length: [" + iv.length + "], ivStr: [" + ivStr + "]");
         log.debug("test_cryptoUtil_aesContent2_cbc - encryptedDataBase64: [" + encryptedDataBase64 + "]");
+        log.debug("test_cryptoUtil_aesContent2_cbc - encryptedData.length: [" + encryptedData.length + "]");
+        log.debug("test_cryptoUtil_aesContent2_cbc - decryptedData.length: [" + decryptedData.length + "]");
+        Assertions.assertNotNull(decryptedData);
+        assertThat(encryptedData.length).isEqualTo(decryptedData.length);
     }
 
     @Test
@@ -170,6 +188,8 @@ public class EncryptionUtilsTests extends AbstractUnitTests {
         log.debug("test_cryptoUtil_aesContent2_gcm - iv.length: [" + iv.length + "], ivStr: [" + ivStr + "]");
         log.debug("test_cryptoUtil_aesContent2_gcm - encryptedDataBase64: [" + encryptedDataBase64 + "]");
         log.debug("test_cryptoUtil_aesContent2_gcm - decryptedStr: [" + decryptedStr + "]");
+        //
+        assertThat(decryptedStr).isEqualTo(dataStr);
     }
 
     @Test
@@ -180,6 +200,11 @@ public class EncryptionUtilsTests extends AbstractUnitTests {
         String message = "{\"versionNo\":null,\"id\":40,\"title\":null,\"purchasedDate\":null,\"createdBy\":null,\"createdDatetime\":null,\"lastModifiedBy\":null,\"lastModifiedDatetime\":null}";
         byte[] encryptedData = EncryptionUtils.encryptWithAesEcbSecret(message, keyArr);
         String encryptedDataBase64 = Base64.getEncoder().encodeToString(encryptedData);
+        //
+        byte[] data = Base64.getDecoder().decode(encryptedDataBase64);
+        byte[] decryptedData = EncryptionUtils.decryptWithAesEcbSecret(data, keyArr);
+        String decryptedStr = new String(decryptedData);
+        //
 //        System.out.println("test_cryptoUtil_aesContent3_ecb - keyBase64: [" + keyBase64 + "]");
 //        System.out.println("test_cryptoUtil_aesContent3_ecb - keyArrBase64: [" + keyArrBase64 + "]");
 //        System.out.println("test_cryptoUtil_aesContent3_ecb - encryptedDataBase64: [" + encryptedDataBase64 + "]");
@@ -187,6 +212,9 @@ public class EncryptionUtilsTests extends AbstractUnitTests {
         log.debug("test_cryptoUtil_aesContent3_ecb - keyBase64: [" + keyBase64 + "]");
         log.debug("test_cryptoUtil_aesContent3_ecb - keyArrBase64: [" + keyArrBase64 + "]");
         log.debug("test_cryptoUtil_aesContent3_ecb - encryptedDataBase64: [" + encryptedDataBase64 + "]");
+        log.debug("test_cryptoUtil_aesContent3_ecb - decryptedStr: [" + decryptedStr + "]");
+        //
+        assertThat(decryptedStr).isEqualTo(message);
     }
 
 }

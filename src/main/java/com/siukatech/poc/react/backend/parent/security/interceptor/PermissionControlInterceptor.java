@@ -35,15 +35,14 @@ public class PermissionControlInterceptor implements HandlerInterceptor {
         log.debug("preHandle - request.getRequestURI: [${}], handler: [{}]", request.getRequestURI(), handler);
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication instanceof MyAuthenticationToken myAuthenticationToken) {
+        if (authentication instanceof MyAuthenticationToken myAuthenticationToken
+                && myAuthenticationToken.getAuthorities() instanceof MyGrantedAuthority myGrantedAuthority) {
 //            myAuthenticationToken.getName();
-            if (myAuthenticationToken.getAuthorities() instanceof MyGrantedAuthority myGrantedAuthority) {
-                myGrantedAuthority.getAuthority();
-                log.debug("preHandle - authentication.name: [{}], myGrantedAuthority.getAuthority: [{}]"
-                        , authentication == null ? "" : authentication.getName()
-                        , myGrantedAuthority.getAuthority()
-                );
-            }
+            myGrantedAuthority.getAuthority();
+            log.debug("preHandle - authentication.name: [{}], myGrantedAuthority.getAuthority: [{}]"
+                    , authentication == null ? "" : authentication.getName()
+                    , myGrantedAuthority.getAuthority()
+            );
         }
         log.debug("preHandle - authentication.name: [{}]"
                 , authentication == null ? "NULL" : authentication.getName()

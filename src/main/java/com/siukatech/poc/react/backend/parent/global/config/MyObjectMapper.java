@@ -60,7 +60,7 @@ public class MyObjectMapper extends ObjectMapper {
     }
 
     @Override
-    public <T> T readValue(JsonParser p, JavaType valueType) throws IOException, StreamReadException, DatabindException {
+    public <T> T readValue(JsonParser p, JavaType valueType) throws IOException {
         log.debug("readValue - valueType: [{}]", valueType.getClass().getName());
         return super.readValue(p, valueType);
     }

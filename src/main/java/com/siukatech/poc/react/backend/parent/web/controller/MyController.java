@@ -25,7 +25,7 @@ public class MyController {
     }
 
     @GetMapping("/my/public-key")
-    public ResponseEntity<?> getPublicKey(@RequestHeader HttpHeaders httpHeaders
+    public ResponseEntity getPublicKey(@RequestHeader HttpHeaders httpHeaders
             , Authentication authentication) {
         Authentication authenticationInSc = SecurityContextHolder.getContext().getAuthentication();
         HttpHeaderUtils.logHttpHeaders(httpHeaders);
@@ -39,7 +39,7 @@ public class MyController {
     }
 
     @GetMapping("/my/key-info")
-    public ResponseEntity<?> getKeyInfo(@RequestHeader HttpHeaders httpHeaders
+    public ResponseEntity getKeyInfo(@RequestHeader HttpHeaders httpHeaders
             , Authentication authentication) {
         Authentication authenticationInSc = SecurityContextHolder.getContext().getAuthentication();
         HttpHeaderUtils.logHttpHeaders(httpHeaders);
@@ -52,7 +52,7 @@ public class MyController {
     }
 
     @GetMapping("/my/user-info")
-    public ResponseEntity<?> getUserInfo(@RequestHeader HttpHeaders httpHeaders
+    public ResponseEntity getUserInfo(@RequestHeader HttpHeaders httpHeaders
             , Authentication authentication) {
         Authentication authenticationInSc = SecurityContextHolder.getContext().getAuthentication();
         HttpHeaderUtils.logHttpHeaders(httpHeaders);
@@ -65,7 +65,7 @@ public class MyController {
     }
 
     @GetMapping("/my/permissions")
-    public ResponseEntity<?> getUserPermissions(@RequestHeader HttpHeaders httpHeaders
+    public ResponseEntity getUserPermissions(@RequestHeader HttpHeaders httpHeaders
             , @RequestParam(required = true) String appMid
             , Authentication authentication) {
         Authentication authenticationInSc = SecurityContextHolder.getContext().getAuthentication();
@@ -80,7 +80,7 @@ public class MyController {
     }
 
     @GetMapping("/my/permission-info")
-    public ResponseEntity<?> getUserPermissionInfo(@RequestHeader HttpHeaders httpHeaders
+    public ResponseEntity getUserPermissionInfo(@RequestHeader HttpHeaders httpHeaders
             , @RequestParam(required = true) String appMid
             , Authentication authentication) {
         Authentication authenticationInSc = SecurityContextHolder.getContext().getAuthentication();
@@ -99,7 +99,7 @@ public class MyController {
     }
 
     @GetMapping("/my/user-view")
-    public ResponseEntity<?> getUserView(@RequestHeader HttpHeaders httpHeaders
+    public ResponseEntity getUserView(@RequestHeader HttpHeaders httpHeaders
             , Authentication authentication) {
         Authentication authenticationInSc = SecurityContextHolder.getContext().getAuthentication();
         HttpHeaderUtils.logHttpHeaders(httpHeaders);

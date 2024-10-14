@@ -11,7 +11,7 @@ import static org.springframework.test.util.AssertionErrors.*;
 
 public class EncodingUtilsTests extends AbstractUnitTests {
 
-    @Test
+//    @Test
     void contextLoads() {
     }
 

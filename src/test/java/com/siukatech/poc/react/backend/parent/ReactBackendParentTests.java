@@ -6,6 +6,7 @@ import com.siukatech.poc.react.backend.parent.security.provider.database.reposit
 import com.siukatech.poc.react.backend.parent.security.provider.database.repository.UserRepository;
 import com.siukatech.poc.react.backend.parent.security.provider.database.repository.UserViewRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.security.oauth2.client.OAuth2ClientProperties;
 import org.springframework.boot.test.autoconfigure.OverrideAutoConfiguration;
@@ -87,6 +88,7 @@ public class ReactBackendParentTests {
 
     @Test
     void contextLoads() {
+        Assertions.assertNotNull(oAuth2ClientProperties);
     }
 
 }

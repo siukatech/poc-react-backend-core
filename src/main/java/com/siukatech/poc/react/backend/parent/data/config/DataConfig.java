@@ -27,16 +27,18 @@ public class DataConfig {
 
     @Bean
     public AuditorAware<String> auditorAware() {
-        return new AuditorAware<String>() {
-            @Override
-            public Optional<String> getCurrentAuditor() {
-                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-                String name = (authentication == null ? "NULL" : authentication.getName());
-                log.debug("getCurrentAuditor - name: [{}], authentication: [{}]"
-                        , name, authentication);
-                return Optional.of(name);
-            }
+//        return new AuditorAware<String>() {
+//            @Override
+//            public Optional<String> getCurrentAuditor() {
+        return () -> {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String name = (authentication == null ? "NULL" : authentication.getName());
+            log.debug("getCurrentAuditor - name: [{}], authentication: [{}]"
+                    , name, authentication);
+            return Optional.of(name);
         };
+//            }
+//        };
     }
 
 }

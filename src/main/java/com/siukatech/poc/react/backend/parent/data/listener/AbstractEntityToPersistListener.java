@@ -10,7 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 public class AbstractEntityToPersistListener {
 
     @PrePersist
-    protected void onSavePrePersist(final AbstractEntity abstractEntity) {
+    protected void onSavePrePersist(final AbstractEntity<?> abstractEntity) {
         log.debug("onSavePrePersist - abstractEntity.getClass().getName: [{}"
                 + "], abstractEntity.getId: [{}"
                 + "], abstractEntity.getVersionNo: [{}"
@@ -26,7 +26,7 @@ public class AbstractEntityToPersistListener {
     }
 
     @PostPersist
-    protected void onSavePostPersist(final AbstractEntity abstractEntity) {
+    protected void onSavePostPersist(final AbstractEntity<?> abstractEntity) {
         log.debug("onSavePostPersist - abstractEntity.getClass().getName: [{}"
                         + "], abstractEntity.getId: [{}"
                         + "], abstractEntity.getVersionNo: [{}"
@@ -37,7 +37,7 @@ public class AbstractEntityToPersistListener {
     }
 
     @PreUpdate
-    protected void onSavePreUpdate(final AbstractEntity abstractEntity) {
+    protected void onSavePreUpdate(final AbstractEntity<?> abstractEntity) {
         log.debug("onSavePreUpdate - abstractEntity.getClass().getName: [{}"
                         + "], abstractEntity.getId: [{}"
                         + "], abstractEntity.getVersionNo: [{}"
@@ -51,7 +51,7 @@ public class AbstractEntityToPersistListener {
     }
 
     @PostUpdate
-    protected void onSavePostUpdate(final AbstractEntity abstractEntity) {
+    protected void onSavePostUpdate(final AbstractEntity<?> abstractEntity) {
         log.debug("onSavePostUpdate - abstractEntity.getClass().getName: [{}"
                         + "], abstractEntity.getId: [{}"
                         + "], abstractEntity.getVersionNo: [{}"
@@ -62,7 +62,7 @@ public class AbstractEntityToPersistListener {
     }
 
     @PreRemove
-    protected void onSavePreRemove(final AbstractEntity abstractEntity) {
+    protected void onSavePreRemove(final AbstractEntity<?> abstractEntity) {
         log.debug("onSavePreRemove - abstractEntity.getClass().getName: [{}"
                         + "], abstractEntity.getId: [{}"
                         + "], abstractEntity.getVersionNo: [{}"
@@ -73,7 +73,7 @@ public class AbstractEntityToPersistListener {
     }
 
     @PostRemove
-    protected void onSavePostRemove(final AbstractEntity abstractEntity) {
+    protected void onSavePostRemove(final AbstractEntity<?> abstractEntity) {
         log.debug("onSavePostRemove - abstractEntity.getClass().getName: [{}"
                         + "], abstractEntity.getId: [{}"
                         + "], abstractEntity.getVersionNo: [{}"
@@ -84,7 +84,7 @@ public class AbstractEntityToPersistListener {
     }
 
     @PostLoad
-    protected void onGetPostLoad(final AbstractEntity abstractEntity) {
+    protected void onGetPostLoad(final AbstractEntity<?> abstractEntity) {
         log.debug("onGetPostLoad - abstractEntity.getClass().getName: [{}"
                         + "], abstractEntity.getId: [{}"
                         + "], abstractEntity.getVersionNo: [{}"

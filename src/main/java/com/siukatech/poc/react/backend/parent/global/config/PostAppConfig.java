@@ -48,9 +48,9 @@ public class PostAppConfig {
                     , typeName, simpleName, formTypeName);
             if (formTypeName.endsWith("Form")) {
                 try {
-                    Class formType = ClassUtils.getClass(formTypeName);
-                    AbstractEntity entityObj = (AbstractEntity) entityType.getDeclaredConstructor().newInstance();
-                    AbstractForm formObj = (AbstractForm) formType.getDeclaredConstructor().newInstance();
+                    Class<?> formType = ClassUtils.getClass(formTypeName);
+                    AbstractEntity<?> entityObj = (AbstractEntity) entityType.getDeclaredConstructor().newInstance();
+                    AbstractForm<?> formObj = (AbstractForm) formType.getDeclaredConstructor().newInstance();
                     registerPropertyMap(formObj, entityObj);
                 } catch (ClassNotFoundException e) {
                     log.error("configModelMapper - ClassNotFoundException - e.getMessage: " + e.getMessage());

@@ -57,7 +57,7 @@ public class AuthController {
     }
 
     @PostMapping(value = "/auth/login/{clientName}")
-    public ResponseEntity<?> doPasswordLogin(@PathVariable String clientName
+    public ResponseEntity doPasswordLogin(@PathVariable String clientName
             , @RequestBody @Valid LoginForm loginForm) {
         TokenRes tokenRes = this.authService.resolvePasswordTokenRes(clientName, loginForm);
         log.debug("doPasswordLogin - clientName: [" + clientName
@@ -68,7 +68,7 @@ public class AuthController {
     }
 
     @PostMapping(value = "/auth/token/{clientName}/{code}")
-    public ResponseEntity<?> doAuthCodeToken(
+    public ResponseEntity doAuthCodeToken(
             @PathVariable String clientName, @PathVariable String code
             , @RequestParam(required = false) String codeVerifier
     ) {
@@ -82,7 +82,7 @@ public class AuthController {
     }
 
     @PostMapping(value = "/auth/refresh-token/{clientName}")
-    public ResponseEntity<?> doAuthTokenRefresh(@PathVariable String clientName
+    public ResponseEntity doAuthTokenRefresh(@PathVariable String clientName
             , @RequestBody @Valid RefreshTokenForm refreshTokenForm) {
         TokenRes tokenRes = this.authService.resolveRefreshTokenTokenRes(clientName, refreshTokenForm);
         log.debug("doPasswordLogin - clientName: [" + clientName
@@ -93,7 +93,7 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<?> doAuthLogout(HttpServletRequest request) throws URISyntaxException {
+    public ResponseEntity doAuthLogout(HttpServletRequest request) throws URISyntaxException {
         try {
             String requestURL = request.getRequestURL().toString();
             String requestURI = request.getRequestURI();

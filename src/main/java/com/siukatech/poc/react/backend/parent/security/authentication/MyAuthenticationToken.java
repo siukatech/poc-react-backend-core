@@ -8,9 +8,9 @@ import java.util.Collection;
 
 public class MyAuthenticationToken extends OAuth2AuthenticationToken {
 
-    public final static String ATTR_TOKEN_VALUE = "ATTR_TOKEN_VALUE";
-    public final static String ATTR_USER_ID = "ATTR_USER_ID";
-    public final static String ATTR_PUBLIC_KEY = "ATTR_PUBLIC_KEY";
+    public static final String ATTR_TOKEN_VALUE = "ATTR_TOKEN_VALUE";
+    public static final String ATTR_USER_ID = "ATTR_USER_ID";
+    public static final String ATTR_PUBLIC_KEY = "ATTR_PUBLIC_KEY";
 
     /**
      * Constructs an {@code OAuth2AuthenticationToken} using the provided parameters.

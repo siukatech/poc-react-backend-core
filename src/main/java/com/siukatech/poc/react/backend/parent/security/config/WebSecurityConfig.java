@@ -305,7 +305,7 @@ public class WebSecurityConfig {
         OAuth2TokenValidator<Jwt> withIssuerJwtTokenValidator = JwtValidators.createDefaultWithIssuer(
                 oAuth2ResourceServerProperties.getJwt().getIssuerUri()
         );
-        OAuth2TokenValidator<Jwt> jwtDelegatingOAuth2TokenValidator = new DelegatingOAuth2TokenValidator<Jwt>(withIssuerJwtTokenValidator);
+        OAuth2TokenValidator<Jwt> jwtDelegatingOAuth2TokenValidator = new DelegatingOAuth2TokenValidator<>(withIssuerJwtTokenValidator);
         jwtDecoder.setJwtValidator(jwtDelegatingOAuth2TokenValidator);
         return jwtDecoder;
     }
