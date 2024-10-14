@@ -24,6 +24,7 @@ public class EncryptionUtils {
     public static final String ALGORITHM_RSA = "RSA";
     public static final String ALGORITHM_AES = "AES";
     public static final String TRANSFORMATION_RSA = "RSA";
+    public static final String TRANSFORMATION_RSA_NONE_OAEPWITHSHA256_MGF1PADDING = "RSA/None/OAEPWITHSHA-256ANDMGF1PADDING";
     public static final String TRANSFORMATION_AES_CBC_PKCS5PADDING = "AES/CBC/PKCS5Padding";
     public static final String TRANSFORMATION_AES_ECB_PKCS5PADDING = "AES/ECB/PKCS5Padding";
     public static final String TRANSFORMATION_AES_GCM_NOPADDING = "AES/GCM/NoPadding";
