@@ -74,7 +74,7 @@ public abstract class AbstractWebTests extends AbstractUnitTests {
         return authenticationToken;
     }
 
-    protected MyAuthenticationToken prepareMyAuthenticationToken(String loginId, Long userId) {
+    protected MyAuthenticationToken prepareMyAuthenticationToken(String loginId, String userId) {
         List<GrantedAuthority> convertedAuthorities = new ArrayList<GrantedAuthority>();
         Map<String, Object> attributeMap = new HashMap<>();
         attributeMap.put(StandardClaimNames.PREFERRED_USERNAME, loginId);

@@ -30,7 +30,7 @@ public class MyAuthenticationToken extends OAuth2AuthenticationToken {
         return this.getPrincipal().getAttribute(ATTR_TOKEN_VALUE);
     }
 
-    public Long getUserId() {
+    public String getUserId() {
         return this.getPrincipal().getAttribute(ATTR_USER_ID);
     }
 

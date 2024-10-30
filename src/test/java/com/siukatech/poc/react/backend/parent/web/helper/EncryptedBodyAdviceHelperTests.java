@@ -5,7 +5,7 @@ import com.siukatech.poc.react.backend.parent.AbstractUnitTests;
 import com.siukatech.poc.react.backend.parent.business.dto.MyKeyDto;
 import com.siukatech.poc.react.backend.parent.business.form.encrypted.EncryptedDetail;
 import com.siukatech.poc.react.backend.parent.business.form.encrypted.EncryptedInfo;
-import com.siukatech.poc.react.backend.parent.business.service.AuthService;
+import com.siukatech.poc.react.backend.parent.user.service.AuthService;
 import com.siukatech.poc.react.backend.parent.global.config.ParentAppProp;
 import com.siukatech.poc.react.backend.parent.security.provider.AuthorizationDataProvider;
 import com.siukatech.poc.react.backend.parent.util.EncryptionUtils;

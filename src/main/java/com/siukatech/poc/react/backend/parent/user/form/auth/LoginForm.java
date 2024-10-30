@@ -1,4 +1,4 @@
-package com.siukatech.poc.react.backend.parent.business.form.auth;
+package com.siukatech.poc.react.backend.parent.user.form.auth;
 
 import lombok.Data;
 

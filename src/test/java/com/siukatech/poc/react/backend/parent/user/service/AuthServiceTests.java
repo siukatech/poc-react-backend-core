@@ -1,12 +1,13 @@
-package com.siukatech.poc.react.backend.parent.business.service;
+package com.siukatech.poc.react.backend.parent.user.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.siukatech.poc.react.backend.parent.AbstractUnitTests;
 import com.siukatech.poc.react.backend.parent.business.dto.MyKeyDto;
-import com.siukatech.poc.react.backend.parent.business.form.auth.LoginForm;
-import com.siukatech.poc.react.backend.parent.business.form.auth.RefreshTokenForm;
-import com.siukatech.poc.react.backend.parent.business.form.auth.TokenRes;
+import com.siukatech.poc.react.backend.parent.user.form.auth.LoginForm;
+import com.siukatech.poc.react.backend.parent.user.form.auth.RefreshTokenForm;
+import com.siukatech.poc.react.backend.parent.user.form.auth.TokenRes;
 import com.siukatech.poc.react.backend.parent.global.config.ParentAppProp;
+import com.siukatech.poc.react.backend.parent.user.service.AuthService;
 import com.siukatech.poc.react.backend.parent.util.EncryptionUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Condition;

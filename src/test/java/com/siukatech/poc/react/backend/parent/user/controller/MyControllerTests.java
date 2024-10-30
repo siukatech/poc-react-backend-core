@@ -29,6 +29,7 @@ import org.springframework.web.context.WebApplicationContext;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -126,7 +127,7 @@ public class MyControllerTests extends AbstractWebTests {
     }
 
     private MyAuthenticationToken prepareMyAuthenticationToken_basic() {
-        return prepareMyAuthenticationToken("app-user-01", 1L);
+        return prepareMyAuthenticationToken("app-user-01", UUID.randomUUID().toString());
     }
 
 //    @BeforeAll
