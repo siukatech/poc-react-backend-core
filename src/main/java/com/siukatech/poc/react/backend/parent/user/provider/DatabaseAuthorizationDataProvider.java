@@ -1,13 +1,13 @@
-package com.siukatech.poc.react.backend.parent.security.provider;
+package com.siukatech.poc.react.backend.parent.user.provider;
 
 import com.siukatech.poc.react.backend.parent.business.dto.UserDto;
 import com.siukatech.poc.react.backend.parent.business.dto.UserPermissionDto;
-import com.siukatech.poc.react.backend.parent.security.provider.database.entity.UserEntity;
-import com.siukatech.poc.react.backend.parent.security.provider.database.entity.UserPermissionEntity;
-import com.siukatech.poc.react.backend.parent.security.provider.database.repository.UserPermissionRepository;
-import com.siukatech.poc.react.backend.parent.security.provider.database.repository.UserRepository;
-import com.siukatech.poc.react.backend.parent.security.provider.database.repository.UserViewRepository;
-import com.siukatech.poc.react.backend.parent.security.provider.database.service.UserService;
+import com.siukatech.poc.react.backend.parent.security.provider.AuthorizationDataProvider;
+import com.siukatech.poc.react.backend.parent.user.entity.UserEntity;
+import com.siukatech.poc.react.backend.parent.user.entity.UserPermissionEntity;
+import com.siukatech.poc.react.backend.parent.user.repository.UserPermissionRepository;
+import com.siukatech.poc.react.backend.parent.user.repository.UserRepository;
+import com.siukatech.poc.react.backend.parent.user.repository.UserViewRepository;
 import com.siukatech.poc.react.backend.parent.global.config.ParentAppProp;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
@@ -63,8 +63,8 @@ public class DatabaseAuthorizationDataProvider implements AuthorizationDataProvi
     public List<UserPermissionDto> findPermissionsByLoginId(String targetLoginId, String tokenValue) {
         log.debug("findPermissionsByLoginId - start");
 //        List<UserPermissionDto> userPermissionDtoList = userService
-//                .findPermissionsByLoginIdAndAppMid(loginId, parentAppProp.getAppMid());
-        List<UserPermissionEntity> userPermissionEntityList = this.userPermissionRepository.findUserPermissionByLoginIdAndAppMid(targetLoginId, parentAppProp.getAppMid());
+//                .findPermissionsByLoginIdAndApplicationId(loginId, parentAppProp.getApplicationId());
+        List<UserPermissionEntity> userPermissionEntityList = this.userPermissionRepository.findUserPermissionByLoginIdAndApplicationId(targetLoginId, parentAppProp.getApplicationId());
         List<UserPermissionDto> userPermissionDtoList = userPermissionEntityList.stream()
                 .map(userPermissionEntity -> this.modelMapper
                         .map(userPermissionEntity, UserPermissionDto.class))

@@ -1,4 +1,4 @@
-package com.siukatech.poc.react.backend.parent.security.provider.database.entity;
+package com.siukatech.poc.react.backend.parent.user.entity;
 
 import com.siukatech.poc.react.backend.parent.data.entity.AbstractEntity;
 import jakarta.persistence.*;
@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Data
 //@EqualsAndHashCode(callSuper = true)
 @Entity(name = "users_view")
-public class UserViewEntity extends AbstractEntity<Long> {
+public class UserViewEntity extends AbstractEntity<String> {
 
     @Column(name = "login_id")
     protected String loginId;
@@ -24,7 +24,9 @@ public class UserViewEntity extends AbstractEntity<Long> {
     protected LocalDateTime dbDatetime;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    protected Long id;
+////    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.UUID)
+    protected String id;
 
 }

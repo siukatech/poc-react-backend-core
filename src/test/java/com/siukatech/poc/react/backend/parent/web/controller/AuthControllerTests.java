@@ -6,7 +6,7 @@ import com.siukatech.poc.react.backend.parent.business.form.auth.LoginForm;
 import com.siukatech.poc.react.backend.parent.business.form.auth.RefreshTokenForm;
 import com.siukatech.poc.react.backend.parent.business.form.auth.TokenRes;
 import com.siukatech.poc.react.backend.parent.business.service.AuthService;
-import com.siukatech.poc.react.backend.parent.security.provider.database.service.UserService;
+import com.siukatech.poc.react.backend.parent.user.service.UserService;
 import com.siukatech.poc.react.backend.parent.util.EncryptionUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,6 +19,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
+import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -72,6 +73,9 @@ public class AuthControllerTests extends AbstractWebTests {
     // define this for keycloakJwtAuthenticationConverter initialization
     @MockBean
     private UserService userService;
+
+    @MockBean
+    private JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter;
 
 //    /**
 //     * @Autowired is defined because the OAuth2ClientProperties will be created based on the properties.

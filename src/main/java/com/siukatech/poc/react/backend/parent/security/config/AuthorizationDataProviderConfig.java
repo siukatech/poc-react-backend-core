@@ -1,12 +1,11 @@
 package com.siukatech.poc.react.backend.parent.security.config;
 
-import com.siukatech.poc.react.backend.parent.security.provider.database.repository.UserPermissionRepository;
-import com.siukatech.poc.react.backend.parent.security.provider.database.repository.UserRepository;
-import com.siukatech.poc.react.backend.parent.security.provider.database.repository.UserViewRepository;
-import com.siukatech.poc.react.backend.parent.security.provider.database.service.UserService;
+import com.siukatech.poc.react.backend.parent.user.repository.UserPermissionRepository;
+import com.siukatech.poc.react.backend.parent.user.repository.UserRepository;
+import com.siukatech.poc.react.backend.parent.user.repository.UserViewRepository;
 import com.siukatech.poc.react.backend.parent.global.config.ParentAppProp;
 import com.siukatech.poc.react.backend.parent.security.provider.AuthorizationDataProvider;
-import com.siukatech.poc.react.backend.parent.security.provider.DatabaseAuthorizationDataProvider;
+import com.siukatech.poc.react.backend.parent.user.provider.DatabaseAuthorizationDataProvider;
 import com.siukatech.poc.react.backend.parent.security.provider.RemoteAuthorizationDataProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -46,36 +45,46 @@ public class AuthorizationDataProviderConfig {
 //        this.oauth2ClientRestTemplate = oauth2ClientRestTemplate;
         log.debug("constructor");
     }
+//
+//    @Bean("authorizationDataProvider")
+//    @ConditionalOnProperty("app.api.my-user-info")
+//    public AuthorizationDataProvider remoteAuthorizationDataProvider(
+//            ParentAppProp parentAppProp
+//            , RestTemplate oauth2ClientRestTemplate
+//    ) {
+//        log.debug("remoteAuthorizationDataProvider");
+////        return new DatabaseAuthorizationDataProvider(userService);
+//        return new RemoteAuthorizationDataProvider(parentAppProp, oauth2ClientRestTemplate);
+//    }
+//
+//    @Bean("authorizationDataProvider")
+//    @ConditionalOnMissingBean
+//    public AuthorizationDataProvider databaseAuthorizationDataProvider(
+//            ParentAppProp parentAppProp
+//            , ModelMapper modelMapper
+////            , UserService userService
+//            , UserRepository userRepository
+//            , UserPermissionRepository userPermissionRepository
+//            , UserViewRepository userViewRepository
+//    ) {
+//        log.debug("databaseAuthorizationDataProvider");
+//        return new DatabaseAuthorizationDataProvider(parentAppProp
+//                , modelMapper
+////                , userService
+//                , userRepository
+//                , userPermissionRepository
+//                , userViewRepository
+//        );
+//    }
 
-    @Bean("authorizationDataProvider")
-    @ConditionalOnProperty("app.api.my-user-info")
-    public AuthorizationDataProvider remoteAuthorizationDataProvider(
+    @Bean
+    public AuthorizationDataProvider authorizationDataProvider(
             ParentAppProp parentAppProp
             , RestTemplate oauth2ClientRestTemplate
     ) {
         log.debug("remoteAuthorizationDataProvider");
 //        return new DatabaseAuthorizationDataProvider(userService);
         return new RemoteAuthorizationDataProvider(parentAppProp, oauth2ClientRestTemplate);
-    }
-
-    @Bean("authorizationDataProvider")
-    @ConditionalOnMissingBean
-    public AuthorizationDataProvider databaseAuthorizationDataProvider(
-            ParentAppProp parentAppProp
-            , ModelMapper modelMapper
-//            , UserService userService
-            , UserRepository userRepository
-            , UserPermissionRepository userPermissionRepository
-            , UserViewRepository userViewRepository
-    ) {
-        log.debug("databaseAuthorizationDataProvider");
-        return new DatabaseAuthorizationDataProvider(parentAppProp
-                , modelMapper
-//                , userService
-                , userRepository
-                , userPermissionRepository
-                , userViewRepository
-        );
     }
 
 }

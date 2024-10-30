@@ -4,7 +4,6 @@ package com.siukatech.poc.react.backend.parent.web.controller;
 import com.siukatech.poc.react.backend.parent.security.annotation.PermissionControl;
 import com.siukatech.poc.react.backend.parent.web.annotation.v1.PublicApiV1Controller;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -18,12 +17,13 @@ import java.security.Principal;
 public class WebController {
 
     @GetMapping(path = "/")
+//    @PermissionControl(appResourceId = "parent.web.index", accessRight = "view")
     public String index() {
         return "external";
     }
 
     @GetMapping(path = "/authorized")
-    @PermissionControl(resourceMid = "parent.web.authorized", accessRight = "view")
+//    @PermissionControl(appResourceId = "parent.web.authorized", accessRight = "view")
     public String authorized(Principal principal, Model model) {
         //addCustomers();
         //model.addAttribute("customers", customerDAO.findAll());

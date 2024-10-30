@@ -1,10 +1,10 @@
-package com.siukatech.poc.react.backend.parent.data.repository;
+package com.siukatech.poc.react.backend.parent.user.repository;
 
 import com.siukatech.poc.react.backend.parent.AbstractUnitTests;
-import com.siukatech.poc.react.backend.parent.security.provider.database.entity.UserEntity;
-import com.siukatech.poc.react.backend.parent.security.provider.database.entity.UserPermissionEntity;
-import com.siukatech.poc.react.backend.parent.security.provider.database.repository.UserPermissionRepository;
-import com.siukatech.poc.react.backend.parent.security.provider.database.repository.UserRepository;
+import com.siukatech.poc.react.backend.parent.user.entity.UserEntity;
+import com.siukatech.poc.react.backend.parent.user.entity.UserPermissionEntity;
+import com.siukatech.poc.react.backend.parent.user.repository.UserPermissionRepository;
+import com.siukatech.poc.react.backend.parent.user.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,13 +48,13 @@ public class UserPermissionRepositoryTests extends AbstractUnitTests {
         Optional<UserEntity> userEntityOptional = userRepository.findByLoginId("app-user-02");
         log.debug("findUserPermissionByLoginId_basic - userEntityOptional.get: [" + userEntityOptional.get() + "]");
         List<UserPermissionEntity> userPermissionEntityList = userPermissionRepository
-                .findUserPermissionByLoginIdAndAppMid("app-user-02", "frontend-app");
+                .findUserPermissionByLoginIdAndApplicationId("app-user-02", "frontend-app");
 
         log.debug("findUserPermissionByLoginId_basic - userPermissionEntityList.size: [" + userPermissionEntityList.size()
                 + "], userPermissionEntityList: [" + userPermissionEntityList
                 + "]");
         Assertions.assertEquals(userPermissionEntityList.get(0).getLoginId(), "app-user-02");
-        Assertions.assertEquals(userPermissionEntityList.get(0).getAppMid(), "frontend-app");
+        Assertions.assertEquals(userPermissionEntityList.get(0).getApplicationId(), "frontend-app");
     }
 
 

@@ -1,7 +1,9 @@
 
 
 create table if not exists users (
-  id serial not null
+--  id serial not null
+  id varchar(150) not null default random_uuid()
+--  , mid varchar(150) not null
   , login_id varchar(350) not null
   , name varchar(350) not null
   , public_key text

@@ -7,6 +7,7 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.siukatech.poc.react.backend.parent.security.interceptor.AuthorizationDataInterceptor;
 import com.siukatech.poc.react.backend.parent.security.interceptor.PermissionControlInterceptor;
+import com.siukatech.poc.react.backend.parent.web.helper.PublicControllerHelper;
 import com.siukatech.poc.react.backend.parent.web.interceptor.CorrelationIdInterceptor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -133,13 +134,15 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 .addPathPatterns("/**")
         ;
         registry.addInterceptor(authorizationDataInterceptor)
-                .addPathPatterns("/**")
-//                .excludePathPatterns("/auth/**", "/logout")
-                .excludePathPatterns(excludedPathPatternList.toArray(String[]::new))
+//                .addPathPatterns("/**")
+////                .excludePathPatterns("/auth/**", "/logout")
+//                .excludePathPatterns(excludedPathPatternList.toArray(String[]::new))
+                .excludePathPatterns(PublicControllerHelper.resolveExcludePath())
         ;
         registry.addInterceptor(permissionControlInterceptor)
-                .addPathPatterns("/**")
-                .excludePathPatterns(excludedPathPatternList.toArray(String[]::new))
+//                .addPathPatterns("/**")
+//                .excludePathPatterns(excludedPathPatternList.toArray(String[]::new))
+                .excludePathPatterns(PublicControllerHelper.resolveExcludePath())
         ;
         log.debug("addInterceptors - end");
     }

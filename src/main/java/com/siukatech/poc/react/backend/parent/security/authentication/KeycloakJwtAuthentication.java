@@ -1,4 +1,4 @@
-package com.siukatech.poc.react.backend.parent.security.converter;
+package com.siukatech.poc.react.backend.parent.security.authentication;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.oidc.StandardClaimNames;

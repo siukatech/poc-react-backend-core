@@ -1,8 +1,8 @@
-package com.siukatech.poc.react.backend.parent.web.controller;
+package com.siukatech.poc.react.backend.parent.user.controller;
 
 import com.siukatech.poc.react.backend.parent.business.dto.UserDto;
 import com.siukatech.poc.react.backend.parent.business.dto.UserViewDto;
-import com.siukatech.poc.react.backend.parent.security.provider.database.service.UserService;
+import com.siukatech.poc.react.backend.parent.user.service.UserService;
 import com.siukatech.poc.react.backend.parent.security.evaluator.PermissionControlEvaluator;
 import com.siukatech.poc.react.backend.parent.security.provider.AuthorizationDataProvider;
 import com.siukatech.poc.react.backend.parent.web.advice.mapper.ProblemDetailExtMapper;
@@ -26,6 +26,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
@@ -73,6 +74,8 @@ public class UserControllerTests {
     private UserService userService;
 //    @MockBean
 //    private UserRepository userRepository;
+    @MockBean
+    private JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter;
     @SpyBean
     private EncryptedBodyContext encryptedBodyContext;
     @MockBean

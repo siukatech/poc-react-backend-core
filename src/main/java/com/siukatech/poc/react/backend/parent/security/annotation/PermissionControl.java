@@ -7,6 +7,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface PermissionControl {
-    String resourceMid();
+    String appResourceId();
     String accessRight();
+
 }

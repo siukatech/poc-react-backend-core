@@ -3,6 +3,8 @@ package com.siukatech.poc.react.backend.parent.security.evaluator;
 import com.siukatech.poc.react.backend.parent.AbstractUnitTests;
 import com.siukatech.poc.react.backend.parent.security.authentication.MyAuthenticationToken;
 import com.siukatech.poc.react.backend.parent.security.authority.MyGrantedAuthority;
+import com.siukatech.poc.react.backend.parent.security.controller.ProtectedUrlController;
+import com.siukatech.poc.react.backend.parent.security.controller.RestUrlController;
 import com.siukatech.poc.react.backend.parent.security.exception.NoSuchPermissionException;
 import com.siukatech.poc.react.backend.parent.web.controller.WebController;
 import org.junit.jupiter.api.Test;
@@ -29,22 +31,23 @@ public class PermissionControlEvaluatorTests extends AbstractUnitTests {
     private PermissionControlEvaluator permissionControlEvaluator;
 
     private List<MyGrantedAuthority> getGrantAuthorityList() {
-        String appMid = "backend-app";
-        String roleMidUser = "role-user-01";
-        String roleMidAdmin = "role-admin-01";
+        String applicationId = "backend-app";
+        String userRoleIdUser = "role-user-01";
+        String userRoleIdAdmin = "role-admin-01";
         List<MyGrantedAuthority> authorities = List.of(
                 MyGrantedAuthority.builder()
-                        .appMid(appMid)
-                        .userRoleMid(roleMidUser)
-                        .resourceMid("parent.web.authorized")
+                        .applicationId(applicationId)
+                        .userRoleId(userRoleIdUser)
+//                        .appResourceId("parent.web.authorized")
+                        .appResourceId("parent.protectedUrl.authorized")
                         .accessRight("view")
                         .build()
-//                , MyGrantedAuthority.builder()
-//                        .appMid(appMid)
-//                        .userRoleMid(roleMidAdmin)
-//                        .resourceMid("parent.web.authorized")
-//                        .accessRight("view")
-//                        .build()
+                , MyGrantedAuthority.builder()
+                        .applicationId(applicationId)
+                        .userRoleId(userRoleIdAdmin)
+                        .appResourceId("parent.restUrl.authorized")
+                        .accessRight("view")
+                        .build()
         );
         return authorities;
     }
@@ -59,10 +62,10 @@ public class PermissionControlEvaluatorTests extends AbstractUnitTests {
     }
 
     @Test
-    public void test_evaluate_basic() throws NoSuchMethodException, NoSuchPermissionException {
+    public void test_evaluate_basic_protectedUrlController() throws NoSuchPermissionException {
         // given
-        Method method = ClassUtils.getMethod(WebController.class, "authorized", Principal.class, Model.class);
-        HandlerMethod handlerMethod = new HandlerMethod(new WebController(), method);
+        Method method = ClassUtils.getMethod(ProtectedUrlController.class, "authorized");
+        HandlerMethod handlerMethod = new HandlerMethod(new ProtectedUrlController(), method);
         List<MyGrantedAuthority> authorities = getGrantAuthorityList();
         Map<String, Object> attributeMap = getAttributeMap();
         OAuth2User principal = new DefaultOAuth2User(authorities, attributeMap, StandardClaimNames.PREFERRED_USERNAME);
@@ -76,10 +79,69 @@ public class PermissionControlEvaluatorTests extends AbstractUnitTests {
     }
 
     @Test
-    public void test_evaluate_access_denied() throws NoSuchMethodException, NoSuchPermissionException {
+    public void test_evaluate_basic_restUrlController() throws NoSuchPermissionException {
         // given
-        Method method = ClassUtils.getMethod(WebController.class, "index");
+        Method method = ClassUtils.getMethod(RestUrlController.class, "authorized");
+        HandlerMethod handlerMethod = new HandlerMethod(new RestUrlController(), method);
+        List<MyGrantedAuthority> authorities = getGrantAuthorityList();
+        Map<String, Object> attributeMap = getAttributeMap();
+        OAuth2User principal = new DefaultOAuth2User(authorities, attributeMap, StandardClaimNames.PREFERRED_USERNAME);
+        MyAuthenticationToken authentication = new MyAuthenticationToken(principal, principal.getAuthorities(), "keycloak");
+
+        // when
+        boolean result = permissionControlEvaluator.evaluate(handlerMethod, authentication);
+
+        // then
+        assertTrue(result);
+    }
+
+    @Test
+    public void test_evaluate_basic_webController() throws NoSuchPermissionException {
+        // given
+        Method method = ClassUtils.getMethod(WebController.class, "authorized", Principal.class, Model.class);
         HandlerMethod handlerMethod = new HandlerMethod(new WebController(), method);
+        List<MyGrantedAuthority> authorities = getGrantAuthorityList();
+        Map<String, Object> attributeMap = getAttributeMap();
+        OAuth2User principal = new DefaultOAuth2User(authorities, attributeMap, StandardClaimNames.PREFERRED_USERNAME);
+        MyAuthenticationToken authentication = new MyAuthenticationToken(principal, principal.getAuthorities(), "keycloak");
+//
+//        // when
+//        boolean result = permissionControlEvaluator.evaluate(handlerMethod, authentication);
+//
+//        // then
+//        assertTrue(result);
+
+        // when
+        Exception exception = assertThrows(NoSuchPermissionException.class, () -> {
+            boolean result = permissionControlEvaluator.evaluate(handlerMethod, authentication);
+        });
+
+        // then
+        assertEquals(exception.getClass(), NoSuchPermissionException.class);
+    }
+
+    @Test
+    public void test_evaluate_access_denied_protectedUrlController() throws NoSuchPermissionException {
+        // given
+        Method method = ClassUtils.getMethod(ProtectedUrlController.class, "accessDenied");
+        HandlerMethod handlerMethod = new HandlerMethod(new ProtectedUrlController(), method);
+        OAuth2User principal = new DefaultOAuth2User(getGrantAuthorityList(), getAttributeMap(), StandardClaimNames.PREFERRED_USERNAME);
+        MyAuthenticationToken authentication = new MyAuthenticationToken(principal, principal.getAuthorities(), "keycloak");
+
+        // when
+        Exception exception = assertThrows(NoSuchPermissionException.class, () -> {
+            boolean result = permissionControlEvaluator.evaluate(handlerMethod, authentication);
+        });
+
+        // then
+        assertEquals(exception.getClass(), NoSuchPermissionException.class);
+    }
+
+    @Test
+    public void test_evaluate_access_denied_restUrlController() throws NoSuchPermissionException {
+        // given
+        Method method = ClassUtils.getMethod(RestUrlController.class, "accessDenied");
+        HandlerMethod handlerMethod = new HandlerMethod(new RestUrlController(), method);
         OAuth2User principal = new DefaultOAuth2User(getGrantAuthorityList(), getAttributeMap(), StandardClaimNames.PREFERRED_USERNAME);
         MyAuthenticationToken authentication = new MyAuthenticationToken(principal, principal.getAuthorities(), "keycloak");
 

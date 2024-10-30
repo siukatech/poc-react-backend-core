@@ -1,8 +1,8 @@
 package com.siukatech.poc.react.backend.parent.data;
 
-import com.siukatech.poc.react.backend.parent.security.provider.database.repository.UserPermissionRepository;
-import com.siukatech.poc.react.backend.parent.security.provider.database.repository.UserRepository;
-import com.siukatech.poc.react.backend.parent.security.provider.database.repository.UserViewRepository;
+import com.siukatech.poc.react.backend.parent.user.repository.UserPermissionRepository;
+import com.siukatech.poc.react.backend.parent.user.repository.UserRepository;
+import com.siukatech.poc.react.backend.parent.user.repository.UserViewRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -14,7 +14,6 @@ import org.springframework.boot.test.autoconfigure.web.client.AutoConfigureWebCl
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.test.context.TestPropertySource;
 
 

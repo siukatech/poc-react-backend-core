@@ -1,7 +1,8 @@
-package com.siukatech.poc.react.backend.parent.web.controller;
+package com.siukatech.poc.react.backend.parent.user.controller;
 
 import com.siukatech.poc.react.backend.parent.business.dto.UserDto;
-import com.siukatech.poc.react.backend.parent.security.provider.database.service.UserService;
+import com.siukatech.poc.react.backend.parent.security.annotation.PermissionControl;
+import com.siukatech.poc.react.backend.parent.user.service.UserService;
 import com.siukatech.poc.react.backend.parent.web.annotation.v1.ProtectedApiV1Controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ public class UserController {
     }
 
     @PostMapping("/users/{targetLoginId}/user-info")
+    @PermissionControl(appResourceId = "parent.user.getUserInfo", accessRight = "view")
     public ResponseEntity getUserInfo(@PathVariable
 //                                                 // after upgrade to springboot >= 3.2.1
 //                                                 // this can be fixed by update build.gradle or adding maven plugin

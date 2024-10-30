@@ -1,8 +1,9 @@
-package com.siukatech.poc.react.backend.parent.web.controller;
+package com.siukatech.poc.react.backend.parent.user.controller;
 
 import com.siukatech.poc.react.backend.parent.AbstractWebTests;
 import com.siukatech.poc.react.backend.parent.business.dto.*;
-import com.siukatech.poc.react.backend.parent.security.provider.database.service.UserService;
+import com.siukatech.poc.react.backend.parent.user.controller.MyController;
+import com.siukatech.poc.react.backend.parent.user.service.UserService;
 import com.siukatech.poc.react.backend.parent.security.authentication.MyAuthenticationToken;
 import com.siukatech.poc.react.backend.parent.web.annotation.v1.ProtectedApiV1Controller;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +18,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
@@ -61,6 +63,9 @@ public class MyControllerTests extends AbstractWebTests {
     private WebApplicationContext webApplicationContext;
     @MockBean
     private UserService userService;
+    @MockBean
+    private JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter;
+
 //    @MockBean
 //    private ParentAppProp parentAppProp;
 //    @MockBean
@@ -107,10 +112,10 @@ public class MyControllerTests extends AbstractWebTests {
         for (String[] userPermissionTemps : userPermissionTempsArr) {
             userPermissionDtoList.add(new UserPermissionDto());
             userPermissionDtoList.get(userPermissionDtoList.size() - 1).setLoginId(userPermissionTemps[0]);
-            userPermissionDtoList.get(userPermissionDtoList.size() - 1).setUserId(Long.valueOf(userPermissionTemps[1]));
-            userPermissionDtoList.get(userPermissionDtoList.size() - 1).setUserRoleMid(userPermissionTemps[2]);
-            userPermissionDtoList.get(userPermissionDtoList.size() - 1).setAppMid(userPermissionTemps[3]);
-            userPermissionDtoList.get(userPermissionDtoList.size() - 1).setResourceMid(userPermissionTemps[4]);
+            userPermissionDtoList.get(userPermissionDtoList.size() - 1).setUserId(userPermissionTemps[1]);
+            userPermissionDtoList.get(userPermissionDtoList.size() - 1).setUserRoleId(userPermissionTemps[2]);
+            userPermissionDtoList.get(userPermissionDtoList.size() - 1).setApplicationId(userPermissionTemps[3]);
+            userPermissionDtoList.get(userPermissionDtoList.size() - 1).setAppResourceId(userPermissionTemps[4]);
             userPermissionDtoList.get(userPermissionDtoList.size() - 1).setAccessRight(userPermissionTemps[5]);
         }
         return userPermissionDtoList;
@@ -247,11 +252,11 @@ public class MyControllerTests extends AbstractWebTests {
     public void getUserPermissions_basic() throws Exception {
         // given
         List<UserPermissionDto> userPermissionDtoList = this.prepareUserPermissions_basic();
-        when(userService.findPermissionsByLoginIdAndAppMid(anyString(), anyString())).thenReturn(userPermissionDtoList);
+        when(userService.findPermissionsByLoginIdAndApplicationId(anyString(), anyString())).thenReturn(userPermissionDtoList);
 
         // when
         RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get(ProtectedApiV1Controller.REQUEST_MAPPING_URI_PREFIX + "/my/permissions?appMid={appMid}", "frontend-app")
+                .get(ProtectedApiV1Controller.REQUEST_MAPPING_URI_PREFIX + "/my/permissions?applicationId={applicationId}", "frontend-app")
                 .with(authentication(prepareUsernamePasswordAuthenticationToken_basic()))
                 .with(csrf())
                 .accept(MediaType.APPLICATION_JSON);
@@ -260,7 +265,7 @@ public class MyControllerTests extends AbstractWebTests {
         MvcResult mvcResult = this.mockMvc.perform(requestBuilder)
                 .andExpect(status().isOk())
 //                .andExpect(content().json())
-                .andExpect(content().string(containsString("resourceMid")))
+                .andExpect(content().string(containsString("appResourceId")))
                 .andReturn();
 
         // result
@@ -271,11 +276,11 @@ public class MyControllerTests extends AbstractWebTests {
     public void getUserPermissionInfo_basic() throws Exception {
         // given
         List<UserPermissionDto> userPermissionDtoList = this.prepareUserPermissions_basic();
-        when(userService.findPermissionsByLoginIdAndAppMid(anyString(), anyString())).thenReturn(userPermissionDtoList);
+        when(userService.findPermissionsByLoginIdAndApplicationId(anyString(), anyString())).thenReturn(userPermissionDtoList);
 
         // when
         RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get(ProtectedApiV1Controller.REQUEST_MAPPING_URI_PREFIX + "/my/permission-info?appMid={appMid}", "frontend-app")
+                .get(ProtectedApiV1Controller.REQUEST_MAPPING_URI_PREFIX + "/my/permission-info?applicationId={applicationId}", "frontend-app")
                 .with(authentication(prepareUsernamePasswordAuthenticationToken_basic()))
                 .with(csrf())
                 .accept(MediaType.APPLICATION_JSON);
@@ -285,7 +290,7 @@ public class MyControllerTests extends AbstractWebTests {
                 .andDo(print())
                 .andExpect(status().isOk())
 //                .andExpect(content().json())
-                .andExpect(content().string(containsString("resourceMid")))
+                .andExpect(content().string(containsString("appResourceId")))
                 .andReturn();
 
         // result

@@ -8,14 +8,14 @@ import org.springframework.security.core.GrantedAuthority;
 @Builder
 public class MyGrantedAuthority implements GrantedAuthority {
 
-    private String userRoleMid;
-    private String appMid;
-    private String resourceMid;
+    private String userRoleId;
+    private String applicationId;
+    private String appResourceId;
     private String accessRight;
 
     @Override
     public String getAuthority() {
-        return userRoleMid + ":" + resourceMid + ":" + accessRight;
+        return userRoleId + ":" + appResourceId + ":" + accessRight;
     }
 
 }

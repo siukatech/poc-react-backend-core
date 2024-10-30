@@ -1,4 +1,4 @@
-package com.siukatech.poc.react.backend.parent.security.provider.database.entity;
+package com.siukatech.poc.react.backend.parent.user.entity;
 
 import com.siukatech.poc.react.backend.parent.data.entity.AbstractEntity;
 import jakarta.persistence.*;
@@ -8,7 +8,7 @@ import lombok.EqualsAndHashCode;
 @Data
 //@EqualsAndHashCode(callSuper = true)
 @Entity(name = "users")
-public class UserEntity extends AbstractEntity<Long> {
+public class UserEntity extends AbstractEntity<String> {
 
     @Column(name = "login_id")
     protected String loginId;
@@ -20,7 +20,9 @@ public class UserEntity extends AbstractEntity<Long> {
     protected String privateKey;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    protected Long id;
+////    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.UUID)
+    protected String id;
 
 }

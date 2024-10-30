@@ -1,16 +1,16 @@
-package com.siukatech.poc.react.backend.parent.business.service;
+package com.siukatech.poc.react.backend.parent.user.service;
 
 import com.siukatech.poc.react.backend.parent.AbstractUnitTests;
 import com.siukatech.poc.react.backend.parent.business.dto.UserDto;
 import com.siukatech.poc.react.backend.parent.business.dto.UserPermissionDto;
 import com.siukatech.poc.react.backend.parent.business.dto.UserViewDto;
-import com.siukatech.poc.react.backend.parent.security.provider.database.entity.UserEntity;
-import com.siukatech.poc.react.backend.parent.security.provider.database.entity.UserPermissionEntity;
-import com.siukatech.poc.react.backend.parent.security.provider.database.entity.UserViewEntity;
-import com.siukatech.poc.react.backend.parent.security.provider.database.repository.UserPermissionRepository;
-import com.siukatech.poc.react.backend.parent.security.provider.database.repository.UserRepository;
-import com.siukatech.poc.react.backend.parent.security.provider.database.repository.UserViewRepository;
-import com.siukatech.poc.react.backend.parent.security.provider.database.service.UserService;
+import com.siukatech.poc.react.backend.parent.user.entity.UserEntity;
+import com.siukatech.poc.react.backend.parent.user.entity.UserPermissionEntity;
+import com.siukatech.poc.react.backend.parent.user.entity.UserViewEntity;
+import com.siukatech.poc.react.backend.parent.user.repository.UserPermissionRepository;
+import com.siukatech.poc.react.backend.parent.user.repository.UserRepository;
+import com.siukatech.poc.react.backend.parent.user.repository.UserViewRepository;
+import com.siukatech.poc.react.backend.parent.user.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -91,10 +91,11 @@ public class UserServiceTests extends AbstractUnitTests {
         for (String[] userPermissionTemps : userPermissionTempsArr) {
             UserPermissionEntity userPermissionEntity = new UserPermissionEntity();
             userPermissionEntity.setLoginId(userPermissionTemps[0]);
-            userPermissionEntity.setUserId(Long.valueOf(userPermissionTemps[1]));
-            userPermissionEntity.setUserRoleMid(userPermissionTemps[2]);
-            userPermissionEntity.setAppMid(userPermissionTemps[3]);
-            userPermissionEntity.setResourceMid(userPermissionTemps[4]);
+//            userPermissionEntity.setUserId(Long.valueOf(userPermissionTemps[1]));
+            userPermissionEntity.setUserId(userPermissionTemps[1]);
+            userPermissionEntity.setUserRoleId(userPermissionTemps[2]);
+            userPermissionEntity.setApplicationId(userPermissionTemps[3]);
+            userPermissionEntity.setAppResourceId(userPermissionTemps[4]);
             userPermissionEntity.setAccessRight(userPermissionTemps[5]);
             userPermissionEntityList.add(userPermissionEntity);
         }
@@ -135,17 +136,17 @@ public class UserServiceTests extends AbstractUnitTests {
     }
 
     @Test
-    public void findUserPermissionByLoginIdAndAppMid_basic() {
+    public void findUserPermissionByLoginIdAndApplicationId_basic() {
         // given
         List<UserPermissionEntity> userPermissionEntityListTemp = prepareUserPermissions_basic();
-        when(this.userPermissionRepository.findUserPermissionByLoginIdAndAppMid(anyString(), anyString())).thenReturn(userPermissionEntityListTemp);
+        when(this.userPermissionRepository.findUserPermissionByLoginIdAndApplicationId(anyString(), anyString())).thenReturn(userPermissionEntityListTemp);
 
         // when
-        List<UserPermissionDto> userPermissionDtoListActual = this.userService.findPermissionsByLoginIdAndAppMid("app-user-01", "frontend-app");
+        List<UserPermissionDto> userPermissionDtoListActual = this.userService.findPermissionsByLoginIdAndApplicationId("app-user-01", "frontend-app");
 
         // then / verify
         assertThat(userPermissionDtoListActual.get(0).getLoginId()).isEqualTo("app-user-01");
-        assertThat(userPermissionDtoListActual.get(0).getAppMid()).isEqualTo("frontend-app");
+        assertThat(userPermissionDtoListActual.get(0).getApplicationId()).isEqualTo("frontend-app");
     }
 
     @Test

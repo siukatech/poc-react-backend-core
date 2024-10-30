@@ -1,10 +1,9 @@
-package com.siukatech.poc.react.backend.parent.security.provider.database.entity;
+package com.siukatech.poc.react.backend.parent.user.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 @Data
 //@EqualsAndHashCode(callSuper = true)
@@ -12,22 +11,22 @@ import lombok.EqualsAndHashCode;
 public class UserPermissionEntity {
 
     @Id
-    private Long id;
+    private String id;
 
     @Column(name = "login_id")
     private String loginId;
 
     @Column(name = "user_id")
-    private Long userId;
+    private String userId;
 
-    @Column(name = "user_role_mid")
-    private String userRoleMid;
+    @Column(name = "user_role_id")
+    private String userRoleId;
 
-    @Column(name = "app_mid")
-    private String appMid;
+    @Column(name = "application_id")
+    private String applicationId;
 
-    @Column(name = "resource_mid")
-    private String resourceMid;
+    @Column(name = "app_resource_id")
+    private String appResourceId;
 
     @Column(name = "access_right")
     private String accessRight;

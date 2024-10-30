@@ -4,12 +4,14 @@ import com.siukatech.poc.react.backend.parent.security.converter.KeycloakJwtAuth
 import com.siukatech.poc.react.backend.parent.security.filter.AuthorizationDataFilter;
 import com.siukatech.poc.react.backend.parent.security.handler.KeycloakLogoutHandler;
 import com.siukatech.poc.react.backend.parent.web.annotation.base.PublicController;
+import com.siukatech.poc.react.backend.parent.web.helper.PublicControllerHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -202,7 +204,8 @@ public class WebSecurityConfig {
                                 , AntPathRequestMatcher.antMatcher("/error")
 
                                 // Only /v*/public/** is allowed to permit without security checking
-                                , AntPathRequestMatcher.antMatcher("/v*" + PublicController.REQUEST_MAPPING_URI_PREFIX + "/**")
+//                                , AntPathRequestMatcher.antMatcher("/v*" + PublicController.REQUEST_MAPPING_URI_PREFIX + "/**")
+                                , AntPathRequestMatcher.antMatcher(PublicControllerHelper.resolveExcludePath())
 
                                 // This is required to add HttpMethod.OPTIONS here
                                 // Preflight-request failed reason is missing WebMvcConfig which implements WebMvcConfigurer,
@@ -259,30 +262,31 @@ public class WebSecurityConfig {
                 throw new RuntimeException(e);
             }
         });
-//        //http.oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt);
-//        http.oauth2ResourceServer()
-//                .jwt()
-//                .jwtAuthenticationConverter(keycloakJwtAuthenticationConverter)
-//        ;
-//        http.oauth2ResourceServer(new Customizer<OAuth2ResourceServerConfigurer<HttpSecurity>>() {
-//            @Override
-//            public void customize(OAuth2ResourceServerConfigurer<HttpSecurity> httpSecurityOAuth2ResourceServerConfigurer) {
-//                httpSecurityOAuth2ResourceServerConfigurer.jwt(new Customizer<OAuth2ResourceServerConfigurer<org.springframework.security.config.annotation.web.builders.HttpSecurity>.JwtConfigurer>() {
-//                    @Override
-//                    public void customize(OAuth2ResourceServerConfigurer<HttpSecurity>.JwtConfigurer jwtConfigurer) {
-//                        jwtConfigurer
-//                                .jwtAuthenticationConverter(keycloakJwtAuthenticationConverter)
-//                                ;
-//                    }
-//                });
-//            }
-//        });
+////        //http.oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt);
+////        http.oauth2ResourceServer()
+////                .jwt()
+////                .jwtAuthenticationConverter(keycloakJwtAuthenticationConverter)
+////        ;
+////        http.oauth2ResourceServer(new Customizer<OAuth2ResourceServerConfigurer<HttpSecurity>>() {
+////            @Override
+////            public void customize(OAuth2ResourceServerConfigurer<HttpSecurity> httpSecurityOAuth2ResourceServerConfigurer) {
+////                httpSecurityOAuth2ResourceServerConfigurer.jwt(new Customizer<OAuth2ResourceServerConfigurer<org.springframework.security.config.annotation.web.builders.HttpSecurity>.JwtConfigurer>() {
+////                    @Override
+////                    public void customize(OAuth2ResourceServerConfigurer<HttpSecurity>.JwtConfigurer jwtConfigurer) {
+////                        jwtConfigurer
+////                                .jwtAuthenticationConverter(keycloakJwtAuthenticationConverter)
+////                                ;
+////                    }
+////                });
+////            }
+////        });
         http.oauth2ResourceServer(oAuth2ResourceServerConfigurer ->
                 oAuth2ResourceServerConfigurer
                         .jwt(jwtConfigurer -> jwtConfigurer
                                 .jwtAuthenticationConverter(keycloakJwtAuthenticationConverter)
                         )
         );
+//        http.oauth2ResourceServer(Customizer.withDefaults());
 
         http.addFilterAfter(authorizationDataFilter, BasicAuthenticationFilter.class);
 

@@ -2,7 +2,6 @@ package com.siukatech.poc.react.backend.parent.security.converter;
 
 import com.siukatech.poc.react.backend.parent.business.dto.UserDto;
 import com.siukatech.poc.react.backend.parent.business.dto.UserPermissionDto;
-import com.siukatech.poc.react.backend.parent.global.config.ParentAppProp;
 import com.siukatech.poc.react.backend.parent.security.authentication.MyAuthenticationToken;
 import com.siukatech.poc.react.backend.parent.security.authority.MyGrantedAuthority;
 import com.siukatech.poc.react.backend.parent.security.provider.AuthorizationDataProvider;
@@ -14,6 +13,7 @@ import org.springframework.security.oauth2.core.oidc.StandardClaimNames;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -23,14 +23,19 @@ import java.util.Map;
 
 @Slf4j
 @Component
+//@Component(value = "JwtAuthenticationConverter")
+//@ConditionalOnProperty(name = "spring.security.oauth2.provider.keycloak.issuer-uri")
 public class KeycloakJwtAuthenticationConverter implements Converter<Jwt, AbstractAuthenticationToken> {
 
+    private final JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter;
 //    private final UserService userService;
     private final AuthorizationDataProvider authorizationDataProvider;
 
     public KeycloakJwtAuthenticationConverter(
+            JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter,
 //            UserService userService,
             AuthorizationDataProvider authorizationDataProvider) {
+        this.jwtGrantedAuthoritiesConverter = jwtGrantedAuthoritiesConverter;
 //        this.userService = userService;
         this.authorizationDataProvider = authorizationDataProvider;
     }
@@ -53,6 +58,8 @@ public class KeycloakJwtAuthenticationConverter implements Converter<Jwt, Abstra
                 + "], loginId: [" + loginId
                 + "]");
         List<GrantedAuthority> convertedAuthorities = new ArrayList<>();
+        // Extract authorities from jwt
+        convertedAuthorities.addAll(jwtGrantedAuthoritiesConverter.convert(source));
 //        UserDetails userDetails = new User(
 //                //source.getSubject()
 //                loginId
@@ -69,19 +76,23 @@ public class KeycloakJwtAuthenticationConverter implements Converter<Jwt, Abstra
         List<UserPermissionDto> userPermissionDtoList = authorizationDataProvider.findPermissionsByLoginId(loginId, tokenValue);
         userPermissionDtoList.stream().forEach(userPermissionDto -> {
             convertedAuthorities.add(MyGrantedAuthority.builder()
-                            .userRoleMid(userPermissionDto.getUserRoleMid())
-                            .appMid(userPermissionDto.getAppMid())
-                            .resourceMid(userPermissionDto.getResourceMid())
+                            .userRoleId(userPermissionDto.getUserRoleId())
+                            .applicationId(userPermissionDto.getApplicationId())
+                            .appResourceId(userPermissionDto.getAppResourceId())
                             .accessRight(userPermissionDto.getAccessRight())
                     .build());
         });
 
         Map<String, Object> attributeMap = new HashMap<>();
+        // Extract claims from jwt
+        attributeMap.putAll(source.getClaims());
+        //
         attributeMap.put(StandardClaimNames.PREFERRED_USERNAME, loginId);
         attributeMap.put(MyAuthenticationToken.ATTR_TOKEN_VALUE, tokenValue);
         attributeMap.put(MyAuthenticationToken.ATTR_USER_ID, userDto.getId());
         attributeMap.put(MyAuthenticationToken.ATTR_PUBLIC_KEY, userDto.getPublicKey());
 //        }
+        log.debug("convert - loginId: [{}], convertedAuthorities: [{}], attributeMap: [{}]", loginId, convertedAuthorities, attributeMap);
 
         OAuth2User oAuth2User = new DefaultOAuth2User(convertedAuthorities, attributeMap, StandardClaimNames.PREFERRED_USERNAME);
 //        OAuth2AuthenticationToken authenticationToken = new OAuth2AuthenticationToken(oAuth2User, convertedAuthorities, "keycloak");

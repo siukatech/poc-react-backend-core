@@ -32,15 +32,22 @@ public class RemoteAuthorizationDataProvider implements AuthorizationDataProvide
         this.oauth2ClientRestTemplate = oauth2ClientRestTemplate;
     }
 
+    private void prepareHttpHeaders(HttpHeaders httpHeaders, String tokenValue) {
+        // Special handling of adding token to oauth2ClientRestTemplate
+        // authentication from SecurityContext is null when the process is KeycloakJwtAuthenticationConverter.
+        // authentication is still preparing at that moment.
+        // So header is required to configured at that moment.
+        httpHeaders.add(HttpHeaders.AUTHORIZATION, "Bearer " + tokenValue);
+    }
+
     @Override
     public UserDto findByLoginIdAndTokenValue(String loginId, String tokenValue) {
         log.debug("findByLoginId - start");
         String myUserInfoUrl = this.parentAppProp.getMyUserInfoUrl();
         UserDto userDto = null;
         if (StringUtils.isNotEmpty(myUserInfoUrl)) {
-            // Special handling of adding token to oauth2ClientRestTemplate
             HttpHeaders httpHeaders = new HttpHeaders();
-            httpHeaders.add(HttpHeaders.AUTHORIZATION, "Bearer " + tokenValue);
+            prepareHttpHeaders(httpHeaders, tokenValue);
             HttpEntity<String> httpEntity = new HttpEntity<>(httpHeaders);
             ResponseEntity<UserDto> responseEntity = this.oauth2ClientRestTemplate.exchange(
                     myUserInfoUrl, HttpMethod.GET
@@ -75,25 +82,26 @@ public class RemoteAuthorizationDataProvider implements AuthorizationDataProvide
         log.debug("findPermissionsByLoginId - start");
         List<UserPermissionDto> userPermissionDtoList = new ArrayList<>();
         //
-        String myUserPermissionInfoUrl = this.parentAppProp.getMyUserPermissionInfoUrl();
+        String myPermissionInfoUrl = this.parentAppProp.getMyPermissionInfoUrl();
         UserPermissionInfoDto userPermissionInfoDto = null;
-        if (StringUtils.isNotEmpty(myUserPermissionInfoUrl)) {
-            UriComponentsBuilder myUserPermissionInfoUriBuilder = UriComponentsBuilder.fromUriString(myUserPermissionInfoUrl)
-                    .queryParam("appMid", this.parentAppProp.getAppMid());
-            String myUserPermissionInfoUriTemplate = myUserPermissionInfoUriBuilder.encode().toUriString();
-            // Special handling of adding token to oauth2ClientRestTemplate
+        if (StringUtils.isNotEmpty(myPermissionInfoUrl)) {
+            UriComponentsBuilder myPermissionInfoUriBuilder = UriComponentsBuilder.fromUriString(myPermissionInfoUrl)
+                    .queryParam("applicationId", this.parentAppProp.getApplicationId());
+            String myPermissionInfoUriTemplate = myPermissionInfoUriBuilder.encode().toUriString();
             HttpHeaders httpHeaders = new HttpHeaders();
-//            httpHeaders.add(HttpHeaders.AUTHORIZATION, "Bearer " + tokenValue);
+            prepareHttpHeaders(httpHeaders, tokenValue);
             HttpEntity<String> httpEntity = new HttpEntity<>(httpHeaders);
             ResponseEntity<UserPermissionInfoDto> responseEntity = this.oauth2ClientRestTemplate.exchange(
-                    myUserPermissionInfoUriTemplate, HttpMethod.GET
+                    myPermissionInfoUriTemplate, HttpMethod.GET
                     , httpEntity
-                    , new ParameterizedTypeReference<UserPermissionInfoDto>() {
-                    });
+//                    , new ParameterizedTypeReference<UserPermissionInfoDto>() {
+//                    }
+                    , UserPermissionInfoDto.class
+                    );
             userPermissionInfoDto = responseEntity.getBody();
-            log.debug("findPermissionsByLoginId - loginId: [{}], myUserPermissionInfoUriTemplate: [{}], userPermissionInfoDto.getLoginId: [{}], userPermissionDtoList.size: [{}]"
+            log.debug("findPermissionsByLoginId - loginId: [{}], myPermissionInfoUriTemplate: [{}], userPermissionInfoDto.getLoginId: [{}], userPermissionDtoList.size: [{}]"
 //                + ", responseEntity.getBody.toString: [{}]"
-                    , loginId, myUserPermissionInfoUriTemplate, userPermissionInfoDto.getLoginId()
+                    , loginId, myPermissionInfoUriTemplate, userPermissionInfoDto.getLoginId()
                     , userPermissionInfoDto.getUserPermissionList().size()
 //                , responseEntity.getBody().toString()
             );
@@ -104,7 +112,7 @@ public class RemoteAuthorizationDataProvider implements AuthorizationDataProvide
             }
         } else {
             log.debug("findPermissionsByLoginId - loginId: [{}], myUserPermissionInfoUrl: [{}]"
-                    , loginId, myUserPermissionInfoUrl
+                    , loginId, myPermissionInfoUrl
             );
             throw new RuntimeException(
                     "User with loginId: [%s] cannot be resolved because of the empty my-user-info"

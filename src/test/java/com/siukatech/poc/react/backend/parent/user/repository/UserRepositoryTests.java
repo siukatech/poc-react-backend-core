@@ -1,8 +1,8 @@
-package com.siukatech.poc.react.backend.parent.data.repository;
+package com.siukatech.poc.react.backend.parent.user.repository;
 
 import com.siukatech.poc.react.backend.parent.AbstractUnitTests;
-import com.siukatech.poc.react.backend.parent.security.provider.database.entity.UserEntity;
-import com.siukatech.poc.react.backend.parent.security.provider.database.repository.UserRepository;
+import com.siukatech.poc.react.backend.parent.user.entity.UserEntity;
+import com.siukatech.poc.react.backend.parent.user.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 
 import java.lang.reflect.Method;
+import java.util.UUID;
 
 @Slf4j
 @DataJpaTest
@@ -30,7 +31,8 @@ public class UserRepositoryTests extends AbstractUnitTests {
         UserEntity userEntity = new UserEntity();
         userEntity.setLoginId("app-user-01");
         userEntity.setName("App-User-01");
-        userEntity.setId(1L);
+//        userEntity.setId(1L);
+        userEntity.setId(UUID.randomUUID().toString());
         userEntity.setVersionNo(1L);
         userEntity.setPublicKey("public-key");
         userEntity.setPrivateKey("private-key");
@@ -67,7 +69,7 @@ public class UserRepositoryTests extends AbstractUnitTests {
         log.debug("teardown - testInfo: [" + testInfo
                 + "], method: [" + method.getName()
                 + "]");
-        UserEntity userEntity = userEntity = this.userRepository.findByLoginId("app-user-01")
+        UserEntity userEntity = this.userRepository.findByLoginId("app-user-01")
                 .orElseThrow(() -> new RuntimeException());
         switch (method.getName()) {
             case "findByLoginId_basic":

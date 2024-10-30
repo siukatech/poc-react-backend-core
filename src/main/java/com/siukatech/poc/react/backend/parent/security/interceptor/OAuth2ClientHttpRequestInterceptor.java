@@ -13,7 +13,11 @@ import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.util.stream.Collectors;
 
 @Slf4j
 public class OAuth2ClientHttpRequestInterceptor implements ClientHttpRequestInterceptor {
@@ -35,11 +39,16 @@ public class OAuth2ClientHttpRequestInterceptor implements ClientHttpRequestInte
 //        if (authentication instanceof OAuth2AuthenticationToken oAuth2AuthenticationToken) {
 ////            OAuth2AuthenticationToken oAuth2AuthenticationToken = (OAuth2AuthenticationToken) authentication;
 //            tokenValue = oAuth2AuthenticationToken.getPrincipal().getAttribute(KeycloakJwtAuthenticationConverter.ATTR_TOKEN_VALUE);
+        //
+        // authentication from SecurityContext is null when the process is KeycloakJwtAuthenticationConverter.
+        // authentication is still preparing at that moment.
+        // So header is required to configured at that moment.
         if (authentication instanceof MyAuthenticationToken myAuthenticationToken) {
             tokenValue = myAuthenticationToken.getTokenValue();
         }
         HttpHeaderUtils.logHttpHeaders(request.getHeaders());
 //        log.debug("intercept - request.getHeaders: [{}]", request.getHeaders());
+        log.debug("intercept - authentication: [{}], tokenValue: [{}]", authentication, tokenValue);
         log.debug("intercept - correlationIdHandler.getCorrelationId: [{}]", correlationIdHandler.getCorrelationId());
         log.debug("intercept - request.URI: [{}]"
                         + ", authentication.getName: [{}]"
@@ -62,7 +71,15 @@ public class OAuth2ClientHttpRequestInterceptor implements ClientHttpRequestInte
             request.getHeaders().set(HttpHeaders.AUTHORIZATION, "Bearer " + tokenValue);
         }
 //        return null;
-        return execution.execute(request, body);
+        ClientHttpResponse response = execution.execute(request, body);
+        //
+//        if (log.isDebugEnabled()) {
+//            InputStreamReader inputStreamReader = new InputStreamReader(response.getBody(), StandardCharsets.UTF_8);
+//            String resBody = new BufferedReader(inputStreamReader).lines().collect(Collectors.joining("\n"));
+//            log.debug("intercept - resBody: [{}]", resBody);
+//        }
+        //
+        return response;
     }
 
 }

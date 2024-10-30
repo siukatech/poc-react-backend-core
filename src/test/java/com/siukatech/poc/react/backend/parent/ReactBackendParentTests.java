@@ -1,10 +1,8 @@
 package com.siukatech.poc.react.backend.parent;
 
-import com.siukatech.poc.react.backend.parent.security.provider.AuthorizationDataProvider;
-import com.siukatech.poc.react.backend.parent.security.provider.DatabaseAuthorizationDataProvider;
-import com.siukatech.poc.react.backend.parent.security.provider.database.repository.UserPermissionRepository;
-import com.siukatech.poc.react.backend.parent.security.provider.database.repository.UserRepository;
-import com.siukatech.poc.react.backend.parent.security.provider.database.repository.UserViewRepository;
+import com.siukatech.poc.react.backend.parent.user.repository.UserPermissionRepository;
+import com.siukatech.poc.react.backend.parent.user.repository.UserRepository;
+import com.siukatech.poc.react.backend.parent.user.repository.UserViewRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
