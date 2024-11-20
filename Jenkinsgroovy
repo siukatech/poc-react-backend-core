@@ -1,7 +1,7 @@
 @Library('jenkins-groovy-library-script') _
 
-def repoName = "poc-react-backend-parent"
-def repoUrl = "https://github.com/siukatech/poc-react-backend-parent.git"
+def repoName = "poc-react-backend-core"
+def repoUrl = "https://github.com/siukatech/poc-react-backend-core.git"
 def repoHttp = "https"
 def repoHostname = "github.com"
 def repoUsername = "siukatech"

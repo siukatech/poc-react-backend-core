@@ -1,5 +1,5 @@
 
-# React-Backend-Parent
+# React-backend-core
 This is a lib-project for other microservices (ms-projects) to import.  
 OAuth2 is integrated for the SSO with Keycloak as the development identity provider (IdP) server.  
 End-to-End-Encryption (E2EE) is also introduced in this project.  
@@ -63,7 +63,7 @@ plugins {
 *ms-project*
 ```groovy
 dependencies {
-    implementation 'com.siukatech.poc:react-backend-parent:0.0.1-SNAPSHOT'
+    implementation 'com.siukatech.poc:react-backend-core:0.0.1-SNAPSHOT'
 
 //    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 //    implementation 'org.springframework.boot:spring-boot-starter-security'

@@ -1,7 +1,7 @@
 # Read Me First
 The following was discovered as part of building this project:
 
-* The original package name 'com.siukatech.poc.react-backend-parent' is invalid and this project uses 'com.siukatech.poc.reactbackendparent' instead.
+* The original package name 'com.siukatech.poc.react-backend-core' is invalid and this project uses 'com.siukatech.poc.reactbackendparent' instead.
 
 # Getting Started
 

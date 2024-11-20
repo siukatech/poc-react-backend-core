@@ -7,4 +7,4 @@ pluginManagement {
     }
 }
 
-rootProject.name = 'react-backend-parent'
+rootProject.name = 'react-backend-core'

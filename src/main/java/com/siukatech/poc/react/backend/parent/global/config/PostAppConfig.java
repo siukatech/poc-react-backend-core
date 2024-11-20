@@ -29,7 +29,7 @@ public class PostAppConfig {
     // DO NOT do this here
     @PostConstruct
     public void configModelMapper() {
-        log.debug("configModelMapper - react-backend-parent!!!");
+        log.debug("configModelMapper - react-backend-core!!!");
         // https://www.baeldung.com/java-scan-annotations-runtime
 //        String packageName = this.getClass().getPackageName();
         String packageName = "com.siukatech";
