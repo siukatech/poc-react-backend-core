@@ -87,6 +87,6 @@ logging:
   level:
 #    org.springframework.web.servlet.DispatcherServlet: DEBUG
     org.springframework.web: TRACE
-    com.siukatech.poc.react.backend.parent: TRACE
+    com.siukatech.poc.react.backend.core: TRACE
 
 

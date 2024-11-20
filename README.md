@@ -361,7 +361,7 @@ Some embedded interceptors are planning to develop to cross-check the `base` ann
 
 
 
-### EnableReactBackendParent
+### EnableReactBackend
 Enable ms-projects to contain the features in this library project.  
 The concept is doing `@Import` with those `@Configuration` classes.
 ```java
@@ -372,9 +372,9 @@ The concept is doing `@Import` with those `@Configuration` classes.
 })
 ```
 
-- @EnableReactBackendParent.class
+- @EnableReactBackend.class
     - GlobalConfigImport.class
-        - ParentAppConfig.class
+        - AppCoreConfig.class
     - WebConfigImport.class
         - DataConfig.class
         - WebConfig.class
@@ -568,7 +568,7 @@ classDiagram
     class EncryptedBodyAdviceHelper {
     %%        -ObjectMapper objectMapper
     %%        -RestTemplate oauth2ClientRestTemplate
-    %%        -ParentAppProp parentAppProp
+    %%        -AppCoreProp appCoreProp
         +decryptRsaDataBase64ToBodyDetail()
         +encryptBodyToDataBase64()
         +resolveRsaInfoAesContent()
@@ -608,8 +608,8 @@ stateDiagram-v2
         SecurityConfigImport --> [*]
     }
     state GlobalConfigImport {
-        [*] --> ParentAppProp
-        ParentAppProp --> MapperConfig
+        [*] --> AppCoreProp
+        AppCoreProp --> MapperConfig
         MapperConfig --> PostAppConfig
         PostAppConfig --> [*]
     }

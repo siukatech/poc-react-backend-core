@@ -2,7 +2,7 @@ package com.siukatech.poc.mapper.mapstruct;
 
 import com.siukatech.poc.mapper.model.SourceObjWithOptional;
 import com.siukatech.poc.mapper.model.TargetObjWithoutOptional;
-import com.siukatech.poc.react.backend.parent.business.mapper.AbstractMapper;
+import com.siukatech.poc.react.backend.core.business.mapper.AbstractMapper;
 import org.mapstruct.Mapping;
 
 public interface SourceTargetMapper extends AbstractMapper {
