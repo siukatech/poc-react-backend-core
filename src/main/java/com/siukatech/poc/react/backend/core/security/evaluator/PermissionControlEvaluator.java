@@ -61,24 +61,28 @@ public class PermissionControlEvaluator {
                 , loginId, beanName, methodName
 //                , isPublic
         );
-        log.debug("evaluate - permissionControlAnnotationByUtil: [{}], permissionControlAnnotationByMethod: [{}]"
-                , permissionControlAnnotationByUtil, permissionControlAnnotationByMethod);
+        log.debug("evaluate - loginId: [{}], authentication.getClass.getName: [{}], permissionControlAnnotationByUtil: [{}], permissionControlAnnotationByMethod: [{}]"
+                , loginId, authentication.getClass().getName(), permissionControlAnnotationByUtil, permissionControlAnnotationByMethod);
 //        if (isPublic) {
 //            // nothing to do with PublicController
 //        }
 //        else {
             if (authentication instanceof MyAuthenticationToken myAuthenticationToken) {
                 grantedAuthorityList.addAll(myAuthenticationToken.getAuthorities());
+                log.debug("evaluate - loginId: [{}], grantedAuthorityList.size: [{}]"
+                        , loginId, grantedAuthorityList.size());
+                log.trace("evaluate - loginId: [{}], grantedAuthorityList: [{}]"
+                        , loginId, grantedAuthorityList);
                 authorityCount = grantedAuthorityList.stream()
                         .filter(grantedAuthority -> grantedAuthority instanceof MyGrantedAuthority)
                         .map(MyGrantedAuthority.class::cast)
                         .peek(mga -> {
-                            log.debug("preHandle - permissionControlAnnotationByUtil: [{}]"
+                            log.trace("evaluate - loginId: [{}], permissionControlAnnotationByUtil: [{}]"
                                             + ", appResourceId: [{}], accessRight: [{}]"
                                             + ", mga.getApplicationId: [{}], mga.getUserRoleId: [{}]"
-                                            + ", mga.getAppResourceId: [], mga.getAccessRight: [{}]"
+                                            + ", mga.getAppResourceId: [{}], mga.getAccessRight: [{}]"
                                             + ", mga.getAuthority: [{}]"
-                                    , permissionControlAnnotationByUtil
+                                    , loginId, permissionControlAnnotationByUtil
                                     , appResourceId, accessRight
                                     , mga.getApplicationId(), mga.getUserRoleId()
                                     , mga.getAppResourceId(), mga.getAccessRight()

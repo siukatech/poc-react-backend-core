@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.oauth2.client.OAuth2ClientProperties;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -34,6 +35,8 @@ public class WebControllerTests extends AbstractWebTests {
     private MockMvc mockMvc;
     @MockBean
     private JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter;
+    @MockBean
+    private OAuth2ClientProperties oAuth2ClientProperties;
 
     @Test
     public void index_basic() throws Exception {

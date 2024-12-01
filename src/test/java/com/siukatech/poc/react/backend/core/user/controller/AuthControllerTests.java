@@ -13,6 +13,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.oauth2.client.OAuth2ClientProperties;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -76,6 +77,9 @@ public class AuthControllerTests extends AbstractWebTests {
 
     @MockBean
     private JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter;
+
+    @MockBean
+    private OAuth2ClientProperties oAuth2ClientProperties;
 
 //    /**
 //     * @Autowired is defined because the OAuth2ClientProperties will be created based on the properties.

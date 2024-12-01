@@ -1,11 +1,13 @@
-package com.siukatech.poc.react.backend.core.security.converter;
+package com.siukatech.poc.react.backend.core.security.resourceserver;
 
 import com.siukatech.poc.react.backend.core.business.dto.UserDto;
 import com.siukatech.poc.react.backend.core.business.dto.UserPermissionDto;
 import com.siukatech.poc.react.backend.core.security.authentication.MyAuthenticationToken;
 import com.siukatech.poc.react.backend.core.security.authority.MyGrantedAuthority;
 import com.siukatech.poc.react.backend.core.security.provider.AuthorizationDataProvider;
+import com.siukatech.poc.react.backend.core.util.ResourceServerUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.security.oauth2.client.OAuth2ClientProperties;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -25,19 +27,21 @@ import java.util.Map;
 @Component
 //@Component(value = "JwtAuthenticationConverter")
 //@ConditionalOnProperty(name = "spring.security.oauth2.provider.keycloak.issuer-uri")
-public class KeycloakJwtAuthenticationConverter implements Converter<Jwt, AbstractAuthenticationToken> {
+public class MyJwtAuthenticationConverter implements Converter<Jwt, AbstractAuthenticationToken> {
 
     private final JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter;
 //    private final UserService userService;
     private final AuthorizationDataProvider authorizationDataProvider;
+    private final OAuth2ClientProperties oAuth2ClientProperties;
 
-    public KeycloakJwtAuthenticationConverter(
+    public MyJwtAuthenticationConverter(
             JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter,
 //            UserService userService,
-            AuthorizationDataProvider authorizationDataProvider) {
+            AuthorizationDataProvider authorizationDataProvider, OAuth2ClientProperties oAuth2ClientProperties) {
         this.jwtGrantedAuthoritiesConverter = jwtGrantedAuthoritiesConverter;
 //        this.userService = userService;
         this.authorizationDataProvider = authorizationDataProvider;
+        this.oAuth2ClientProperties = oAuth2ClientProperties;
     }
 
     @Override
@@ -57,6 +61,12 @@ public class KeycloakJwtAuthenticationConverter implements Converter<Jwt, Abstra
                 + "], tokenValue: [" + tokenValue
                 + "], loginId: [" + loginId
                 + "]");
+        //
+        String issuerUri = source.getIssuer().toString();
+        String clientName = ResourceServerUtil.getClientName(oAuth2ClientProperties, issuerUri);
+        //
+        log.debug("convert - loginId: [{}], issuerUri: [{}], clientName: [{}]", loginId, issuerUri, clientName);
+        //
         List<GrantedAuthority> convertedAuthorities = new ArrayList<>();
         // Extract authorities from jwt
         convertedAuthorities.addAll(jwtGrantedAuthoritiesConverter.convert(source));
@@ -74,7 +84,8 @@ public class KeycloakJwtAuthenticationConverter implements Converter<Jwt, Abstra
             userDto = authorizationDataProvider.findByLoginIdAndTokenValue(loginId, tokenValue);
 
         List<UserPermissionDto> userPermissionDtoList = authorizationDataProvider.findPermissionsByLoginId(loginId, tokenValue);
-        userPermissionDtoList.stream().forEach(userPermissionDto -> {
+        log.debug("convert - loginId: [{}], userPermissionDtoList: [{}]", loginId, userPermissionDtoList);
+        userPermissionDtoList.forEach(userPermissionDto -> {
             convertedAuthorities.add(MyGrantedAuthority.builder()
                             .userRoleId(userPermissionDto.getUserRoleId())
                             .applicationId(userPermissionDto.getApplicationId())
@@ -96,7 +107,7 @@ public class KeycloakJwtAuthenticationConverter implements Converter<Jwt, Abstra
 
         OAuth2User oAuth2User = new DefaultOAuth2User(convertedAuthorities, attributeMap, StandardClaimNames.PREFERRED_USERNAME);
 //        OAuth2AuthenticationToken authenticationToken = new OAuth2AuthenticationToken(oAuth2User, convertedAuthorities, "keycloak");
-        MyAuthenticationToken authenticationToken = new MyAuthenticationToken(oAuth2User, convertedAuthorities, "keycloak");
+        MyAuthenticationToken authenticationToken = new MyAuthenticationToken(oAuth2User, convertedAuthorities, clientName);
         return authenticationToken;
     }
 

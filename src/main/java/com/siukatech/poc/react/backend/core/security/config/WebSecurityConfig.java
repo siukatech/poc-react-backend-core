@@ -1,11 +1,12 @@
 package com.siukatech.poc.react.backend.core.security.config;
 
-import com.siukatech.poc.react.backend.core.security.converter.KeycloakJwtAuthenticationConverter;
 import com.siukatech.poc.react.backend.core.security.filter.AuthorizationDataFilter;
 import com.siukatech.poc.react.backend.core.security.handler.KeycloakLogoutHandler;
+import com.siukatech.poc.react.backend.core.security.resourceserver.MyJwtAuthenticationConverter;
+import com.siukatech.poc.react.backend.core.security.resourceserver.MyOpaqueTokenAuthenticationConverter;
+import com.siukatech.poc.react.backend.core.security.resourceserver.MyOpaqueTokenIntrospector;
 import com.siukatech.poc.react.backend.core.web.helper.PublicControllerHelper;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -15,9 +16,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.session.SessionRegistryImpl;
-import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
-import org.springframework.security.oauth2.core.OAuth2TokenValidator;
-import org.springframework.security.oauth2.jwt.*;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 import org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy;
@@ -50,9 +48,12 @@ public class WebSecurityConfig {
 //    private final AppCoreProp appCoreProp;
     private final KeycloakLogoutHandler keycloakLogoutHandler;
 //    private final OAuth2ResourceServerProperties oAuth2ResourceServerProperties;
-    private final KeycloakJwtAuthenticationConverter keycloakJwtAuthenticationConverter;
+    private final MyJwtAuthenticationConverter myJwtAuthenticationConverter;
     private final AuthorizationDataFilter authorizationDataFilter;
-
+//    private final OAuth2ClientProperties oAuth2ClientProperties;
+//    private final OAuth2ResourceServerExtProp oAuth2ResourceServerExtProp;
+    private final MyOpaqueTokenIntrospector opaqueTokenIntrospector;
+    private final MyOpaqueTokenAuthenticationConverter opaqueTokenAuthenticationConverter;
 
     public WebSecurityConfig(
 //            ObjectMapper objectMapper
@@ -61,15 +62,26 @@ public class WebSecurityConfig {
 //            ,
             KeycloakLogoutHandler keycloakLogoutHandler
 //            , OAuth2ResourceServerProperties oAuth2ResourceServerProperties
-            , KeycloakJwtAuthenticationConverter keycloakJwtAuthenticationConverter
-            , AuthorizationDataFilter authorizationDataFilter) {
+            , MyJwtAuthenticationConverter myJwtAuthenticationConverter
+            , AuthorizationDataFilter authorizationDataFilter
+//            , OAuth2ClientProperties oAuth2ClientProperties
+//            , OAuth2ResourceServerExtProp oAuth2ResourceServerExtProp
+            , MyOpaqueTokenIntrospector opaqueTokenIntrospector
+            , MyOpaqueTokenAuthenticationConverter opaqueTokenAuthenticationConverter) {
 //        this.objectMapper = objectMapper;
 //        this.userService = userService;
 //        this.appCoreProp = appCoreProp;
         this.authorizationDataFilter = authorizationDataFilter;
         this.keycloakLogoutHandler = keycloakLogoutHandler;
 //        this.oAuth2ResourceServerProperties = oAuth2ResourceServerProperties;
-        this.keycloakJwtAuthenticationConverter = keycloakJwtAuthenticationConverter;
+        this.myJwtAuthenticationConverter = myJwtAuthenticationConverter;
+        //
+//        this.oAuth2ClientProperties = oAuth2ClientProperties;
+//        this.oAuth2ResourceServerExtProp = oAuth2ResourceServerExtProp;
+        //
+        this.opaqueTokenIntrospector = opaqueTokenIntrospector;
+        this.opaqueTokenAuthenticationConverter = opaqueTokenAuthenticationConverter;
+        //
         log.debug("constructor");
     }
 
@@ -228,20 +240,6 @@ public class WebSecurityConfig {
 //                .logoutSuccessUrl("/login")
 //                .permitAll()
 //        ;
-        http.logout(logoutConfigurer -> logoutConfigurer
-                        .addLogoutHandler(keycloakLogoutHandler)
-//                .logoutRequestMatcher(AntPathRequestMatcher.antMatcher("/logout"))
-                        //
-                        // Reference:
-                        // https://stackoverflow.com/a/38461866
-                        // https://baeldung.com/spring-security-logout
-                        // return http-status instead of doing redirect
-//                .logoutSuccessUrl("/")
-                        .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler(HttpStatus.OK))
-                        .invalidateHttpSession(true)
-                        .deleteCookies("JSESSIONID")
-                        .permitAll()
-        );
 //        http.oauth2Login(new Customizer<OAuth2LoginConfigurer<HttpSecurity>>() {
 //            @Override
 //            public void customize(OAuth2LoginConfigurer<HttpSecurity> httpSecurityOAuth2LoginConfigurer) {
@@ -280,13 +278,35 @@ public class WebSecurityConfig {
 ////        });
         http.oauth2ResourceServer(oAuth2ResourceServerConfigurer ->
                 oAuth2ResourceServerConfigurer
-                        .jwt(jwtConfigurer -> jwtConfigurer
-                                .jwtAuthenticationConverter(keycloakJwtAuthenticationConverter)
+//                        .jwt(jwtConfigurer -> jwtConfigurer
+//                                .jwtAuthenticationConverter(keycloakJwtAuthenticationConverter)
+//                        )
+                        .opaqueToken(opaqueTokenConfigurer -> opaqueTokenConfigurer
+                                .introspector(
+//                                        opaqueTokenIntrospector()
+                                        opaqueTokenIntrospector
+                                )
+                                        .authenticationConverter(opaqueTokenAuthenticationConverter)
                         )
         );
 //        http.oauth2ResourceServer(Customizer.withDefaults());
 
         http.addFilterAfter(authorizationDataFilter, BasicAuthenticationFilter.class);
+
+        http.logout(logoutConfigurer -> logoutConfigurer
+                        .addLogoutHandler(keycloakLogoutHandler)
+//                .logoutRequestMatcher(AntPathRequestMatcher.antMatcher("/logout"))
+                        //
+                        // Reference:
+                        // https://stackoverflow.com/a/38461866
+                        // https://baeldung.com/spring-security-logout
+                        // return http-status instead of doing redirect
+//                .logoutSuccessUrl("/")
+                        .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler(HttpStatus.OK))
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
+                        .permitAll()
+        );
 
         http.sessionManagement(sessionManagementConfigurer ->
                 sessionManagementConfigurer
@@ -294,23 +314,46 @@ public class WebSecurityConfig {
         );
         return http.build();
     }
+//
+//    @Bean
+//    public JwtDecoder jwtDecoder() {
+//        return (token -> {
+//            try {
+//                String issuerUri = ResourceServerUtil.getIssuerUri(token);
+//                String clientName = oAuth2ClientProperties.getProvider().entrySet().stream()
+//                        .filter(entry -> entry.getValue().getIssuerUri().equals(issuerUri))
+//                        .map(entry -> entry.getKey())
+//                        .findFirst()
+//                        .orElse(null)
+//                        ;
+//                OAuth2ClientProperties.Registration registration = oAuth2ClientProperties.getRegistration().get(clientName);
+//                OAuth2ResourceServerProperties.Jwt jwt = oAuth2ResourceServerExtProp.getJwt().entrySet().stream()
+//                        .filter(entry -> entry.getKey().equals(clientName))
+//                        .map(entry -> entry.getValue())
+//                        .findFirst()
+//                        .orElse(null)
+//                        ;
+////                NimbusJwtDecoder jwtDecoder = NimbusJwtDecoder
+////                        .withIssuerLocation(oAuth2ResourceServerProperties.getJwt().getIssuerUri())
+////                        .jwsAlgorithm(SignatureAlgorithm.RS512)
+////                        .build();
+//                NimbusJwtDecoder jwtDecoder = JwtDecoders.fromOidcIssuerLocation(jwt.getIssuerUri());
+//                OAuth2TokenValidator<Jwt> withIssuerJwtTokenValidator = JwtValidators.createDefaultWithIssuer(jwt.getIssuerUri());
+//                OAuth2TokenValidator<Jwt> jwtDelegatingOAuth2TokenValidator = new DelegatingOAuth2TokenValidator<>(withIssuerJwtTokenValidator);
+//                jwtDecoder.setJwtValidator(jwtDelegatingOAuth2TokenValidator);
+//                return jwtDecoder.decode(token);
+//            } catch (ParseException e) {
+//                throw new RuntimeException(e);
+//            }
+//        });
+//    }
 
-    @Bean
-    public JwtDecoder jwtDecoder(OAuth2ResourceServerProperties oAuth2ResourceServerProperties) {
-        NimbusJwtDecoder jwtDecoder = JwtDecoders.fromOidcIssuerLocation(
-                oAuth2ResourceServerProperties.getJwt().getIssuerUri()
-        );
-//        NimbusJwtDecoder jwtDecoder = NimbusJwtDecoder
-//                .withIssuerLocation(oAuth2ResourceServerProperties.getJwt().getIssuerUri())
-//                .jwsAlgorithm(SignatureAlgorithm.RS512)
-//                .build();
-        OAuth2TokenValidator<Jwt> withIssuerJwtTokenValidator = JwtValidators.createDefaultWithIssuer(
-                oAuth2ResourceServerProperties.getJwt().getIssuerUri()
-        );
-        OAuth2TokenValidator<Jwt> jwtDelegatingOAuth2TokenValidator = new DelegatingOAuth2TokenValidator<>(withIssuerJwtTokenValidator);
-        jwtDecoder.setJwtValidator(jwtDelegatingOAuth2TokenValidator);
-        return jwtDecoder;
-    }
+//    @Bean
+//    public OpaqueTokenIntrospector opaqueTokenIntrospector() {
+//        MyOpaqueTokenIntrospector myOpaqueTokenIntrospector
+//                = new MyOpaqueTokenIntrospector(oAuth2ClientProperties, oAuth2ResourceServerExtProp);
+//        return myOpaqueTokenIntrospector;
+//    }
 
 //
 //    @Bean("authorizationDataProvider")
