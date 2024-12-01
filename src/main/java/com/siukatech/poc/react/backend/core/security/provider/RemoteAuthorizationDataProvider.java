@@ -104,6 +104,10 @@ public class RemoteAuthorizationDataProvider implements AuthorizationDataProvide
                     , userPermissionInfoDto.getUserPermissionList().size()
 //                , responseEntity.getBody().toString()
             );
+            userPermissionDtoList.addAll(userPermissionInfoDto.getUserPermissionList());
+            log.debug("findPermissionsByLoginId - loginId: [{}], userPermissionDtoList: [{}]"
+                    , loginId, userPermissionDtoList.size()
+            );
             if (!loginId.equals(userPermissionInfoDto.getLoginId())) {
                 throw new EntityNotFoundException(
                         "User does not match loginId: [%s], userPermissionInfoDto.getLoginId: [%s]"
