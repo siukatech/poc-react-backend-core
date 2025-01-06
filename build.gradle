@@ -158,14 +158,19 @@ dependencies {
 //    testFixturesApi 'org.springframework.security:spring-security-test'
     testFixturesApi "org.springframework.boot:spring-boot-starter-test:${springBootVersion}"
     testFixturesApi "org.springframework.security:spring-security-test:${springSecurityVersion}"
-    testFixturesApi 'com.h2database:h2:2.1.214'
+    testFixturesApi 'com.h2database:h2:2.2.220'
 
 //	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 //	testImplementation 'org.springframework.security:spring-security-test'
 //	testImplementation 'com.h2database:h2:2.1.214'
 ////	testImplementation 'org.simplify4u:slf4j2-mock:2.3.0'
 
+    testImplementation 'org.projectlombok:lombok:1.18.30'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.30'
+
+    testFixturesApi 'org.projectlombok:lombok:1.18.30'
     testFixturesAnnotationProcessor 'org.projectlombok:lombok:1.18.30'
+
     testFixturesAnnotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
     testFixturesAnnotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
 

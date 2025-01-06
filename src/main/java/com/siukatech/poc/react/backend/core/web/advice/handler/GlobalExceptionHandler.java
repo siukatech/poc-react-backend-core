@@ -2,6 +2,7 @@ package com.siukatech.poc.react.backend.core.web.advice.handler;
 
 import com.siukatech.poc.react.backend.core.security.exception.NoSuchPermissionException;
 import com.siukatech.poc.react.backend.core.web.advice.mapper.ProblemDetailExtMapper;
+import com.siukatech.poc.react.backend.core.web.advice.model.ErrorDetail;
 import com.siukatech.poc.react.backend.core.web.advice.model.ProblemDetailExt;
 import com.siukatech.poc.react.backend.core.web.micrometer.CorrelationIdHandler;
 import jakarta.persistence.EntityNotFoundException;
@@ -19,13 +20,14 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 //@Component
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
-//    private final Tracer tracer;
+    //    private final Tracer tracer;
     private final CorrelationIdHandler correlationIdHandler;
     private final ProblemDetailExtMapper problemDetailExtMapper;
 
@@ -91,36 +93,50 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             MethodArgumentNotValidException ex, HttpHeaders headers
             , HttpStatusCode status, WebRequest request) {
 //        return handleExceptionInternal(ex, defaultDetailBuf.toString(), headers, status, request);
-//ex.get
+//
         String contextPath = request.getContextPath();
+        List<ErrorDetail> errorDetailList = new ArrayList<>();
 //        StringBuffer defaultDetailBuf = new StringBuffer();
-//        ex.getBindingResult().getAllErrors().stream().forEach(objectError -> {
+//        ex.getBindingResult().getAllErrors().forEach(objectError -> {
 //            defaultDetailBuf
 //                    .append("objectName: ").append(objectError.getObjectName())
 //                    .append(", ").append("message: ").append(objectError.getDefaultMessage())
 //                    .append(System.lineSeparator())
 //            ;
 //        });
-        List<String> errorMessageList = new ArrayList<>();
-        ex.getFieldErrors().stream().forEach(fieldError -> {
-            String errorMessage = "";
-            errorMessage += fieldError.getDefaultMessage();
-            errorMessage += " : ";
-            errorMessage += fieldError.getObjectName();
-            errorMessage += ".";
-            errorMessage += fieldError.getField();
-            errorMessage += "=";
-            errorMessage += fieldError.getRejectedValue();
-            if (fieldError.getArguments() != null) {
-//                errorMessage += " (";
-//                errorMessage += String.join(",", Arrays.stream(fieldError.getArguments()).toArray(String[]::new));
-//                errorMessage += ")";
-                Arrays.stream(fieldError.getArguments()).forEach(arg -> {
-                    log.debug("handleMethodArgumentNotValid - arg: [" + arg + "]");
-                });
-            }
-//            errorMessage += System.lineSeparator();
-            errorMessageList.add(errorMessage);
+        ex.getFieldErrors().forEach(fieldError -> {
+            ErrorDetail errorDetail = new ErrorDetail(
+                    fieldError.getCode()
+                    , fieldError.getCodes()
+                    , ErrorDetail.refineCodes(fieldError.getCodes(), true)
+                    , ErrorDetail.refineCodes(fieldError.getCodes(), false)
+                    , fieldError.getDefaultMessage()
+                    , fieldError.getObjectName()
+                    , fieldError.getField()
+                    , fieldError.getRejectedValue()
+                    , Arrays.stream(fieldError.getArguments() == null
+                            ? new Object[0] : fieldError.getArguments()
+                    ).toList()
+            );
+//            String errorDetail = "";
+//            errorDetail += fieldError.getDefaultMessage();
+//            errorDetail += " : ";
+//            errorDetail += fieldError.getObjectName();
+//            errorDetail += ".";
+//            errorDetail += fieldError.getField();
+//            errorDetail += "=";
+//            errorDetail += fieldError.getRejectedValue();
+//            if (fieldError.getArguments() != null) {
+////                errorDetail += " (";
+////                errorDetail += String.join(",", Arrays.stream(fieldError.getArguments()).toArray(String[]::new));
+////                errorDetail += ")";
+//                Arrays.stream(fieldError.getArguments()).forEach(arg -> {
+//                    log.debug("handleMethodArgumentNotValid - arg: [" + arg + "]");
+//                });
+//            }
+
+//            errorDetail += System.lineSeparator();
+            errorDetailList.add(errorDetail);
 //            defaultDetailBuf
 //                    .append("objectName: ").append(fieldError.getObjectName())
 //                    .append(", ")
@@ -141,8 +157,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 //            ;
         });
 //        String defaultDetail = defaultDetailBuf.toString();
-        String defaultDetail = String.join("\n", errorMessageList.toArray(String[]::new));
-        ProblemDetail body = createProblemDetail(ex, status, defaultDetail, null, null, request);
+////        String defaultDetail = String.join("\n", errorDetailList.toArray(String[]::new));
+//        String defaultDetail = StringUtils.join(errorDetailList, "\n");
+        String defaultDetail = ex.getMessage();
+        ProblemDetail body = createProblemDetail(ex, status, defaultDetail
+                , null, null, request);
+        body.setProperties(Map.of("errorDetails", errorDetailList));
         return handleExceptionInternal(ex, body, headers, status, request);
     }
 
@@ -231,8 +251,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
         Object[] args = {ex.getClass().getName()};
-        String defaultDetail = "" + ex.getMessage()
-                ;
+        String defaultDetail = "" + ex.getMessage();
         ProblemDetail body = createProblemDetail(ex, status, defaultDetail, null, args, request);
         return handleExceptionInternal(ex, body, new HttpHeaders(), status, request);
     }

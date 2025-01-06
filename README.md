@@ -763,3 +763,61 @@ private static final Logger log = LoggerFactory.getLogger(xxx.class);
 ...
 ```
 
+
+
+# Spring Validation
+Use `jakarta` instead of `javax` for jakarta bean validation.  
+
+## build.gradle
+build.gradle is required to update for lombok in test.  
+```groovy
+...
+testImplementation 'org.projectlombok:lombok:1.18.30'
+testAnnotationProcessor 'org.projectlombok:lombok:1.18.30'
+
+testFixturesApi 'org.projectlombok:lombok:1.18.30'
+testFixturesAnnotationProcessor 'org.projectlombok:lombok:1.18.30'
+...
+```
+
+Import the `jakarta` validation library.  
+```groovy
+...
+api 'org.hibernate:hibernate-validator:6.0.13.Final'
+...
+```
+
+**Reference:**  
+https://www.baeldung.com/java-validation  
+
+
+
+# Exception Handler
+`GlobalExceptionHandler` uses `@ControllerAdvice` and extends `ResponseEntityExceptionHandler`.  
+Override `handleMethodArgumentNotValid` and prepare the `ErrorDetail` object with codes from `FieldError` object.  
+
+In unit-test class, some annotations are required, like `@EnableWebMvc`.  
+```java
+@Slf4j
+@SpringBootTest(classes = {GlobalExceptionHandler.class
+        , GlobalExceptionHandler_controller.class}
+    , properties = {
+        "logging.level.com.siukatech.poc.react.backend.core.web.advice.handler=DEBUG"
+        , "logging.level.com.siukatech.poc.react.backend.core.web.advice.model=DEBUG"
+    }
+)
+@EnableWebMvc // If missing @EnableWebMvc, status 415 will be thrown
+@WebAppConfiguration
+public class GlobalExceptionHandlerTests {
+    ...
+}
+```
+
+
+## Http Status 415 returned when ...
+Http status 415 returned when:    
+- `MockMvcRequestBuilders.contentType` is missing for method `POST`
+- `@EnableWebMvc` is missing when using `@SpringBootTest`
+
+
+
