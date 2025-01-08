@@ -2,6 +2,7 @@ package com.siukatech.poc.react.backend.core;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
+import com.siukatech.poc.react.backend.core.web.advice.mapper.ProblemDetailExtMapper;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.slf4j.LoggerFactory;
@@ -77,6 +78,8 @@ public abstract class AbstractUnitTests {
     @MockBean
 //    @Autowired
     protected InMemoryClientRegistrationRepository clientRegistrationRepository;
+    @MockBean
+    protected ProblemDetailExtMapper problemDetailExtMapper;
 
     @BeforeAll
     public static void init() {

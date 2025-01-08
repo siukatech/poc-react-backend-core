@@ -47,10 +47,9 @@ ext {
     openapiGeneratorVersion = "${ReactBackendUtil.extractOpenapiGeneratorVersion()}"
 }
 
-group = 'com.siukatech.poc'
-version = '0.0.1-SNAPSHOT'
-
 java {
+    group = 'com.siukatech.poc'
+    version = '0.0.1-SNAPSHOT'
     sourceCompatibility = JavaVersion.VERSION_17
 //    sourceCompatibility = JavaVersion.VERSION_21
     targetCompatibility = JavaVersion.VERSION_17
@@ -195,12 +194,11 @@ dependencies {
 // mapstruct:
 // https://github.com/mapstruct/mapstruct-examples/blob/main/mapstruct-on-gradle/build.gradle
 tasks.withType(JavaCompile).configureEach {
-    options.compilerArgs.add('-parameters')
-    options.compilerArgs.addAll([
-            '-Amapstruct.suppressGeneratorTimestamp=true'
-            , '-Amapstruct.defaultComponentModel=spring'
-    ])
-
+//    options.compilerArgs.add('-parameters')
+//    options.compilerArgs.addAll([
+//            '-Amapstruct.suppressGeneratorTimestamp=true'
+//            , '-Amapstruct.defaultComponentModel=spring'
+//    ])
 }
 //tasks.withType(JavaCompile) {
 //    options.compilerArgs = [

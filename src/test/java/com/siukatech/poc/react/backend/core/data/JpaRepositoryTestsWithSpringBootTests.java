@@ -3,6 +3,7 @@ package com.siukatech.poc.react.backend.core.data;
 import com.siukatech.poc.react.backend.core.user.repository.UserPermissionRepository;
 import com.siukatech.poc.react.backend.core.user.repository.UserRepository;
 import com.siukatech.poc.react.backend.core.user.repository.UserViewRepository;
+import com.siukatech.poc.react.backend.core.web.advice.mapper.ProblemDetailExtMapper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -47,6 +48,8 @@ public class JpaRepositoryTestsWithSpringBootTests {
     private UserPermissionRepository userPermissionRepository;
     @MockBean
     private UserViewRepository userViewRepository;
+    @MockBean
+    private ProblemDetailExtMapper problemDetailExtMapper;
 
     // This is not working, start
 //    @MockBean

@@ -153,28 +153,32 @@ public class WebSecurityConfig {
      * Configure corsConfigurationSource instead of corsFilter
      * client-app does not need to implement this
      *
+     * This is not working.
+     *
      * @return
      */
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.setAllowedOrigins(
-                //Arrays.asList("http://localhost:3000", "http://localhost:28080")
-                Arrays.asList("*")
-        );
-//        corsConfiguration.setAllowCredentials(true);
-//        corsConfiguration.setAllowedMethods(Arrays.asList(HttpMethod.HEAD.name()
-//                , HttpMethod.GET.name()
-//                , HttpMethod.POST.name()
-//                , HttpMethod.PUT.name()
-//                , HttpMethod.DELETE.name()
-//                , HttpMethod.PATCH.name()
-//                , HttpMethod.OPTIONS.name()));
-        corsConfiguration.setAllowedMethods(Arrays.stream(HttpMethod.values()).map(HttpMethod::name).collect(Collectors.toList()));
-        UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource();
-        urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", corsConfiguration);
-        return urlBasedCorsConfigurationSource;
-    }
+//    @Bean
+//    public CorsConfigurationSource corsConfigurationSource() {
+//        log.info("corsConfigurationSource - start");
+//        CorsConfiguration corsConfiguration = new CorsConfiguration();
+//        corsConfiguration.setAllowedOrigins(
+//                //Arrays.asList("http://localhost:3000", "http://localhost:28080")
+//                Arrays.asList("*")
+//        );
+////        corsConfiguration.setAllowCredentials(true);
+////        corsConfiguration.setAllowedMethods(Arrays.asList(HttpMethod.HEAD.name()
+////                , HttpMethod.GET.name()
+////                , HttpMethod.POST.name()
+////                , HttpMethod.PUT.name()
+////                , HttpMethod.DELETE.name()
+////                , HttpMethod.PATCH.name()
+////                , HttpMethod.OPTIONS.name()));
+//        corsConfiguration.setAllowedMethods(Arrays.stream(HttpMethod.values()).map(HttpMethod::name).collect(Collectors.toList()));
+//        UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource();
+//        urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", corsConfiguration);
+//        log.info("corsConfigurationSource - end");
+//        return urlBasedCorsConfigurationSource;
+//    }
 
 //    @Bean
 //    public CorsFilter corsFilter() {
@@ -191,7 +195,7 @@ public class WebSecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        //http.csrf().disable();
+////        http.csrf().disable();
 //        http.csrf(new Customizer<CsrfConfigurer<HttpSecurity>>() {
 //            @Override
 //            public void customize(CsrfConfigurer<HttpSecurity> httpSecurityCsrfConfigurer) {

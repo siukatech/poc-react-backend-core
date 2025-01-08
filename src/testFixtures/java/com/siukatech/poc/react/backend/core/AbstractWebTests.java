@@ -55,8 +55,8 @@ public abstract class AbstractWebTests extends AbstractUnitTests {
 //    protected Tracer tracer;
     @MockBean
     protected CorrelationIdHandler correlationIdHandler;
-    @MockBean
-    protected ProblemDetailExtMapper problemDetailExtMapper;
+//    @MockBean
+//    protected ProblemDetailExtMapper problemDetailExtMapper;
 
     protected MockMvc prepareMockMvc() {
         return MockMvcBuilders

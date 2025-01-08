@@ -3,6 +3,7 @@ package com.siukatech.poc.react.backend.core;
 import com.siukatech.poc.react.backend.core.user.repository.UserPermissionRepository;
 import com.siukatech.poc.react.backend.core.user.repository.UserRepository;
 import com.siukatech.poc.react.backend.core.user.repository.UserViewRepository;
+import com.siukatech.poc.react.backend.core.web.advice.mapper.ProblemDetailExtMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -78,6 +79,8 @@ public class ReactBackendCoreTests {
     private UserPermissionRepository userPermissionRepository;
     @MockBean
     private UserViewRepository userViewRepository;
+    @MockBean
+    private ProblemDetailExtMapper problemDetailExtMapper;
 
     // not working, start
 //    @MockBean
