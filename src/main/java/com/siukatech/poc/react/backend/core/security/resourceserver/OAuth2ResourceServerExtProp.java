@@ -15,10 +15,16 @@ import java.util.Map;
 @ConfigurationProperties("spring.security.oauth2.resource-server")
 public class OAuth2ResourceServerExtProp implements InitializingBean {
     private Map<String, OAuth2ResourceServerProperties.Jwt> jwt;
-    private Map<String, OAuth2ResourceServerProperties.Opaquetoken> opaquetoken;
+    private Map<String, OAuth2ResourceServerExtProp.Opaquetoken> opaquetoken;
 
     @Override
     public void afterPropertiesSet() throws Exception {
         log.info("afterPropertiesSet - jwt: [{}], opaquetoken: [{}]", jwt, opaquetoken);
     }
+
+    @Data
+    public static class Opaquetoken extends OAuth2ResourceServerProperties.Opaquetoken {
+        private String issuerUri;
+    }
+
 }
