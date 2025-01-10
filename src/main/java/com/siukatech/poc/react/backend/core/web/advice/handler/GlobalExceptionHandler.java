@@ -7,6 +7,7 @@ import com.siukatech.poc.react.backend.core.web.advice.model.ProblemDetailExt;
 import com.siukatech.poc.react.backend.core.web.micrometer.CorrelationIdHandler;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
+import org.mapstruct.factory.Mappers;
 import org.springframework.http.*;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
@@ -35,12 +36,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 //            Tracer tracer
 //            ,
             CorrelationIdHandler correlationIdHandler
-            , ProblemDetailExtMapper problemDetailExtMapper
+//            , ProblemDetailExtMapper problemDetailExtMapper
     ) {
 //        this.tracer = tracer;
         this.correlationIdHandler = correlationIdHandler;
-        this.problemDetailExtMapper = problemDetailExtMapper;
-//        this.problemDetailExtMapper = Mappers.getMapper(ProblemDetailExtMapper.class);
+//        this.problemDetailExtMapper = problemDetailExtMapper;
+        this.problemDetailExtMapper = Mappers.getMapper(ProblemDetailExtMapper.class);
     }
 
 

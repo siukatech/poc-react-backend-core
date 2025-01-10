@@ -1,5 +1,6 @@
 import com.siukatech.poc.react.backend.plugin.ReactBackendPlugin
 import com.siukatech.poc.react.backend.plugin.ReactBackendUtil
+import org.codehaus.groovy.runtime.GStringImpl
 
 plugins {
 ////	id 'java'
@@ -35,18 +36,6 @@ dependencyManagement {
     }
 }
 
-ext {
-    mapstructVersion = '1.6.0.RC1'
-//    springBootVersion = '3.2.1'
-//    springSecurityVersion = '6.2.1'
-//    springBootVersion = "${ReactBackendPlugin.SPRING_BOOT_VERSION}"
-//    springSecurityVersion = "${ReactBackendPlugin.SPRING_SECURITY_VERSION}"
-//    openapiGeneratorVersion = "${ReactBackendPlugin.OPENAPI_GENERATOR_VERSION}"
-    springBootVersion = "${ReactBackendUtil.extractSpringBootVersion()}"
-    springSecurityVersion = "${ReactBackendUtil.extractSpringSecurityVersion()}"
-    openapiGeneratorVersion = "${ReactBackendUtil.extractOpenapiGeneratorVersion()}"
-}
-
 java {
     group = 'com.siukatech.poc'
     version = '0.0.1-SNAPSHOT'
@@ -58,6 +47,18 @@ java {
 
 repositories {
     mavenCentral()
+}
+
+ext {
+    mapstructVersion = '1.6.0.RC1'
+//    springBootVersion = '3.2.1'
+//    springSecurityVersion = '6.2.1'
+//    springBootVersion = "${ReactBackendPlugin.SPRING_BOOT_VERSION}"
+//    springSecurityVersion = "${ReactBackendPlugin.SPRING_SECURITY_VERSION}"
+//    openapiGeneratorVersion = "${ReactBackendPlugin.OPENAPI_GENERATOR_VERSION}"
+    springBootVersion = "${ReactBackendUtil.extractSpringBootVersion()}" as GStringImpl
+    springSecurityVersion = "${ReactBackendUtil.extractSpringSecurityVersion()}" as GStringImpl
+    openapiGeneratorVersion = "${ReactBackendUtil.extractOpenapiGeneratorVersion()}" as GStringImpl
 }
 
 dependencies {
@@ -175,11 +176,25 @@ dependencies {
 
 }
 
+// This is not working
+//def buildDirectoryPath = project.layout.buildDirectory.get().asFile.path
+////compileJava {
+//////    options.annotationProcessorPath
+////    options.getGeneratedSourceOutputDirectory().set(file("$buildDirectoryPath/classes/java/main"))
+////}
+//tasks.register('copyMapperImpl', Copy) {
+//    dependsOn(classes)
+//    from "$buildDirectoryPath/generated/sources/annotationProcessor/java/main"
+//    into "$buildDirectoryPath/classes/java/main"
+//}
+//jar.dependsOn(copyMapperImpl);
+
 //jar {
 ////	enabled = false
 ////	enabled = true
 //	archiveClassifier = '' //use empty string
 //}
+
 
 //bootJar {
 //	enabled = false

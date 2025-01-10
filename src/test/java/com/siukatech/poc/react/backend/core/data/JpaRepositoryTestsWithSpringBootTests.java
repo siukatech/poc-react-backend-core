@@ -48,8 +48,8 @@ public class JpaRepositoryTestsWithSpringBootTests {
     private UserPermissionRepository userPermissionRepository;
     @MockBean
     private UserViewRepository userViewRepository;
-    @MockBean
-    private ProblemDetailExtMapper problemDetailExtMapper;
+    // @MockBean
+    // private ProblemDetailExtMapper problemDetailExtMapper;
 
     // This is not working, start
 //    @MockBean

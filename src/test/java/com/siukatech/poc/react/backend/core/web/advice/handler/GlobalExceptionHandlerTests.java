@@ -48,8 +48,10 @@ public class GlobalExceptionHandlerTests {
 
     @MockBean
     private CorrelationIdHandler correlationIdHandler;
-    @MockBean
-    private ProblemDetailExtMapper problemDetailExtMapper;
+
+    // @MockBean
+    // private ProblemDetailExtMapper problemDetailExtMapper;
+
     @SpyBean
     private ObjectMapper objectMapper;
 

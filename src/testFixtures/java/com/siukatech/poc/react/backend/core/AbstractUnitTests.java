@@ -78,8 +78,8 @@ public abstract class AbstractUnitTests {
     @MockBean
 //    @Autowired
     protected InMemoryClientRegistrationRepository clientRegistrationRepository;
-    @MockBean
-    protected ProblemDetailExtMapper problemDetailExtMapper;
+    // @MockBean
+    // protected ProblemDetailExtMapper problemDetailExtMapper;
 
     @BeforeAll
     public static void init() {

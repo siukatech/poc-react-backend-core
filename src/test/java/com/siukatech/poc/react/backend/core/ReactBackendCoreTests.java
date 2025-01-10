@@ -79,13 +79,13 @@ public class ReactBackendCoreTests {
     private UserPermissionRepository userPermissionRepository;
     @MockBean
     private UserViewRepository userViewRepository;
-    @MockBean
-    private ProblemDetailExtMapper problemDetailExtMapper;
+    // @MockBean
+    // private ProblemDetailExtMapper problemDetailExtMapper;
 
-    // not working, start
+    // This is not working, start
 //    @MockBean
 //    private TestRestTemplate oauth2ClientRestTemplate;
-    // not working, end
+    // This is not working, end
 
     @Test
     void contextLoads() {

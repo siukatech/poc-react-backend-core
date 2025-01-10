@@ -92,9 +92,9 @@ public class UserControllerTests {
     @MockBean
     protected CorrelationIdHandler correlationIdHandler;
     @MockBean
-    protected ProblemDetailExtMapper problemDetailExtMapper;
-    @MockBean
     private OAuth2ClientProperties oAuth2ClientProperties;
+    // @MockBean
+    // protected ProblemDetailExtMapper problemDetailExtMapper;
 
 
 //    private UserEntity prepareUserEntity_basic() {
