@@ -42,7 +42,6 @@ import java.util.stream.Collectors;
 //@ConditionalOnProperty(name = "", havingValue = "http", matchIfMissing = true)
 public class WebSecurityConfig {
 
-
 //    private final ObjectMapper objectMapper;
 //    private final UserService userService;
 //    private final AppCoreProp appCoreProp;
@@ -149,14 +148,14 @@ public class WebSecurityConfig {
 //        return restTemplate;
 //    }
 
-    /**
-     * Configure corsConfigurationSource instead of corsFilter
-     * client-app does not need to implement this
-     *
-     * This is not working.
-     *
-     * @return
-     */
+//    /**
+//     * Configure corsConfigurationSource instead of corsFilter
+//     * client-app does not need to implement this
+//     *
+//     * This is not working.
+//     *
+//     * @return
+//     */
 //    @Bean
 //    public CorsConfigurationSource corsConfigurationSource() {
 //        log.info("corsConfigurationSource - start");

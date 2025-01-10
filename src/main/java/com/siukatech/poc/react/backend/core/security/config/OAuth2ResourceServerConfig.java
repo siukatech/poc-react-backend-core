@@ -41,15 +41,16 @@ public class OAuth2ResourceServerConfig {
         return (token -> {
             try {
                 String issuerUriSrc = ResourceServerUtil.getIssuerUri(token);
-//                String clientName = ResourceServerUtil.getClientName(oAuth2ClientProperties, issuerUri);
-//                OAuth2ClientProperties.Registration registration = oAuth2ClientProperties.getRegistration().get(clientName);
-//                OAuth2ResourceServerProperties.Jwt jwt = ResourceServerUtil.getResourceServerPropJwt(oAuth2ResourceServerExtProp, clientName);
-////                NimbusJwtDecoder jwtDecoder = NimbusJwtDecoder
-////                        .withIssuerLocation(oAuth2ResourceServerProperties.getJwt().getIssuerUri())
-////                        .jwsAlgorithm(SignatureAlgorithm.RS512)
-////                        .build();
-//                log.debug("jwtDecode - issuerUri: [{}], clientName: [{}], jwt: [{}]", issuerUriSrc, clientName, jwt);
-                String issuerUri = ResourceServerUtil.getClientName(oAuth2ResourceServerExtProp, issuerUriSrc);
+////                String clientName = ResourceServerUtil.getClientName(oAuth2ClientProperties, issuerUri);
+////                OAuth2ClientProperties.Registration registration = oAuth2ClientProperties.getRegistration().get(clientName);
+////                OAuth2ResourceServerProperties.Jwt jwt = ResourceServerUtil.getResourceServerPropJwt(oAuth2ResourceServerExtProp, clientName);
+//////                NimbusJwtDecoder jwtDecoder = NimbusJwtDecoder
+//////                        .withIssuerLocation(oAuth2ResourceServerProperties.getJwt().getIssuerUri())
+//////                        .jwsAlgorithm(SignatureAlgorithm.RS512)
+//////                        .build();
+////                log.debug("jwtDecode - issuerUri: [{}], clientName: [{}], jwt: [{}]", issuerUriSrc, clientName, jwt);
+//                String issuerUri = ResourceServerUtil.getClientName(oAuth2ResourceServerExtProp, issuerUriSrc);
+                String issuerUri = ResourceServerUtil.getIssuerUri(oAuth2ResourceServerExtProp, issuerUriSrc);
                 log.debug("jwtDecode - issuerUri: [{}], issuerUriSrc: [{}]", issuerUri, issuerUriSrc);
                 assert issuerUri != null;
                 NimbusJwtDecoder jwtDecoder = JwtDecoders.fromOidcIssuerLocation(issuerUri);

@@ -31,29 +31,31 @@ public class PermissionControlInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response
             , Object handler) throws Exception {
-        log.debug("preHandle - start");
-        log.debug("preHandle - request.getRequestURI: [${}], handler: [{}]", request.getRequestURI(), handler);
-
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String authName = authentication == null ? "NULL" : authentication.getName();
+
+        log.debug("preHandle - authName: [{}], start", authName);
+        log.debug("preHandle - authName: [{}], request.getRequestURI: [${}], handler: [{}]"
+                , authName, request.getRequestURI(), handler);
+
         if (authentication instanceof MyAuthenticationToken myAuthenticationToken
                 && myAuthenticationToken.getAuthorities() instanceof MyGrantedAuthority myGrantedAuthority) {
-//            myAuthenticationToken.getName();
-            myGrantedAuthority.getAuthority();
-            log.debug("preHandle - authentication.name: [{}], myGrantedAuthority.getAuthority: [{}]"
-                    , authentication == null ? "" : authentication.getName()
+////            myAuthenticationToken.getName();
+//            myGrantedAuthority.getAuthority();
+            log.debug("preHandle - myAuthenticationToken - authName: [{}]"
+                            + ", myGrantedAuthority.getAuthority: [{}]"
+                    , authName
                     , myGrantedAuthority.getAuthority()
             );
         }
-        log.debug("preHandle - authentication.name: [{}]"
-                , authentication == null ? "NULL" : authentication.getName()
-        );
+        log.debug("preHandle - authName: [{}]", authName);
 
         boolean result = false;
         if (handler instanceof HandlerMethod handlerMethod) {
             result = this.permissionControlEvaluator.evaluate(handlerMethod, authentication);
         }
 
-        log.debug("preHandle - end, result: [{}]", result);
+        log.debug("preHandle - authName: [{}], result: [{}], end", authName, result);
         return result;
     }
 
