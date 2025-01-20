@@ -51,6 +51,8 @@ public class MyOpaqueTokenIntrospector implements OpaqueTokenIntrospector {
                         , registration.getClientId(), registration.getClientSecret());
                 opaqueTokenIntrospectorMap.put(clientName, opaqueTokenIntrospector);
             }
+            log.debug("introspect - issuerUri: [{}], clientName: [{}], opaqueToken: [{}]"
+                    , issuerUri, clientName, opaqueToken);
             return opaqueTokenIntrospector.introspect(token);
         } catch (ParseException e) {
             throw new RuntimeException(e);

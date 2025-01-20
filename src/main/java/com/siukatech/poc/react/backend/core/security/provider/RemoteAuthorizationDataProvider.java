@@ -48,21 +48,29 @@ public class RemoteAuthorizationDataProvider implements AuthorizationDataProvide
             HttpHeaders httpHeaders = new HttpHeaders();
             prepareHttpHeaders(httpHeaders, tokenValue);
             HttpEntity<String> httpEntity = new HttpEntity<>(httpHeaders);
-            ResponseEntity<UserDto> responseEntity = this.oauth2ClientRestTemplate.exchange(
-                    myUserInfoUrl, HttpMethod.GET
+            try {
+                ResponseEntity<UserDto> responseEntity = this.oauth2ClientRestTemplate.exchange(
+                        myUserInfoUrl, HttpMethod.GET
 //                    , HttpEntity.EMPTY
-                    , httpEntity
-                    , UserDto.class);
-            userDto = responseEntity.getBody();
-            log.debug("findByLoginId - loginId: [{}], myUserInfoUrl: [{}], userDto.getLoginId: [{}]"
-//                + ", responseEntity.getBody.toString: [{}]"
-                    , loginId, myUserInfoUrl, userDto.getLoginId()
-//                , responseEntity.getBody().toString()
-            );
-            if (!loginId.equals(userDto.getLoginId())) {
-                throw new EntityNotFoundException(
-                        "User does not match loginId: [%s], userDto.getLoginId: [%s]"
-                                .formatted(loginId, userDto.getLoginId()));
+                        , httpEntity
+                        , UserDto.class);
+                userDto = responseEntity.getBody();
+                log.debug("findByLoginId - loginId: [{}], myUserInfoUrl: [{}]"
+                                + ", userDto.getLoginId: [{}]"
+//                                + ", responseEntity.getBody.toString: [{}]"
+                        , loginId, myUserInfoUrl
+                        , (userDto == null ? "NULL" : userDto.getLoginId())
+//                        , responseEntity.getBody().toString()
+                );
+                if (!loginId.equals(userDto.getLoginId())) {
+                    throw new EntityNotFoundException(
+                            "User does not match loginId: [%s], userDto.getLoginId: [%s]"
+                                    .formatted(loginId, userDto.getLoginId()));
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(
+                        "Error occurred during calling api: [%s]".formatted(myUserInfoUrl)
+                        , e);
             }
         } else {
             log.debug("findByLoginId - loginId: [{}], myUserInfoUrl: [{}]"

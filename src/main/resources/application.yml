@@ -13,6 +13,7 @@ spring:
 #  jpa:
 #    properties:
 #      hibernate:
+##        dialect: com.siukatech.poc.react.backend.core.data.dialect.MyPostgreSQLDialect
 #        dialect: org.hibernate.dialect.PostgreSQLDialect
 #        ddl-auto: none
 #        show-sql: true

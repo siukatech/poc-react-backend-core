@@ -1,21 +1,26 @@
 package com.siukatech.poc.react.backend.core.security.config;
 
 import com.siukatech.poc.react.backend.core.security.filter.AuthorizationDataFilter;
+import com.siukatech.poc.react.backend.core.security.filter.ExceptionHandlerFilter;
 import com.siukatech.poc.react.backend.core.security.handler.KeycloakLogoutHandler;
 import com.siukatech.poc.react.backend.core.security.resourceserver.MyJwtAuthenticationConverter;
 import com.siukatech.poc.react.backend.core.security.resourceserver.MyOpaqueTokenAuthenticationConverter;
 import com.siukatech.poc.react.backend.core.security.resourceserver.MyOpaqueTokenIntrospector;
 import com.siukatech.poc.react.backend.core.web.helper.PublicControllerHelper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.session.SessionRegistryImpl;
+import org.springframework.security.oauth2.server.resource.web.authentication.BearerTokenAuthenticationFilter;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 import org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy;
@@ -23,12 +28,7 @@ import org.springframework.security.web.authentication.session.SessionAuthentica
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatchers;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
-import java.util.Arrays;
-import java.util.stream.Collectors;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 
 /**
  * Some beans have higher priority.
@@ -42,44 +42,48 @@ import java.util.stream.Collectors;
 //@ConditionalOnProperty(name = "", havingValue = "http", matchIfMissing = true)
 public class WebSecurityConfig {
 
-//    private final ObjectMapper objectMapper;
-//    private final UserService userService;
-//    private final AppCoreProp appCoreProp;
-    private final KeycloakLogoutHandler keycloakLogoutHandler;
-//    private final OAuth2ResourceServerProperties oAuth2ResourceServerProperties;
-    private final MyJwtAuthenticationConverter myJwtAuthenticationConverter;
-    private final AuthorizationDataFilter authorizationDataFilter;
-//    private final OAuth2ClientProperties oAuth2ClientProperties;
-//    private final OAuth2ResourceServerExtProp oAuth2ResourceServerExtProp;
-    private final MyOpaqueTokenIntrospector opaqueTokenIntrospector;
-    private final MyOpaqueTokenAuthenticationConverter opaqueTokenAuthenticationConverter;
+////    private final ObjectMapper objectMapper;
+////    private final UserService userService;
+////    private final AppCoreProp appCoreProp;
+//    private final KeycloakLogoutHandler keycloakLogoutHandler;
+////    private final OAuth2ResourceServerProperties oAuth2ResourceServerProperties;
+//    private final MyJwtAuthenticationConverter myJwtAuthenticationConverter;
+//    private final AuthorizationDataFilter authorizationDataFilter;
+////    private final OAuth2ClientProperties oAuth2ClientProperties;
+////    private final OAuth2ResourceServerExtProp oAuth2ResourceServerExtProp;
+//    private final MyOpaqueTokenIntrospector opaqueTokenIntrospector;
+//    private final MyOpaqueTokenAuthenticationConverter opaqueTokenAuthenticationConverter;
+//    private final AuthenticationEntryPoint authenticationEntryPoint;
 
     public WebSecurityConfig(
-//            ObjectMapper objectMapper
-//            , UserService userService
-//            , AppCoreProp appCoreProp
-//            ,
-            KeycloakLogoutHandler keycloakLogoutHandler
-//            , OAuth2ResourceServerProperties oAuth2ResourceServerProperties
-            , MyJwtAuthenticationConverter myJwtAuthenticationConverter
-            , AuthorizationDataFilter authorizationDataFilter
-//            , OAuth2ClientProperties oAuth2ClientProperties
-//            , OAuth2ResourceServerExtProp oAuth2ResourceServerExtProp
-            , MyOpaqueTokenIntrospector opaqueTokenIntrospector
-            , MyOpaqueTokenAuthenticationConverter opaqueTokenAuthenticationConverter) {
-//        this.objectMapper = objectMapper;
-//        this.userService = userService;
-//        this.appCoreProp = appCoreProp;
-        this.authorizationDataFilter = authorizationDataFilter;
-        this.keycloakLogoutHandler = keycloakLogoutHandler;
-//        this.oAuth2ResourceServerProperties = oAuth2ResourceServerProperties;
-        this.myJwtAuthenticationConverter = myJwtAuthenticationConverter;
-        //
-//        this.oAuth2ClientProperties = oAuth2ClientProperties;
-//        this.oAuth2ResourceServerExtProp = oAuth2ResourceServerExtProp;
-        //
-        this.opaqueTokenIntrospector = opaqueTokenIntrospector;
-        this.opaqueTokenAuthenticationConverter = opaqueTokenAuthenticationConverter;
+////            ObjectMapper objectMapper
+////            , UserService userService
+////            , AppCoreProp appCoreProp
+////            ,
+//            KeycloakLogoutHandler keycloakLogoutHandler
+////            , OAuth2ResourceServerProperties oAuth2ResourceServerProperties
+//            , MyJwtAuthenticationConverter myJwtAuthenticationConverter
+//            , AuthorizationDataFilter authorizationDataFilter
+////            , OAuth2ClientProperties oAuth2ClientProperties
+////            , OAuth2ResourceServerExtProp oAuth2ResourceServerExtProp
+//            , MyOpaqueTokenIntrospector opaqueTokenIntrospector
+//            , MyOpaqueTokenAuthenticationConverter opaqueTokenAuthenticationConverter
+//            , @Qualifier("delegatedAuthenticationEntryPoint") AuthenticationEntryPoint authenticationEntryPoint
+    ) {
+////        this.objectMapper = objectMapper;
+////        this.userService = userService;
+////        this.appCoreProp = appCoreProp;
+//        this.authorizationDataFilter = authorizationDataFilter;
+//        this.keycloakLogoutHandler = keycloakLogoutHandler;
+////        this.oAuth2ResourceServerProperties = oAuth2ResourceServerProperties;
+//        this.myJwtAuthenticationConverter = myJwtAuthenticationConverter;
+//        //
+////        this.oAuth2ClientProperties = oAuth2ClientProperties;
+////        this.oAuth2ResourceServerExtProp = oAuth2ResourceServerExtProp;
+//        //
+//        this.opaqueTokenIntrospector = opaqueTokenIntrospector;
+//        this.opaqueTokenAuthenticationConverter = opaqueTokenAuthenticationConverter;
+//        this.authenticationEntryPoint = authenticationEntryPoint;
         //
         log.debug("constructor");
     }
@@ -193,7 +197,19 @@ public class WebSecurityConfig {
 //    }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http
+            , KeycloakLogoutHandler keycloakLogoutHandler
+//            , OAuth2ResourceServerProperties oAuth2ResourceServerProperties
+            , MyJwtAuthenticationConverter myJwtAuthenticationConverter
+            , AuthorizationDataFilter authorizationDataFilter
+//            , OAuth2ClientProperties oAuth2ClientProperties
+//            , OAuth2ResourceServerExtProp oAuth2ResourceServerExtProp
+            , MyOpaqueTokenIntrospector opaqueTokenIntrospector
+            , MyOpaqueTokenAuthenticationConverter opaqueTokenAuthenticationConverter
+//            , @Qualifier("delegatedAuthenticationEntryPoint") AuthenticationEntryPoint delegatedAuthenticationEntryPoint
+            , AuthenticationEntryPoint delegatedAuthenticationEntryPoint
+            , ExceptionHandlerFilter exceptionHandlerFilter
+    ) throws Exception {
 ////        http.csrf().disable();
 //        http.csrf(new Customizer<CsrfConfigurer<HttpSecurity>>() {
 //            @Override
@@ -204,6 +220,7 @@ public class WebSecurityConfig {
         // can be rewritten in lambda way
         http.csrf(csrfConfigurer -> csrfConfigurer.disable());
 
+        // The AntPathRequestMatcher list should match to WebMvcConfig.addInterceptors
         http.authorizeHttpRequests(requests -> requests
 //                .requestMatchers(
 //                        "/"
@@ -294,6 +311,7 @@ public class WebSecurityConfig {
         );
 //        http.oauth2ResourceServer(Customizer.withDefaults());
 
+        http.addFilterBefore(exceptionHandlerFilter, BearerTokenAuthenticationFilter.class);
         http.addFilterAfter(authorizationDataFilter, BasicAuthenticationFilter.class);
 
         http.logout(logoutConfigurer -> logoutConfigurer
@@ -315,6 +333,14 @@ public class WebSecurityConfig {
                 sessionManagementConfigurer
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         );
+
+        log.debug("filterChain - http.exceptionHandling - delegatedAuthenticationEntryPoint: [{}]"
+                , delegatedAuthenticationEntryPoint);
+        http.exceptionHandling(exceptionHandlingConfigurer ->
+                exceptionHandlingConfigurer
+                        .authenticationEntryPoint(delegatedAuthenticationEntryPoint)
+        );
+
         return http.build();
     }
 //

@@ -16,6 +16,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -128,21 +129,28 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         log.debug("addInterceptors - start");
         //
+        // The excluded path list should match to WebSecurityConfig.filterChain
         // "/auth/**" is the oauth2 login flow url
-        List<String> excludedPathPatternList = List.of("/auth/**", "/logout");
+        List<String> excludedPathPatternList = List.of(
+                "/"
+                , "/login"
+                , "/logout"
+                , "/error"
+//                , "/auth/**"excludedPathPatternList
+        );
         registry.addInterceptor(correlationIdInterceptor)
                 .addPathPatterns("/**")
         ;
         registry.addInterceptor(authorizationDataInterceptor)
 //                .addPathPatterns("/**")
 ////                .excludePathPatterns("/auth/**", "/logout")
-//                .excludePathPatterns(excludedPathPatternList.toArray(String[]::new))
-                .excludePathPatterns(PublicControllerHelper.resolveExcludePath())
+                .excludePathPatterns(excludedPathPatternList.toArray(String[]::new))
+//                .excludePathPatterns(PublicControllerHelper.resolveExcludePath())
         ;
         registry.addInterceptor(permissionControlInterceptor)
 //                .addPathPatterns("/**")
-//                .excludePathPatterns(excludedPathPatternList.toArray(String[]::new))
-                .excludePathPatterns(PublicControllerHelper.resolveExcludePath())
+                .excludePathPatterns(excludedPathPatternList.toArray(String[]::new))
+//                .excludePathPatterns(PublicControllerHelper.resolveExcludePath())
         ;
         log.debug("addInterceptors - end");
     }

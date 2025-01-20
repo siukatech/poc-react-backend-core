@@ -1,9 +1,6 @@
 package com.siukatech.poc.react.backend.core.security;
 
-import com.siukatech.poc.react.backend.core.security.config.AuthorizationDataProviderConfig;
-import com.siukatech.poc.react.backend.core.security.config.OAuth2ResourceServerConfig;
-import com.siukatech.poc.react.backend.core.security.config.Oauth2ClientRestTemplateConfig;
-import com.siukatech.poc.react.backend.core.security.config.WebSecurityConfig;
+import com.siukatech.poc.react.backend.core.security.config.*;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 
@@ -12,6 +9,7 @@ import org.springframework.context.annotation.Import;
         Oauth2ClientRestTemplateConfig.class
         , AuthorizationDataProviderConfig.class
         , OAuth2ResourceServerConfig.class
+//        , AuthenticationEntryPointConfig.class
         , WebSecurityConfig.class
 })
 //@Import({

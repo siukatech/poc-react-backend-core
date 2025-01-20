@@ -13,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.boot.test.autoconfigure.web.client.AutoConfigureWebClient;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 
 /**
  * <pre>
@@ -81,6 +82,8 @@ public class ReactBackendCoreTests {
     private UserViewRepository userViewRepository;
     // @MockBean
     // private ProblemDetailExtMapper problemDetailExtMapper;
+    @MockBean
+    private HandlerExceptionResolver handlerExceptionResolver;
 
     // This is not working, start
 //    @MockBean

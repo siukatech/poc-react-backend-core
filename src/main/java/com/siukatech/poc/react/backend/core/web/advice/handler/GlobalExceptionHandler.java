@@ -1,6 +1,6 @@
 package com.siukatech.poc.react.backend.core.web.advice.handler;
 
-import com.siukatech.poc.react.backend.core.security.exception.NoSuchPermissionException;
+import com.siukatech.poc.react.backend.core.security.exception.PermissionControlNotFoundException;
 import com.siukatech.poc.react.backend.core.web.advice.mapper.ProblemDetailExtMapper;
 import com.siukatech.poc.react.backend.core.web.advice.model.ErrorDetail;
 import com.siukatech.poc.react.backend.core.web.advice.model.ProblemDetailExt;
@@ -12,6 +12,8 @@ import org.springframework.http.*;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
+import org.springframework.security.oauth2.server.resource.InvalidBearerTokenException;
+import org.springframework.security.oauth2.server.resource.introspection.BadOpaqueTokenException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -25,6 +27,7 @@ import java.util.Map;
 
 @Slf4j
 //@Component
+//@Order(Ordered.HIGHEST_PRECEDENCE)
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
@@ -44,6 +47,31 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         this.problemDetailExtMapper = Mappers.getMapper(ProblemDetailExtMapper.class);
     }
 
+    protected ProblemDetailExt createProblemDetailExt(ProblemDetail body) {
+        ProblemDetailExt bodyExt = problemDetailExtMapper.convertProblemDetailToExtWithoutCorrelationId(body);
+        bodyExt.setCorrelationId(this.correlationIdHandler.getCorrelationId());
+        return bodyExt;
+    }
+
+    protected ResponseEntity handleRuntimeInternal(RuntimeException ex, WebRequest request
+            , HttpStatus status, Object[] args) {
+
+        log.error("handleRuntimeInternal - status: [" +  status.toString()
+                + "], ex: [" + ex
+                + "], ex.getClass.getName: [" + ex.getClass().getName()
+                + "], ex.getMessage: [" + ex.getMessage()
+                + "], ex.fillInStackTrace: ", ex.fillInStackTrace());
+
+        String defaultDetail = ex.getMessage();
+        ProblemDetail body = createProblemDetail(ex, status, defaultDetail, null, args, request);
+        return handleExceptionInternal(ex, body, new HttpHeaders(), status, request);
+    }
+
+    @ExceptionHandler(value = {RuntimeException.class})
+    protected ResponseEntity handleRuntimeException(RuntimeException ex, WebRequest request) {
+        Object[] args = {ex.getClass().getName()};
+        return this.handleRuntimeInternal(ex, request, HttpStatus.INTERNAL_SERVER_ERROR, args);
+    }
 
     /**
      * This is exception handler of IllegalArgumentException
@@ -53,16 +81,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
      * @return
      */
     @ExceptionHandler(value = {IllegalArgumentException.class})
-    protected ResponseEntity handleIllegalArgument(RuntimeException ex, WebRequest request) {
-//        return this.handleExceptionInternal(ex, "handle IllegalArgumentException", new HttpHeaders(), HttpStatus.CONFLICT, request);
-        log.error("handleIllegalArgument - ex: [" + ex
-                + "], ex.getClass.getName: [" + ex.getClass().getName()
-                + "]");
-        HttpStatus status = HttpStatus.CONFLICT;
+    protected ResponseEntity handleIllegalArgument(IllegalArgumentException ex, WebRequest request) {
         Object[] args = {};
-        String defaultDetail = ex.getMessage();
-        ProblemDetail body = createProblemDetail(ex, status, defaultDetail, null, args, request);
-        return handleExceptionInternal(ex, body, new HttpHeaders(), status, request);
+        return this.handleRuntimeInternal(ex, request, HttpStatus.CONFLICT, args);
     }
 
     /**
@@ -73,20 +94,15 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
      * @return
      */
     @ExceptionHandler(value = {ObjectOptimisticLockingFailureException.class})
-    protected ResponseEntity handleObjectOptimisticLockingFailure(ObjectOptimisticLockingFailureException ex, WebRequest request) {
-//        return this.handleExceptionInternal(ex, null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
+    protected ResponseEntity handleObjectOptimisticLockingFailure(
+            ObjectOptimisticLockingFailureException ex, WebRequest request) {
         log.error("handleObjectOptimisticLockingFailure - ex: [" + ex
                 + "], ex.getIdentifier.getClass.getName: [" + ex.getIdentifier().getClass().getName()
                 + "], ex.getIdentifier: [" + ex.getIdentifier()
                 + "], ex.getPersistentClassName: [" + ex.getPersistentClassName()
                 + "]");
-        HttpStatus status = HttpStatus.CONFLICT;
         Object[] args = {ex.getIdentifier(), ex.getPersistentClassName()};
-        String defaultDetail = "" + ex.getMessage()
-                //+ "; Id: [" + args[0] + "], Type: [" + args[1] + "]"
-                ;
-        ProblemDetail body = createProblemDetail(ex, status, defaultDetail, null, args, request);
-        return handleExceptionInternal(ex, body, new HttpHeaders(), status, request);
+        return this.handleRuntimeInternal(ex, request, HttpStatus.CONFLICT, args);
     }
 
     @Override
@@ -209,23 +225,19 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
      * @return
      */
     @ExceptionHandler(value = {EntityNotFoundException.class})
-    protected ResponseEntity handleEntityNotFoundException(EntityNotFoundException ex, WebRequest request) {
-//        return this.handleExceptionInternal(ex, null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
-        log.error("handleEntityNotFoundException - ex: [" + ex
+    protected ResponseEntity handleEntityNotFound(EntityNotFoundException ex, WebRequest request) {
+        log.error("handleEntityNotFound - ex: [" + ex
                 + "], ex.getClass.getName: [" + ex.getClass().getName()
                 + "], ex.getMessage: [" + ex.getMessage()
                 + "], ex.fillInStackTrace: ", ex.fillInStackTrace());
-
-        HttpStatus status = HttpStatus.NOT_FOUND;
-        String defaultDetail = "" + ex.getMessage();
-        ProblemDetail body = createProblemDetail(ex, status, defaultDetail, null, null, request);
-        return handleExceptionInternal(ex, body, new HttpHeaders(), status, request);
+        return handleRuntimeInternal(ex, request, HttpStatus.NOT_FOUND, null);
     }
 
-    @ExceptionHandler(value = NoSuchPermissionException.class)
-    protected ResponseEntity handleNoSuchPermissionException(NoSuchPermissionException ex, WebRequest request) {
+    @ExceptionHandler(value = PermissionControlNotFoundException.class)
+    protected ResponseEntity handlePermissionControlNotFound(
+            PermissionControlNotFoundException ex, WebRequest request) {
 
-        log.error("handleNoSuchPermissionException - ex: [" + ex
+        log.error("handlePermissionControlNotFound - ex: [" + ex
                 + "], ex.getClass.getName: [" + ex.getClass().getName()
                 + "], ex.getMessage: [" + ex.getMessage()
                 + "], request.getHeader: [" + request.getHeader("")
@@ -242,25 +254,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(ex, bodyExt, new HttpHeaders(), status, request);
     }
 
-    @ExceptionHandler(value = RuntimeException.class)
-    protected ResponseEntity handleRuntimeException(RuntimeException ex, WebRequest request) {
+    @ExceptionHandler(value = {InvalidBearerTokenException.class, BadOpaqueTokenException.class})
+    protected ResponseEntity handleInvalidBearerToken(InvalidBearerTokenException ex, WebRequest request) {
+        Object[] args = {ex.getClass().getName(), ex.getClass().getNestHost()};
+        return this.handleRuntimeInternal(ex, request, HttpStatus.NON_AUTHORITATIVE_INFORMATION, args);
 
-        log.error("handleRuntimeException - ex: [" + ex
-                + "], ex.getClass.getName: [" + ex.getClass().getName()
-                + "], ex.getMessage: [" + ex.getMessage()
-                + "], ex.fillInStackTrace: ", ex.fillInStackTrace());
-
-        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
-        Object[] args = {ex.getClass().getName()};
-        String defaultDetail = "" + ex.getMessage();
-        ProblemDetail body = createProblemDetail(ex, status, defaultDetail, null, args, request);
-        return handleExceptionInternal(ex, body, new HttpHeaders(), status, request);
-    }
-
-    protected ProblemDetailExt createProblemDetailExt(ProblemDetail body) {
-        ProblemDetailExt bodyExt = problemDetailExtMapper.convertProblemDetailToExtWithoutCorrelationId(body);
-        bodyExt.setCorrelationId(this.correlationIdHandler.getCorrelationId());
-        return bodyExt;
     }
 
 }

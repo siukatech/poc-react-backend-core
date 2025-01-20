@@ -16,6 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 
 
 /**
@@ -50,6 +51,8 @@ public class JpaRepositoryTestsWithSpringBootTests {
     private UserViewRepository userViewRepository;
     // @MockBean
     // private ProblemDetailExtMapper problemDetailExtMapper;
+    @MockBean
+    private HandlerExceptionResolver handlerExceptionResolver;
 
     // This is not working, start
 //    @MockBean
