@@ -3,7 +3,7 @@ package com.siukatech.poc.react.backend.core.user.controller;
 import com.siukatech.poc.react.backend.core.AbstractWebTests;
 import com.siukatech.poc.react.backend.core.business.dto.*;
 import com.siukatech.poc.react.backend.core.user.service.UserService;
-import com.siukatech.poc.react.backend.core.security.authentication.MyAuthenticationToken;
+import com.siukatech.poc.react.backend.core.security.model.MyAuthenticationToken;
 import com.siukatech.poc.react.backend.core.web.annotation.v1.ProtectedApiV1Controller;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
@@ -193,7 +193,9 @@ public class MyControllerTests extends AbstractWebTests {
                 .andReturn();
 
         // result
-        log.debug("getPublicKey_basic - end - mvcResult.getResponse.getContentAsString: [" + mvcResult.getResponse().getContentAsString() + "]");
+        log.debug("getPublicKey_basic - mvcResult.getResponse.getContentAsString: ["
+                + mvcResult.getResponse().getContentAsString()
+                + "], end");
 
     }
 
@@ -220,7 +222,9 @@ public class MyControllerTests extends AbstractWebTests {
                 .andReturn();
 
         // result
-        log.debug("getKeyInfo_basic - end - mvcResult.getResponse.getContentAsString: [" + mvcResult.getResponse().getContentAsString() + "]");
+        log.debug("getKeyInfo_basic - mvcResult.getResponse.getContentAsString: ["
+                + mvcResult.getResponse().getContentAsString()
+                + "], end");
 
     }
 
@@ -247,7 +251,9 @@ public class MyControllerTests extends AbstractWebTests {
                 .andReturn();
 
         // result
-        log.debug("getUserInfo_basic - end - mvcResult.getResponse.getContentAsString: [" + mvcResult.getResponse().getContentAsString() + "]");
+        log.debug("getUserInfo_basic - mvcResult.getResponse.getContentAsString: ["
+                + mvcResult.getResponse().getContentAsString()
+                + "], end");
 
     }
 
@@ -272,7 +278,9 @@ public class MyControllerTests extends AbstractWebTests {
                 .andReturn();
 
         // result
-        log.debug("getUserPermissions_basic - end - mvcResult.getResponse.getContentAsString: [" + mvcResult.getResponse().getContentAsString() + "]");
+        log.debug("getUserPermissions_basic -  mvcResult.getResponse.getContentAsString: ["
+                + mvcResult.getResponse().getContentAsString()
+                + "], end");
     }
 
     @Test
@@ -297,7 +305,9 @@ public class MyControllerTests extends AbstractWebTests {
                 .andReturn();
 
         // result
-        log.debug("getUserPermissionInfo_basic - end - mvcResult.getResponse.getContentAsString: [" + mvcResult.getResponse().getContentAsString() + "]");
+        log.debug("getUserPermissionInfo_basic - mvcResult.getResponse.getContentAsString: ["
+                + mvcResult.getResponse().getContentAsString()
+                + "], end");
     }
 
     @Test
@@ -321,7 +331,9 @@ public class MyControllerTests extends AbstractWebTests {
                 .andReturn();
 
         // result
-        log.debug("getUserView_basic - end - mvcResult.getResponse.getContentAsString: [" + mvcResult.getResponse().getContentAsString() + "]");
+        log.debug("getUserView_basic - mvcResult.getResponse.getContentAsString: ["
+                + mvcResult.getResponse().getContentAsString()
+                + "], end");
 
     }
 

@@ -1,11 +1,11 @@
 package com.siukatech.poc.react.backend.core.security.evaluator;
 
 import com.siukatech.poc.react.backend.core.AbstractUnitTests;
-import com.siukatech.poc.react.backend.core.security.authentication.MyAuthenticationToken;
-import com.siukatech.poc.react.backend.core.security.authority.MyGrantedAuthority;
+import com.siukatech.poc.react.backend.core.security.model.MyAuthenticationToken;
+import com.siukatech.poc.react.backend.core.security.model.MyGrantedAuthority;
 import com.siukatech.poc.react.backend.core.security.controller.ProtectedUrlController;
 import com.siukatech.poc.react.backend.core.security.controller.RestUrlController;
-import com.siukatech.poc.react.backend.core.security.exception.NoSuchPermissionException;
+import com.siukatech.poc.react.backend.core.security.exception.PermissionControlNotFoundException;
 import com.siukatech.poc.react.backend.core.web.controller.WebController;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,7 +62,7 @@ public class PermissionControlEvaluatorTests extends AbstractUnitTests {
     }
 
     @Test
-    public void test_evaluate_basic_protectedUrlController() throws NoSuchPermissionException {
+    public void test_evaluate_basic_protectedUrlController() throws PermissionControlNotFoundException {
         // given
         Method method = ClassUtils.getMethod(ProtectedUrlController.class, "authorized");
         HandlerMethod handlerMethod = new HandlerMethod(new ProtectedUrlController(), method);
@@ -79,7 +79,7 @@ public class PermissionControlEvaluatorTests extends AbstractUnitTests {
     }
 
     @Test
-    public void test_evaluate_basic_restUrlController() throws NoSuchPermissionException {
+    public void test_evaluate_basic_restUrlController() throws PermissionControlNotFoundException {
         // given
         Method method = ClassUtils.getMethod(RestUrlController.class, "authorized");
         HandlerMethod handlerMethod = new HandlerMethod(new RestUrlController(), method);
@@ -96,7 +96,7 @@ public class PermissionControlEvaluatorTests extends AbstractUnitTests {
     }
 
     @Test
-    public void test_evaluate_basic_webController() throws NoSuchPermissionException {
+    public void test_evaluate_basic_webController() throws PermissionControlNotFoundException {
         // given
         Method method = ClassUtils.getMethod(WebController.class, "authorized", Principal.class, Model.class);
         HandlerMethod handlerMethod = new HandlerMethod(new WebController(), method);
@@ -112,16 +112,16 @@ public class PermissionControlEvaluatorTests extends AbstractUnitTests {
 //        assertTrue(result);
 
         // when
-        Exception exception = assertThrows(NoSuchPermissionException.class, () -> {
+        Exception exception = assertThrows(PermissionControlNotFoundException.class, () -> {
             boolean result = permissionControlEvaluator.evaluate(handlerMethod, authentication);
         });
 
         // then
-        assertEquals(exception.getClass(), NoSuchPermissionException.class);
+        assertEquals(exception.getClass(), PermissionControlNotFoundException.class);
     }
 
     @Test
-    public void test_evaluate_access_denied_protectedUrlController() throws NoSuchPermissionException {
+    public void test_evaluate_access_denied_protectedUrlController() throws PermissionControlNotFoundException {
         // given
         Method method = ClassUtils.getMethod(ProtectedUrlController.class, "accessDenied");
         HandlerMethod handlerMethod = new HandlerMethod(new ProtectedUrlController(), method);
@@ -129,16 +129,16 @@ public class PermissionControlEvaluatorTests extends AbstractUnitTests {
         MyAuthenticationToken authentication = new MyAuthenticationToken(principal, principal.getAuthorities(), "keycloak");
 
         // when
-        Exception exception = assertThrows(NoSuchPermissionException.class, () -> {
+        Exception exception = assertThrows(PermissionControlNotFoundException.class, () -> {
             boolean result = permissionControlEvaluator.evaluate(handlerMethod, authentication);
         });
 
         // then
-        assertEquals(exception.getClass(), NoSuchPermissionException.class);
+        assertEquals(exception.getClass(), PermissionControlNotFoundException.class);
     }
 
     @Test
-    public void test_evaluate_access_denied_restUrlController() throws NoSuchPermissionException {
+    public void test_evaluate_access_denied_restUrlController() throws PermissionControlNotFoundException {
         // given
         Method method = ClassUtils.getMethod(RestUrlController.class, "accessDenied");
         HandlerMethod handlerMethod = new HandlerMethod(new RestUrlController(), method);
@@ -146,12 +146,12 @@ public class PermissionControlEvaluatorTests extends AbstractUnitTests {
         MyAuthenticationToken authentication = new MyAuthenticationToken(principal, principal.getAuthorities(), "keycloak");
 
         // when
-        Exception exception = assertThrows(NoSuchPermissionException.class, () -> {
+        Exception exception = assertThrows(PermissionControlNotFoundException.class, () -> {
             boolean result = permissionControlEvaluator.evaluate(handlerMethod, authentication);
         });
 
         // then
-        assertEquals(exception.getClass(), NoSuchPermissionException.class);
+        assertEquals(exception.getClass(), PermissionControlNotFoundException.class);
     }
 
 }

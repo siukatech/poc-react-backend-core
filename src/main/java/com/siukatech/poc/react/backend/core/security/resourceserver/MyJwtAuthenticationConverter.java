@@ -2,8 +2,8 @@ package com.siukatech.poc.react.backend.core.security.resourceserver;
 
 import com.siukatech.poc.react.backend.core.business.dto.UserDto;
 import com.siukatech.poc.react.backend.core.business.dto.UserPermissionDto;
-import com.siukatech.poc.react.backend.core.security.authentication.MyAuthenticationToken;
-import com.siukatech.poc.react.backend.core.security.authority.MyGrantedAuthority;
+import com.siukatech.poc.react.backend.core.security.model.MyAuthenticationToken;
+import com.siukatech.poc.react.backend.core.security.model.MyGrantedAuthority;
 import com.siukatech.poc.react.backend.core.security.provider.AuthorizationDataProvider;
 import com.siukatech.poc.react.backend.core.util.ResourceServerUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -49,7 +49,8 @@ public class MyJwtAuthenticationConverter implements Converter<Jwt, AbstractAuth
         // subject is the user-id
         String loginId = source.getClaimAsString(StandardClaimNames.PREFERRED_USERNAME);
         String tokenValue = source.getTokenValue();
-        log.debug("convert - source.getId: [" + source.getId()
+        log.debug("convert - loginId: [" + loginId
+                + "], source.getId: [" + source.getId()
                 + "], source.getClaims: [" + source.getClaims()
                 + "], source.getHeaders: [" + source.getHeaders()
                 + "], source.getAudience: [" + source.getAudience()
@@ -59,13 +60,13 @@ public class MyJwtAuthenticationConverter implements Converter<Jwt, AbstractAuth
                 + "], source.getSubject: [" + source.getSubject()
 //                + "], source.getTokenValue: [" + source.getTokenValue()
                 + "], tokenValue: [" + tokenValue
-                + "], loginId: [" + loginId
                 + "]");
         //
         String issuerUri = source.getIssuer().toString();
         String clientName = ResourceServerUtil.getClientName(oAuth2ClientProperties, issuerUri);
         //
-        log.debug("convert - loginId: [{}], issuerUri: [{}], clientName: [{}]", loginId, issuerUri, clientName);
+        log.debug("convert - loginId: [{}], issuerUri: [{}], clientName: [{}]"
+                , loginId, issuerUri, clientName);
         //
         List<GrantedAuthority> convertedAuthorities = new ArrayList<>();
         // Extract authorities from jwt

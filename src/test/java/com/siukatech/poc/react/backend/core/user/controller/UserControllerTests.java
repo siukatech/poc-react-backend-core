@@ -185,7 +185,9 @@ public class UserControllerTests {
 //                .andReturn();
 //
 //        // result
-//        log.debug("getPublicKey_basic - end - mvcResult.getResponse.getContentAsString: [" + mvcResult.getResponse().getContentAsString() + "]");
+//        log.debug("getPublicKey_basic - mvcResult.getResponse.getContentAsString: ["
+//                + mvcResult.getResponse().getContentAsString()
+//                + "], end");
 //
 //    }
 
@@ -217,7 +219,9 @@ public class UserControllerTests {
                 .andReturn();
 
         // result
-        log.debug("getUserInfo_basic - end - mvcResult.getResponse.getContentAsString: [" + mvcResult.getResponse().getContentAsString() + "]");
+        log.debug("getUserInfo_basic - mvcResult.getResponse.getContentAsString: ["
+                + mvcResult.getResponse().getContentAsString()
+                + "], end");
 
     }
 

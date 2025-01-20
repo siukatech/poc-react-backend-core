@@ -1,6 +1,6 @@
 package com.siukatech.poc.react.backend.core.security.interceptor;
 
-import com.siukatech.poc.react.backend.core.security.authentication.MyAuthenticationToken;
+import com.siukatech.poc.react.backend.core.security.model.MyAuthenticationToken;
 import com.siukatech.poc.react.backend.core.util.HttpHeaderUtils;
 import com.siukatech.poc.react.backend.core.web.micrometer.CorrelationIdHandler;
 import lombok.extern.slf4j.Slf4j;

@@ -1,4 +1,4 @@
-package com.siukatech.poc.react.backend.core.security.authority;
+package com.siukatech.poc.react.backend.core.security.model;
 
 import lombok.Builder;
 import lombok.Data;

@@ -1,7 +1,7 @@
 package com.siukatech.poc.react.backend.core.security.interceptor;
 
-import com.siukatech.poc.react.backend.core.security.authentication.MyAuthenticationToken;
-import com.siukatech.poc.react.backend.core.security.authority.MyGrantedAuthority;
+import com.siukatech.poc.react.backend.core.security.model.MyAuthenticationToken;
+import com.siukatech.poc.react.backend.core.security.model.MyGrantedAuthority;
 import com.siukatech.poc.react.backend.core.security.evaluator.PermissionControlEvaluator;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

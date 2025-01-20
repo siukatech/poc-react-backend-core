@@ -1,4 +1,4 @@
-package com.siukatech.poc.react.backend.core.security.authentication;
+package com.siukatech.poc.react.backend.core.security.model;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.oidc.StandardClaimNames;

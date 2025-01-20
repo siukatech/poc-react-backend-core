@@ -1,9 +1,9 @@
 package com.siukatech.poc.react.backend.core.security.evaluator;
 
 import com.siukatech.poc.react.backend.core.security.annotation.PermissionControl;
-import com.siukatech.poc.react.backend.core.security.authentication.MyAuthenticationToken;
-import com.siukatech.poc.react.backend.core.security.authority.MyGrantedAuthority;
-import com.siukatech.poc.react.backend.core.security.exception.NoSuchPermissionException;
+import com.siukatech.poc.react.backend.core.security.model.MyAuthenticationToken;
+import com.siukatech.poc.react.backend.core.security.model.MyGrantedAuthority;
+import com.siukatech.poc.react.backend.core.security.exception.PermissionControlNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.security.core.Authentication;
@@ -19,7 +19,7 @@ import java.util.List;
 @Slf4j
 @Service
 public class PermissionControlEvaluator {
-    public boolean evaluate(HandlerMethod handlerMethod, Authentication authentication) throws NoSuchPermissionException {
+    public boolean evaluate(HandlerMethod handlerMethod, Authentication authentication) throws PermissionControlNotFoundException {
         String loginId = authentication.getName();
         Class<?> beanType = handlerMethod.getBeanType();
         Method method = handlerMethod.getMethod();
@@ -114,7 +114,7 @@ public class PermissionControlEvaluator {
                         , permissionControlAnnotationByUtil == null ? "NULL" : permissionControlAnnotationByUtil.toString()
                         , appResourceId, accessRight
                         , authorityCount);
-                throw new NoSuchPermissionException(accessDeniedMsg);
+                throw new PermissionControlNotFoundException(accessDeniedMsg);
             }
 //        }
         return true;

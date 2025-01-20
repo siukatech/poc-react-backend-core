@@ -1,6 +1,6 @@
 package com.siukatech.poc.react.backend.core.security.interceptor;
 
-import com.siukatech.poc.react.backend.core.security.authentication.MyAuthenticationToken;
+import com.siukatech.poc.react.backend.core.security.model.MyAuthenticationToken;
 import com.siukatech.poc.react.backend.core.security.provider.AuthorizationDataProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
