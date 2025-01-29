@@ -15,6 +15,6 @@ create table if not exists users (
   , version_no int not null
   , primary key (id)
 );
-create index users_idx1_login_id on users(login_id);
+create index if not exists users_idx1_login_id on users(login_id);
 
 

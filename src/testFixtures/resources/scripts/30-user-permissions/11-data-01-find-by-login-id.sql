@@ -51,9 +51,10 @@ insert into user_role_permissions (id, user_role_id, application_id, app_resourc
 values ('user_role_permissions-05', 'role-user-01', 'frontend-app', 'menu.lang', 'view', 'admin', 'admin', 1)
 ;
 
-insert into user_role_users (user_role_id, user_id, created_by, last_modified_by, version_no)
+insert into user_role_users (id, user_role_id, user_id, created_by, last_modified_by, version_no)
 values (
-(select id from user_roles where 1=1 and id = 'role-user-01')
+random_uuid()
+, (select id from user_roles where 1=1 and id = 'role-user-01')
 , (select id from users where 1=1 and login_id = 'app-user-02')
 , 'admin', 'admin', 1)
 ;

@@ -14,7 +14,7 @@ create table if not exists applications (
   , primary key (id)
 --  , unique (id)
 );
---create unique index applications_idx1_id on applications(id);
+--create unique index if not exists applications_idx1_id on applications(id);
 
 
 create table if not exists app_resources (
@@ -30,9 +30,9 @@ create table if not exists app_resources (
   , last_modified_datetime timestamp not null default now()
   , version_no int not null
   , primary key (id)
-  , unique (application_id, id)
+--  , unique (application_id, id)
   , constraint app_resources_fk1_application_id foreign key(application_id) references applications(id) on delete set null
 );
 comment on column app_resources.access_right is 'Resource requires access right';
---create unique index app_resources_idx1_id on app_resources(application_id, id);
+--create unique index if not exists app_resources_idx1_id on app_resources(application_id, id);
 
