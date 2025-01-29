@@ -63,7 +63,7 @@ public class MyController {
         log.debug("getUserInfo - authentication: [{}], authenticationInSc: [{}]"
                 , authentication, authenticationInSc);
         String loginId = authentication.getName();
-        UserDto userDto = this.userService.findByLoginId(loginId);
+        UserDto userDto = this.userService.findUserByLoginId(loginId);
 
         return ResponseEntity.ok(userDto);
     }

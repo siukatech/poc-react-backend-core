@@ -28,7 +28,7 @@ public class UserController {
 //                                                 // https://github.com/spring-projects/spring-framework/wiki/Upgrading-to-Spring-Framework-6.x#parameter-name-retention
 //                                                 (name = "targetLoginId")
                                          String targetLoginId) {
-        UserDto userDto = this.userService.findByLoginId(targetLoginId);
+        UserDto userDto = this.userService.findUserByLoginId(targetLoginId);
 
         return ResponseEntity.ok(userDto);
     }

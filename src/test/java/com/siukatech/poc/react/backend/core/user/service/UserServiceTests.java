@@ -96,7 +96,7 @@ public class UserServiceTests extends AbstractUnitTests {
 //            MapperConfig mapperConfig = new MapperConfig();
 //            modelMapper = mapperConfig.modelMapper();
 //        }
-        // 
+        //
         // Need to configure the AmbiguityIgnored and MatchingStrategy again
         if (modelMapper != null) {
 //            modelMapper.getConfiguration().setAmbiguityIgnored(true);
@@ -153,23 +153,26 @@ public class UserServiceTests extends AbstractUnitTests {
     }
 
     @Test
-    public void findByLoginId_basic() {
+    public void findUserByLoginId_basic() {
         // given
         UserEntity userEntity = this.prepareUserEntity_basic();
         when(this.userRepository.findByLoginId(anyString())).thenReturn(Optional.of(userEntity));
 
         // when
-        UserDto userDtoActual = this.userService.findByLoginId("app-user-01");
+        UserDto userDtoActual = this.userService.findUserByLoginId("app-user-01");
 
         // then / verify
         assertThat(userDtoActual.getLoginId()).isEqualTo("app-user-01");
     }
 
     @Test
-    public void findUserPermissionByLoginIdAndApplicationId_basic() {
+    public void findPermissionsByLoginIdAndApplicationId_basic() {
         // given
         List<UserPermissionEntity> userPermissionEntityListTemp = prepareUserPermissions_basic();
-        when(this.userPermissionRepository.findUserPermissionByLoginIdAndApplicationId(anyString(), anyString())).thenReturn(userPermissionEntityListTemp);
+        when(this.userPermissionRepository.findByLoginIdAndApplicationId(anyString(), anyString())).thenReturn(userPermissionEntityListTemp);
+//        doReturn(userPermissionEntityListTemp).when(userPermissionRepository).findByLoginIdAndApplicationId(anyString(), anyString());
+        log.info("findPermissionsByLoginIdAndApplicationId_basic - modelMapper.getConfiguration: [{}]"
+                , modelMapper.getConfiguration());
 
         // when
         List<UserPermissionDto> userPermissionDtoListActual = this.userService.findPermissionsByLoginIdAndApplicationId("app-user-01", "frontend-app");

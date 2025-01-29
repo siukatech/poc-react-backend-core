@@ -5,7 +5,6 @@ import com.siukatech.poc.react.backend.core.business.dto.UserViewDto;
 import com.siukatech.poc.react.backend.core.user.service.UserService;
 import com.siukatech.poc.react.backend.core.security.evaluator.PermissionControlEvaluator;
 import com.siukatech.poc.react.backend.core.security.provider.AuthorizationDataProvider;
-import com.siukatech.poc.react.backend.core.web.advice.mapper.ProblemDetailExtMapper;
 import com.siukatech.poc.react.backend.core.web.annotation.v1.ProtectedApiV1Controller;
 import com.siukatech.poc.react.backend.core.web.context.EncryptedBodyContext;
 import com.siukatech.poc.react.backend.core.web.helper.EncryptedBodyAdviceHelper;
@@ -197,7 +196,7 @@ public class UserControllerTests {
 //        UserDto userDto = this.prepareUserDto_basic();
 //        when(userService.findByLoginId(anyString())).thenReturn(userDto);
         UserViewDto userViewDto = this.prepareUserViewDto_basic();
-        when(userService.findByLoginId(anyString())).thenReturn(userViewDto);
+        when(userService.findUserByLoginId(anyString())).thenReturn(userViewDto);
 
         // when
         RequestBuilder requestBuilder = MockMvcRequestBuilders

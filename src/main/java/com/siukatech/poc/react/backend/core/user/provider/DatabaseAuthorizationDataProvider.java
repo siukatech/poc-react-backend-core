@@ -64,7 +64,7 @@ public class DatabaseAuthorizationDataProvider implements AuthorizationDataProvi
         log.debug("findPermissionsByLoginId - start");
 //        List<UserPermissionDto> userPermissionDtoList = userService
 //                .findPermissionsByLoginIdAndApplicationId(loginId, appCoreProp.getApplicationId());
-        List<UserPermissionEntity> userPermissionEntityList = this.userPermissionRepository.findUserPermissionByLoginIdAndApplicationId(targetLoginId, appCoreProp.getApplicationId());
+        List<UserPermissionEntity> userPermissionEntityList = this.userPermissionRepository.findByLoginIdAndApplicationId(targetLoginId, appCoreProp.getApplicationId());
         List<UserPermissionDto> userPermissionDtoList = userPermissionEntityList.stream()
                 .map(userPermissionEntity -> this.modelMapper
                         .map(userPermissionEntity, UserPermissionDto.class))

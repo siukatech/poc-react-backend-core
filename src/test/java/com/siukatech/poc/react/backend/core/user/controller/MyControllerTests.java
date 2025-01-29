@@ -232,7 +232,7 @@ public class MyControllerTests extends AbstractWebTests {
     public void getUserInfo_basic() throws Exception {
         // given
         UserDto userDto = this.prepareUserDto_basic();
-        when(userService.findByLoginId(anyString())).thenReturn(userDto);
+        when(userService.findUserByLoginId(anyString())).thenReturn(userDto);
 
         // when
         RequestBuilder requestBuilder = MockMvcRequestBuilders

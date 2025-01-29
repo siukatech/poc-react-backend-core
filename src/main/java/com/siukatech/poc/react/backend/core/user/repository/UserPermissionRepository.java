@@ -4,14 +4,15 @@ import com.siukatech.poc.react.backend.core.user.entity.UserPermissionEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-//@Repository
-public interface UserPermissionRepository extends JpaRepository<UserPermissionEntity, Long> {
+@Repository
+public interface UserPermissionRepository extends JpaRepository<UserPermissionEntity, String> {
 
     // https://stackoverflow.com/a/73583022
-    static String SQL_FIND_USER_PERMISSION_BY_LOGIN_ID = "" +
+    static String SQL_FIND_BY_LOGIN_ID_AND_APPLICATION_ID = "" +
             "select up.* from ( " +
             "select u.login_id login_id, u.id user_id " +
 ////            "--, uru.id user_role_user_id, uru.user_id, uru.user_role_id, ur.id user_role_id_2 " +
@@ -32,7 +33,7 @@ public interface UserPermissionRepository extends JpaRepository<UserPermissionEn
             "and a.id = :applicationId " +
             ") as up " +
             "";
-    @Query(value = SQL_FIND_USER_PERMISSION_BY_LOGIN_ID
+    @Query(value = SQL_FIND_BY_LOGIN_ID_AND_APPLICATION_ID
             , nativeQuery = true)
-    List<UserPermissionEntity> findUserPermissionByLoginIdAndApplicationId(@Param("loginId") String loginId, @Param("applicationId") String applicationId);
+    List<UserPermissionEntity> findByLoginIdAndApplicationId(@Param("loginId") String loginId, @Param("applicationId") String applicationId);
 }

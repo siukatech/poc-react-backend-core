@@ -46,10 +46,10 @@ public class UserService {
 //        return userDto;
 //    }
 
-    public UserDto findByLoginId(String targetLoginId) {
+    public UserDto findUserByLoginId(String targetLoginId) {
         UserEntity userEntity = this.userRepository.findByLoginId(targetLoginId)
                 .orElseThrow(() -> new EntityNotFoundException("No such user [%s]".formatted(targetLoginId)));
-        log.debug("findByLoginId - modelMapper: [" + this.modelMapper + "]");
+        log.debug("findUserByLoginId - modelMapper: [" + this.modelMapper + "]");
         UserDto userDto = this.modelMapper.map(userEntity, UserDto.class);
         return userDto;
     }
@@ -64,7 +64,7 @@ public class UserService {
 
     public List<UserPermissionDto> findPermissionsByLoginIdAndApplicationId(String targetLoginId, String applicationId) {
 //        List<UserPermissionDto> userPermissionDtoList = this.userRepository.findUserPermissionByLoginId(targetLoginId);
-        List<UserPermissionEntity> userPermissionEntityList = this.userPermissionRepository.findUserPermissionByLoginIdAndApplicationId(targetLoginId, applicationId);
+        List<UserPermissionEntity> userPermissionEntityList = this.userPermissionRepository.findByLoginIdAndApplicationId(targetLoginId, applicationId);
         List<UserPermissionDto> userPermissionDtoList = userPermissionEntityList.stream()
                 .map(userPermissionEntity -> this.modelMapper
                         .map(userPermissionEntity, UserPermissionDto.class))
