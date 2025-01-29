@@ -12,4 +12,8 @@ import java.util.List;
 @Entity(name = "users")
 public class UserEntity extends AbstractUserEntity {
 
+    @ToString.Exclude
+    @OneToMany(mappedBy = "userEntity", fetch = FetchType.EAGER)
+    private List<UserRoleUserEntity> userRoleUserEntities;
+
 }

@@ -1,12 +1,13 @@
 package com.siukatech.poc.react.backend.core.user.repository;
 
-import com.siukatech.poc.react.backend.core.AbstractUnitTests;
+import com.siukatech.poc.react.backend.core.AbstractJpaTests;
 import com.siukatech.poc.react.backend.core.user.entity.UserEntity;
 import com.siukatech.poc.react.backend.core.user.entity.UserPermissionEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.util.List;
@@ -14,7 +15,23 @@ import java.util.Optional;
 
 @Slf4j
 @DataJpaTest
-public class UserPermissionRepositoryTests extends AbstractUnitTests {
+// Reference:
+// https://stackoverflow.com/a/1713464
+// https://stackoverflow.com/a/74862954
+@TestPropertySource(properties = {
+        "logging.level.org.hibernate.SQL=DEBUG"
+//        , "logging.level.org.hibernate.type=TRACE"
+        , "logging.level.org.hibernate.orm.jdbc.bind=TRACE"
+        , "logging.level.com.siukatech.poc.react.backend.core.data.listener=INFO"
+        , "spring.h2.console.enabled=true"
+})
+//@DataJpaTest(properties = {
+//        "spring.h2.console.enabled=true"
+//        , "logging.level.org.hibernate.SQL=DEBUG"
+////        , "logging.level.org.hibernate.type=TRACE"
+//        , "logging.level.org.hibernate.orm.jdbc.bind=TRACE"
+//})
+public class UserPermissionRepositoryTests extends AbstractJpaTests {
 
     @Autowired
     public UserRepository userRepository;
