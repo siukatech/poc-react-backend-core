@@ -18,6 +18,7 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.MatchingStrategies;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,13 +29,23 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @Slf4j
-@ExtendWith(MockitoExtension.class)
-//@ContextConfiguration(classes = {WebConfig.class})
+@ExtendWith(value = {MockitoExtension.class
+//    , SpringExtension.class
+})
+//@Extensions(value = {
+//    @ExtendWith(value = MockitoExtension.class)
+//    , @ExtendWith(value = SpringExtension.class)
+//})
+// The following @ContextConfiguration and @Import are not working with MockitoExtension.
+// Use @Import to add Config class, @ContextConfiguration is not working
+////@ContextConfiguration(classes = {WebConfig.class})
+//@Import(value = {UserServiceTests.TestConfig.class})
 public class UserServiceTests extends AbstractUnitTests {
 
     @InjectMocks
     private UserService userService;
     @Spy
+//    @Autowired
     private ModelMapper modelMapper;
     @Mock
     private UserRepository userRepository;
@@ -42,6 +53,16 @@ public class UserServiceTests extends AbstractUnitTests {
     private UserPermissionRepository userPermissionRepository;
     @Mock
     private UserViewRepository userViewRepository;
+
+//    @TestConfiguration
+//    public static class TestConfig {
+//        private MapperConfig mapperConfig = new MapperConfig();
+//        @Bean
+//        public ModelMapper modelMapper() {
+//            log.info("TestConfig.modelMapper - start");
+//            return mapperConfig.modelMapper();
+//        }
+//    }
 
     @BeforeAll
     public static void init() {
@@ -71,6 +92,16 @@ public class UserServiceTests extends AbstractUnitTests {
 //        final Logger log = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
 //        log.setLevel(Level.ALL);
 
+//        if (modelMapper == null) {
+//            MapperConfig mapperConfig = new MapperConfig();
+//            modelMapper = mapperConfig.modelMapper();
+//        }
+        // 
+        // Need to configure the AmbiguityIgnored and MatchingStrategy again
+        if (modelMapper != null) {
+//            modelMapper.getConfiguration().setAmbiguityIgnored(true);
+            modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+        }
         log.debug("setup");
     }
 
