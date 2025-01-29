@@ -13,6 +13,9 @@ public class UserPermissionEntity {
     @Id
     private String id;
 
+    @Column(name = "access_right", insertable = false, updatable = false)
+    private String accessRight;
+
     @Column(name = "login_id", insertable = false, updatable = false)
     private String loginId;
 
@@ -27,9 +30,6 @@ public class UserPermissionEntity {
 
     @Column(name = "app_resource_id", insertable = false, updatable = false)
     private String appResourceId;
-
-    @Column(name = "access_right", insertable = false, updatable = false)
-    private String accessRight;
 
 //    @ToString.Exclude
 //    @ManyToOne

@@ -17,8 +17,8 @@ public class AppResourceEntity extends AbstractEntity<String> {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "access_right")
-    private String accessRight;
+//    @Column(name = "access_right")
+//    private String accessRight;
 
     @ToString.Exclude
     @ManyToOne
