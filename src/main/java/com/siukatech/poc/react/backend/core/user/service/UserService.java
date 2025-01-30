@@ -39,7 +39,7 @@ public class UserService {
 
 //    public UserDto findByLoginId(String targetLoginId) {
 //        UserEntity userEntity = this.userRepository.findByLoginId(targetLoginId)
-//                .orElseThrow(() -> new EntityNotFoundException("No such user [%s]".formatted(targetLoginId)));
+//                .orElseThrow(() -> new EntityNotFoundException("User not found [%s]".formatted(targetLoginId)));
 //        log.debug("findByLoginId - modelMapper: [" + this.modelMapper + "]");
 //        UserDto userDto = this.modelMapper.map(userEntity, UserDto.class);
 //        userDto.setCurrentDatetime(LocalDateTime.now());
@@ -48,7 +48,7 @@ public class UserService {
 
     public UserDto findUserByLoginId(String targetLoginId) {
         UserEntity userEntity = this.userRepository.findByLoginId(targetLoginId)
-                .orElseThrow(() -> new EntityNotFoundException("No such user [%s]".formatted(targetLoginId)));
+                .orElseThrow(() -> new EntityNotFoundException("User not found [%s]".formatted(targetLoginId)));
         log.debug("findUserByLoginId - modelMapper: [" + this.modelMapper + "]");
         UserDto userDto = this.modelMapper.map(userEntity, UserDto.class);
         return userDto;
@@ -56,7 +56,7 @@ public class UserService {
 
     public MyKeyDto findKeyByLoginId(String targetLoginId) {
         UserEntity userEntity = this.userRepository.findByLoginId(targetLoginId)
-                .orElseThrow(() -> new EntityNotFoundException("No such user [%s]".formatted(targetLoginId)));
+                .orElseThrow(() -> new EntityNotFoundException("User not found [%s]".formatted(targetLoginId)));
         log.debug("findKeyByLoginId - modelMapper: [" + this.modelMapper + "]");
         MyKeyDto myKeyDto = this.modelMapper.map(userEntity, MyKeyDto.class);
         return myKeyDto;
@@ -74,7 +74,7 @@ public class UserService {
 
     public UserViewDto findViewByLoginId(String targetLoginId) {
         UserViewEntity userViewEntity = this.userViewRepository.findByLoginId(targetLoginId)
-                .orElseThrow(() -> new EntityNotFoundException("No such user [%s]".formatted(targetLoginId)));
+                .orElseThrow(() -> new EntityNotFoundException("User not found [%s]".formatted(targetLoginId)));
 //        log.debug("findViewByLoginId - modelMapper: [" + this.modelMapper + "]");
         UserViewDto userViewDto = this.modelMapper.map(userViewEntity, UserViewDto.class);
         userViewDto.setAppDatetime(LocalDateTime.now());

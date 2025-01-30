@@ -13,7 +13,7 @@ import lombok.*;
 @Data
 @Entity
 @Table(name = "user_role_permissions")
-@NamedEntityGraph(name = "UserRolePermission.findBy"
+@NamedEntityGraph(name = "UserRolePermissionEntity.basic"
     , attributeNodes = {
         @NamedAttributeNode(value = "userRoleEntity")
         , @NamedAttributeNode(value = "applicationEntity")

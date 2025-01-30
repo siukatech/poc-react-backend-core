@@ -52,7 +52,7 @@ public class DatabaseAuthorizationDataProvider implements AuthorizationDataProvi
         log.debug("findByLoginIdAndTokenValue - start");
 //        UserDto userDto = userService.findByLoginId(targetLoginId);
         UserEntity userEntity = this.userRepository.findByLoginId(targetLoginId)
-                .orElseThrow(() -> new EntityNotFoundException("No such user [%s]".formatted(targetLoginId)));
+                .orElseThrow(() -> new EntityNotFoundException("User not found [%s]".formatted(targetLoginId)));
         log.debug("findByLoginId - modelMapper: [" + this.modelMapper + "]");
         UserDto userDto = this.modelMapper.map(userEntity, UserDto.class);
         log.debug("findByLoginIdAndTokenValue - end");

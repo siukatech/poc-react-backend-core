@@ -88,7 +88,7 @@ public class EncryptedRequestBodyAdvice extends RequestBodyAdviceAdapter {
         String loginId = authentication.getName();
 //        String finalLoginId = loginId;
 //        UserEntity userEntity = this.userRepository.findByLoginId(loginId)
-//                .orElseThrow(() -> new EntityNotFoundException("No such user [" + finalLoginId + "]"));
+//                .orElseThrow(() -> new EntityNotFoundException("User not found [" + finalLoginId + "]"));
         MyKeyDto myKeyDto = this.encryptedBodyAdviceHelper.resolveMyKeyInfo(loginId);
 
         log.debug("beforeBodyRead - methodParameter.getMethod.getName: [" + methodParameter.getMethod().getName()

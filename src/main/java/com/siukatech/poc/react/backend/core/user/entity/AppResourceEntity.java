@@ -8,6 +8,11 @@ import java.util.List;
 
 @Data
 @Entity(name = "app_resources")
+@NamedEntityGraph(name = "AppResourceEntity.basic"
+    , attributeNodes = {
+        @NamedAttributeNode(value = "applicationEntity")
+        , @NamedAttributeNode(value = "userRolePermissionEntities")
+})
 public class AppResourceEntity extends AbstractEntity<String> {
 
     @Id

@@ -1,14 +1,20 @@
 package com.siukatech.poc.react.backend.core.user.repository;
 
-import com.siukatech.poc.react.backend.core.AbstractUnitTests;
+import com.siukatech.poc.react.backend.core.AbstractJpaTests;
 import com.siukatech.poc.react.backend.core.user.entity.UserEntity;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.jdbc.Sql;
 
 import java.lang.reflect.Method;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
@@ -21,7 +27,12 @@ import java.util.UUID;
 //                , "logging.level.org.springframework.data: TRACE"
 //        })
 ////@TestPropertySource("classpath:application.yml")
-public class UserRepositoryTests extends AbstractUnitTests {
+@TestPropertySource(properties = {
+        "logging.level.org.hibernate.SQL=DEBUG"
+        , "logging.level.org.hibernate.orm.jdbc.bind=TRACE"
+        , "logging.level.com.siukatech.poc.react.backend.core.data.listener=INFO"
+})
+public class UserRepositoryTests extends AbstractJpaTests {
 
     @Autowired
     public UserRepository userRepository;
@@ -35,6 +46,10 @@ public class UserRepositoryTests extends AbstractUnitTests {
         userEntity.setVersionNo(1L);
         userEntity.setPublicKey("public-key");
         userEntity.setPrivateKey("private-key");
+        userEntity.setCreatedBy("admin");
+        userEntity.setLastModifiedBy("admin");
+        userEntity.setCreatedDatetime(LocalDateTime.now());
+        userEntity.setLastModifiedDatetime(LocalDateTime.now());
         return userEntity;
     }
 
@@ -46,7 +61,7 @@ public class UserRepositoryTests extends AbstractUnitTests {
     public void setup(TestInfo testInfo) {
         Method method = testInfo.getTestMethod().get();
         log.debug("setup - testInfo: [" + testInfo
-                + "], method: [" + method.getName()
+                + "], method.getName: [" + method.getName()
                 + "]");
         UserEntity userEntity = null;
         switch (method.getName()) {
@@ -65,18 +80,18 @@ public class UserRepositoryTests extends AbstractUnitTests {
     @AfterEach
     public void teardown(TestInfo testInfo) {
         Method method = testInfo.getTestMethod().get();
+        String methodName = method.getName();
         log.debug("teardown - testInfo: [" + testInfo
-                + "], method: [" + method.getName()
+                + "], methodName: [" + methodName
                 + "]");
-        UserEntity userEntity = this.userRepository.findByLoginId("app-user-01")
-                .orElseThrow(() -> new RuntimeException());
-        switch (method.getName()) {
-            case "findByLoginId_basic":
-            case "updateUser_version_updated":
-            case "updateUser_version_not_match":
-        }
-        if (userEntity != null) {
-            this.userRepository.delete(userEntity);
+        List<String> methodNameList = List.of(
+                "findByLoginId_basic"
+                , "updateUser_version_updated"
+                , "updateUser_version_not_match"
+        );
+        if (methodNameList.contains(methodName)) {
+            Optional<UserEntity> userEntityOptional = this.userRepository.findByLoginId("app-user-01");
+            userEntityOptional.ifPresent(userEntity -> this.userRepository.delete(userEntity));
         }
     }
 
@@ -84,19 +99,34 @@ public class UserRepositoryTests extends AbstractUnitTests {
     @Tag("basic")
     public void findByLoginId_basic() {
         UserEntity userEntity = userRepository.findByLoginId("app-user-01")
-                .orElseThrow(() -> new RuntimeException());
+                .orElseThrow(() -> new EntityNotFoundException("No such user [%s]"));
         Assertions.assertEquals(userEntity.getLoginId(), "app-user-01");
+    }
+
+    @Test
+    @Sql(scripts = {
+            "/scripts/00-prerequisite/01-setup.sql"
+            , "/scripts/10-users/01-setup.sql"
+            , "/scripts/20-applications/01-setup.sql"
+            , "/scripts/20-applications/11-data-01-find-all.sql"
+            , "/scripts/30-user-permissions/01-setup.sql"
+            , "/scripts/30-user-permissions/11-data-01-find-by-login-id.sql"
+    })
+    public void findByLoginId_complex() {
+        UserEntity userEntity = userRepository.findByLoginId("app-user-02")
+                .orElseThrow(() -> new EntityNotFoundException("No such user [%s]"));
+        Assertions.assertEquals(userEntity.getLoginId(), "app-user-02");
     }
 
     @Test
     @Tag("version_updated")
     public void updateUser_version_updated() {
         UserEntity userEntity = userRepository.findByLoginId("app-user-01")
-                .orElseThrow(() -> new RuntimeException());
+                .orElseThrow(() -> new EntityNotFoundException("No such user [%s]"));
         userEntity.setName("App-User-01-version-updated");
         this.userRepository.save(userEntity);
         UserEntity userEntityAfterUpdate = userRepository.findByLoginId("app-user-01")
-                .orElseThrow(() -> new RuntimeException());
+                .orElseThrow(() -> new EntityNotFoundException("No such user [%s]"));
         log.debug("updateUser_version_updated - userEntity.getVersionNo: [" + userEntity.getVersionNo()
                 + "], userEntityAfterUpdate.getVersionNo: [" + userEntityAfterUpdate.getVersionNo()
                 + "]");
@@ -109,7 +139,7 @@ public class UserRepositoryTests extends AbstractUnitTests {
     @Tag("version_not_match")
     public void updateUser_version_not_match() {
         UserEntity userEntity = userRepository.findByLoginId("app-user-01")
-                .orElseThrow(() -> new RuntimeException());
+                .orElseThrow(() -> new EntityNotFoundException("No such user [%s]"));
         userEntity.setName("App-User-01-version_updated");
         this.userRepository.save(userEntity);
 
@@ -123,7 +153,7 @@ public class UserRepositoryTests extends AbstractUnitTests {
         userEntityClone.setVersionNo(1L);
 
         UserEntity userEntityAfterUpdate = userRepository.findByLoginId("app-user-01")
-                .orElseThrow(() -> new RuntimeException());
+                .orElseThrow(() -> new EntityNotFoundException("No such user [%s]"));
         log.debug("updateUser_version_not_match - 1 - userEntity.getId: [" + userEntity.getId()
                 + "], userEntity.getName: [" + userEntity.getName()
                 + "], userEntity.getVersionNo: [" + userEntity.getVersionNo()

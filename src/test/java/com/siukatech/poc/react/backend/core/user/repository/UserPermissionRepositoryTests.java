@@ -23,7 +23,7 @@ import java.util.Optional;
 //        , "logging.level.org.hibernate.type=TRACE"
         , "logging.level.org.hibernate.orm.jdbc.bind=TRACE"
         , "logging.level.com.siukatech.poc.react.backend.core.data.listener=INFO"
-        , "spring.h2.console.enabled=true"
+//        , "spring.h2.console.enabled=true"
 })
 //@DataJpaTest(properties = {
 //        "spring.h2.console.enabled=true"
@@ -50,7 +50,8 @@ public class UserPermissionRepositoryTests extends AbstractJpaTests {
 
     @Test
     @Sql(scripts = {
-            "/scripts/10-users/01-setup.sql"
+            "/scripts/00-prerequisite/01-setup.sql"
+            , "/scripts/10-users/01-setup.sql"
             , "/scripts/10-users/02-setup-view.sql"
 //            , "/scripts/users/11-data-01-find-by-login-id.sql"
             , "/scripts/20-applications/01-setup.sql"

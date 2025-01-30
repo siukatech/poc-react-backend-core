@@ -10,13 +10,13 @@ import java.util.List;
 @Repository
 public interface UserRolePermissionRepository extends JpaRepository<UserRolePermissionEntity, String> {
 
-    @EntityGraph(value = "UserRolePermission.findBy")
+    @EntityGraph(value = "UserRolePermissionEntity.basic")
     List<UserRolePermissionEntity> findByUserRoleEntityUserRoleUserEntitiesUserEntityLoginId(String loginId);
 
-    @EntityGraph(value = "UserRolePermission.findBy")
+    @EntityGraph(value = "UserRolePermissionEntity.basic")
     List<UserRolePermissionEntity> findByApplicationEntityId(String applicationId);
 
-    @EntityGraph(value = "UserRolePermission.findBy")
+    @EntityGraph(value = "UserRolePermissionEntity.basic")
     List<UserRolePermissionEntity> findByUserRoleEntityUserRoleUserEntitiesUserEntityLoginIdAndApplicationEntityId(String loginId, String applicationId);
 
 }

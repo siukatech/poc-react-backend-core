@@ -24,7 +24,7 @@ import java.util.Optional;
 //        , "logging.level.org.hibernate.type=TRACE"
         , "logging.level.org.hibernate.orm.jdbc.bind=TRACE"
         , "logging.level.com.siukatech.poc.react.backend.core.data.listener=INFO"
-        , "spring.h2.console.enabled=true"
+//        , "spring.h2.console.enabled=true"
 })
 public class UserRolePermissionRepositoryTests extends AbstractJpaTests {
 
@@ -60,7 +60,7 @@ public class UserRolePermissionRepositoryTests extends AbstractJpaTests {
     })
     public void findByUserRoleEntityUserRoleUserEntitiesUserEntityLoginIdAndApplicationEntityId_basic() {
         Optional<UserEntity> userEntityOptional = userRepository.findByLoginId("app-user-02");
-        Optional<ApplicationEntity> applicationEntityOptional = applicationRepository.findById("frontend-app");
+        Optional<ApplicationEntity> applicationEntityOptional = applicationRepository.findWithAppResourceEntitiesById("frontend-app");
         log.debug("findByUserRoleEntityUserRoleUserEntitiesUserEntityLoginIdAndApplicationEntityId_basic - userEntityOptional.get: [{}], applicationEntityOptional: [{}]"
                 , userEntityOptional.get(), applicationEntityOptional.get());
         List<UserRolePermissionEntity> userRolePermissionEntityList_LoginId = userRolePermissionRepository

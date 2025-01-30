@@ -104,7 +104,7 @@ public class EncryptedResponseBodyAdvice implements ResponseBodyAdvice {
 //        if (userEntity == null) {
 //            String finalLoginId = loginId;
 //            userEntity = this.userRepository.findByLoginId(loginId)
-//                    .orElseThrow(() -> new EntityNotFoundException("No such user [" + finalLoginId + "]"));
+//                    .orElseThrow(() -> new EntityNotFoundException("User not found [" + finalLoginId + "]"));
 //        }
         if (myKeyDto == null) {
             myKeyDto = this.encryptedBodyAdviceHelper.resolveMyKeyInfo(loginId);

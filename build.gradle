@@ -1,6 +1,7 @@
 import com.siukatech.poc.react.backend.plugin.ReactBackendPlugin
 import com.siukatech.poc.react.backend.plugin.ReactBackendUtil
 import org.codehaus.groovy.runtime.GStringImpl
+import org.springframework.boot.gradle.plugin.SpringBootPlugin
 
 plugins {
 ////	id 'java'
@@ -31,7 +32,7 @@ apply plugin: 'io.spring.dependency-management'
 // https://stackoverflow.com/a/55731664
 dependencyManagement {
     imports {
-        mavenBom org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES
+        mavenBom SpringBootPlugin.BOM_COORDINATES
 //        mavenBom "org.springframework.boot:spring-boot-dependencies:3.2.1"
     }
 }
