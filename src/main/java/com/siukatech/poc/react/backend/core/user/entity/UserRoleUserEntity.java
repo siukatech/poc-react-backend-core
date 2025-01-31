@@ -5,7 +5,9 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Data
-@Entity(name = "user_role_users")
+//@Entity(name = "user_role_users")
+@Entity
+@Table(name = "user_role_users")
 public class UserRoleUserEntity extends AbstractEntity<String> {
 
     @Id
@@ -14,12 +16,12 @@ public class UserRoleUserEntity extends AbstractEntity<String> {
 
     @ToString.Exclude
     @ManyToOne
-    @JoinColumn(name = "user_role_id", referencedColumnName = "id")
+    @JoinColumn(name = "user_role_id", referencedColumnName = "user_role_id")
     private UserRoleEntity userRoleEntity;
 
     @ToString.Exclude
     @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
     private UserEntity userEntity;
 
 }

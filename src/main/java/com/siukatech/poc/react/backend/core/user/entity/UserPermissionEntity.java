@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.EntityGraph;
 @Data
 //@EqualsAndHashCode(callSuper = true)
 @Entity
-@Table(name = "user_role_permissions")
+@Table(name = "user_permissions")
 public class UserPermissionEntity {
 
     @Id
@@ -15,9 +15,6 @@ public class UserPermissionEntity {
 
     @Column(name = "access_right", insertable = false, updatable = false)
     private String accessRight;
-
-    @Column(name = "login_id", insertable = false, updatable = false)
-    private String loginId;
 
     @Column(name = "user_id", insertable = false, updatable = false)
     private String userId;

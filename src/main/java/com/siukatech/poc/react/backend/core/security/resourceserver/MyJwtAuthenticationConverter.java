@@ -47,9 +47,9 @@ public class MyJwtAuthenticationConverter implements Converter<Jwt, AbstractAuth
     @Override
     public AbstractAuthenticationToken convert(Jwt source) {
         // subject is the user-id
-        String loginId = source.getClaimAsString(StandardClaimNames.PREFERRED_USERNAME);
+        String userId = source.getClaimAsString(StandardClaimNames.PREFERRED_USERNAME);
         String tokenValue = source.getTokenValue();
-        log.debug("convert - loginId: [" + loginId
+        log.debug("convert - userId: [" + userId
                 + "], source.getId: [" + source.getId()
                 + "], source.getClaims: [" + source.getClaims()
                 + "], source.getHeaders: [" + source.getHeaders()
@@ -65,15 +65,15 @@ public class MyJwtAuthenticationConverter implements Converter<Jwt, AbstractAuth
         String issuerUri = source.getIssuer().toString();
         String clientName = ResourceServerUtil.getClientName(oAuth2ClientProperties, issuerUri);
         //
-        log.debug("convert - loginId: [{}], issuerUri: [{}], clientName: [{}]"
-                , loginId, issuerUri, clientName);
+        log.debug("convert - userId: [{}], issuerUri: [{}], clientName: [{}]"
+                , userId, issuerUri, clientName);
         //
         List<GrantedAuthority> convertedAuthorities = new ArrayList<>();
         // Extract authorities from jwt
         convertedAuthorities.addAll(jwtGrantedAuthoritiesConverter.convert(source));
 //        UserDetails userDetails = new User(
 //                //source.getSubject()
-//                loginId
+//                userId
 //                , "", convertedAuthorities);
 //        UsernamePasswordAuthenticationToken authenticationToken
 //                = new UsernamePasswordAuthenticationToken(userDetails
@@ -81,11 +81,11 @@ public class MyJwtAuthenticationConverter implements Converter<Jwt, AbstractAuth
 
         UserDto userDto = null;
 //        if (SecurityContextHolder.getContext().getAuthentication() != null) {
-//        userDto = userService.findByLoginId(loginId);
-            userDto = authorizationDataProvider.findByLoginIdAndTokenValue(loginId, tokenValue);
+//        userDto = userService.findByUserId(userId);
+            userDto = authorizationDataProvider.findByUserIdAndTokenValue(userId, tokenValue);
 
-        List<UserPermissionDto> userPermissionDtoList = authorizationDataProvider.findPermissionsByLoginId(loginId, tokenValue);
-        log.debug("convert - loginId: [{}], userPermissionDtoList: [{}]", loginId, userPermissionDtoList);
+        List<UserPermissionDto> userPermissionDtoList = authorizationDataProvider.findPermissionsByUserId(userId, tokenValue);
+        log.debug("convert - userId: [{}], userPermissionDtoList: [{}]", userId, userPermissionDtoList);
         userPermissionDtoList.forEach(userPermissionDto -> {
             convertedAuthorities.add(MyGrantedAuthority.builder()
                             .userRoleId(userPermissionDto.getUserRoleId())
@@ -99,12 +99,12 @@ public class MyJwtAuthenticationConverter implements Converter<Jwt, AbstractAuth
         // Extract claims from jwt
         attributeMap.putAll(source.getClaims());
         //
-        attributeMap.put(StandardClaimNames.PREFERRED_USERNAME, loginId);
+        attributeMap.put(StandardClaimNames.PREFERRED_USERNAME, userId);
         attributeMap.put(MyAuthenticationToken.ATTR_TOKEN_VALUE, tokenValue);
         attributeMap.put(MyAuthenticationToken.ATTR_USER_ID, userDto.getId());
         attributeMap.put(MyAuthenticationToken.ATTR_PUBLIC_KEY, userDto.getPublicKey());
 //        }
-        log.debug("convert - loginId: [{}], convertedAuthorities: [{}], attributeMap: [{}]", loginId, convertedAuthorities, attributeMap);
+        log.debug("convert - userId: [{}], convertedAuthorities: [{}], attributeMap: [{}]", userId, convertedAuthorities, attributeMap);
 
         OAuth2User oAuth2User = new DefaultOAuth2User(convertedAuthorities, attributeMap, StandardClaimNames.PREFERRED_USERNAME);
 //        OAuth2AuthenticationToken authenticationToken = new OAuth2AuthenticationToken(oAuth2User, convertedAuthorities, "keycloak");

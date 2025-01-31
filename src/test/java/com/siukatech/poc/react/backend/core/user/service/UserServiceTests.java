@@ -120,9 +120,9 @@ public class UserServiceTests extends AbstractUnitTests {
         List<UserPermissionEntity> userPermissionEntityList = new ArrayList<>();
         for (String[] userPermissionTemps : userPermissionTempsArr) {
             UserPermissionEntity userPermissionEntity = new UserPermissionEntity();
-            userPermissionEntity.setLoginId(userPermissionTemps[0]);
-//            userPermissionEntity.setUserId(Long.valueOf(userPermissionTemps[1]));
-            userPermissionEntity.setUserId(userPermissionTemps[1]);
+            userPermissionEntity.setUserId(userPermissionTemps[0]);
+////            userPermissionEntity.setUserId(Long.valueOf(userPermissionTemps[1]));
+//            userPermissionEntity.setUserId(userPermissionTemps[1]);
             userPermissionEntity.setUserRoleId(userPermissionTemps[2]);
             userPermissionEntity.setApplicationId(userPermissionTemps[3]);
             userPermissionEntity.setAppResourceId(userPermissionTemps[4]);
@@ -134,7 +134,7 @@ public class UserServiceTests extends AbstractUnitTests {
 
     private UserEntity prepareUserEntity_basic() {
         UserEntity userEntity = new UserEntity();
-        userEntity.setLoginId("app-user-01");
+        userEntity.setUserId("app-user-01");
         userEntity.setName("App-User-01");
         userEntity.setPublicKey("public-key");
         userEntity.setPrivateKey("private-key");
@@ -144,7 +144,7 @@ public class UserServiceTests extends AbstractUnitTests {
 
     private UserViewEntity prepareUserViewEntity_basic() {
         UserViewEntity userViewEntity = new UserViewEntity();
-        userViewEntity.setLoginId("app-user-01");
+        userViewEntity.setUserId("app-user-01");
         userViewEntity.setName("App-User-01");
         userViewEntity.setPublicKey("public-key");
         userViewEntity.setPrivateKey("private-key");
@@ -153,46 +153,46 @@ public class UserServiceTests extends AbstractUnitTests {
     }
 
     @Test
-    public void findUserByLoginId_basic() {
+    public void findUserByUserId_basic() {
         // given
         UserEntity userEntity = this.prepareUserEntity_basic();
-        when(this.userRepository.findByLoginId(anyString())).thenReturn(Optional.of(userEntity));
+        when(this.userRepository.findByUserId(anyString())).thenReturn(Optional.of(userEntity));
 
         // when
-        UserDto userDtoActual = this.userService.findUserByLoginId("app-user-01");
+        UserDto userDtoActual = this.userService.findUserByUserId("app-user-01");
 
         // then / verify
-        assertThat(userDtoActual.getLoginId()).isEqualTo("app-user-01");
+        assertThat(userDtoActual.getUserId()).isEqualTo("app-user-01");
     }
 
     @Test
-    public void findPermissionsByLoginIdAndApplicationId_basic() {
+    public void findPermissionsByUserIdAndApplicationId_basic() {
         // given
         List<UserPermissionEntity> userPermissionEntityListTemp = prepareUserPermissions_basic();
-        when(this.userPermissionRepository.findByLoginIdAndApplicationId(anyString(), anyString())).thenReturn(userPermissionEntityListTemp);
-//        doReturn(userPermissionEntityListTemp).when(userPermissionRepository).findByLoginIdAndApplicationId(anyString(), anyString());
-        log.info("findPermissionsByLoginIdAndApplicationId_basic - modelMapper.getConfiguration: [{}]"
+        when(this.userPermissionRepository.findByUserIdAndApplicationId(anyString(), anyString())).thenReturn(userPermissionEntityListTemp);
+//        doReturn(userPermissionEntityListTemp).when(userPermissionRepository).findByUserIdAndApplicationId(anyString(), anyString());
+        log.info("findPermissionsByUserIdAndApplicationId_basic - modelMapper.getConfiguration: [{}]"
                 , modelMapper.getConfiguration());
 
         // when
-        List<UserPermissionDto> userPermissionDtoListActual = this.userService.findPermissionsByLoginIdAndApplicationId("app-user-01", "frontend-app");
+        List<UserPermissionDto> userPermissionDtoListActual = this.userService.findPermissionsByUserIdAndApplicationId("app-user-01", "frontend-app");
 
         // then / verify
-        assertThat(userPermissionDtoListActual.get(0).getLoginId()).isEqualTo("app-user-01");
+        assertThat(userPermissionDtoListActual.get(0).getUserId()).isEqualTo("app-user-01");
         assertThat(userPermissionDtoListActual.get(0).getApplicationId()).isEqualTo("frontend-app");
     }
 
     @Test
-    public void findViewByLoginId_basic() {
+    public void findViewByUserId_basic() {
         // given
         UserViewEntity userViewEntity = this.prepareUserViewEntity_basic();
-        when(this.userViewRepository.findByLoginId(anyString())).thenReturn(Optional.of(userViewEntity));
+        when(this.userViewRepository.findByUserId(anyString())).thenReturn(Optional.of(userViewEntity));
 
         // when
-        UserViewDto userViewDtoActual = this.userService.findViewByLoginId("app-user-01");
+        UserViewDto userViewDtoActual = this.userService.findViewByUserId("app-user-01");
 
         // then / verify
-        assertThat(userViewDtoActual.getLoginId()).isEqualTo("app-user-01");
+        assertThat(userViewDtoActual.getUserId()).isEqualTo("app-user-01");
     }
 
 }

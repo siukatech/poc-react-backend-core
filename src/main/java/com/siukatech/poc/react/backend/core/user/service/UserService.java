@@ -37,34 +37,34 @@ public class UserService {
         this.userViewRepository = userViewRepository;
     }
 
-//    public UserDto findByLoginId(String targetLoginId) {
-//        UserEntity userEntity = this.userRepository.findByLoginId(targetLoginId)
-//                .orElseThrow(() -> new EntityNotFoundException("User not found [%s]".formatted(targetLoginId)));
-//        log.debug("findByLoginId - modelMapper: [" + this.modelMapper + "]");
+//    public UserDto findByUserId(String targetUserId) {
+//        UserEntity userEntity = this.userRepository.findByUserId(targetUserId)
+//                .orElseThrow(() -> new EntityNotFoundException("User not found [%s]".formatted(targetUserId)));
+//        log.debug("findByUserId - modelMapper: [" + this.modelMapper + "]");
 //        UserDto userDto = this.modelMapper.map(userEntity, UserDto.class);
 //        userDto.setCurrentDatetime(LocalDateTime.now());
 //        return userDto;
 //    }
 
-    public UserDto findUserByLoginId(String targetLoginId) {
-        UserEntity userEntity = this.userRepository.findByLoginId(targetLoginId)
-                .orElseThrow(() -> new EntityNotFoundException("User not found [%s]".formatted(targetLoginId)));
-        log.debug("findUserByLoginId - modelMapper: [" + this.modelMapper + "]");
+    public UserDto findUserByUserId(String targetUserId) {
+        UserEntity userEntity = this.userRepository.findByUserId(targetUserId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found [%s]".formatted(targetUserId)));
+        log.debug("findUserByUserId - modelMapper: [" + this.modelMapper + "]");
         UserDto userDto = this.modelMapper.map(userEntity, UserDto.class);
         return userDto;
     }
 
-    public MyKeyDto findKeyByLoginId(String targetLoginId) {
-        UserEntity userEntity = this.userRepository.findByLoginId(targetLoginId)
-                .orElseThrow(() -> new EntityNotFoundException("User not found [%s]".formatted(targetLoginId)));
-        log.debug("findKeyByLoginId - modelMapper: [" + this.modelMapper + "]");
+    public MyKeyDto findKeyByUserId(String targetUserId) {
+        UserEntity userEntity = this.userRepository.findByUserId(targetUserId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found [%s]".formatted(targetUserId)));
+        log.debug("findKeyByUserId - modelMapper: [" + this.modelMapper + "]");
         MyKeyDto myKeyDto = this.modelMapper.map(userEntity, MyKeyDto.class);
         return myKeyDto;
     }
 
-    public List<UserPermissionDto> findPermissionsByLoginIdAndApplicationId(String targetLoginId, String applicationId) {
-//        List<UserPermissionDto> userPermissionDtoList = this.userRepository.findUserPermissionByLoginId(targetLoginId);
-        List<UserPermissionEntity> userPermissionEntityList = this.userPermissionRepository.findByLoginIdAndApplicationId(targetLoginId, applicationId);
+    public List<UserPermissionDto> findPermissionsByUserIdAndApplicationId(String targetUserId, String applicationId) {
+//        List<UserPermissionDto> userPermissionDtoList = this.userRepository.findUserPermissionByUserId(targetUserId);
+        List<UserPermissionEntity> userPermissionEntityList = this.userPermissionRepository.findByUserIdAndApplicationId(targetUserId, applicationId);
         List<UserPermissionDto> userPermissionDtoList = userPermissionEntityList.stream()
                 .map(userPermissionEntity -> this.modelMapper
                         .map(userPermissionEntity, UserPermissionDto.class))
@@ -72,14 +72,14 @@ public class UserService {
         return userPermissionDtoList;
     }
 
-    public UserViewDto findViewByLoginId(String targetLoginId) {
-        UserViewEntity userViewEntity = this.userViewRepository.findByLoginId(targetLoginId)
-                .orElseThrow(() -> new EntityNotFoundException("User not found [%s]".formatted(targetLoginId)));
-//        log.debug("findViewByLoginId - modelMapper: [" + this.modelMapper + "]");
+    public UserViewDto findViewByUserId(String targetUserId) {
+        UserViewEntity userViewEntity = this.userViewRepository.findByUserId(targetUserId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found [%s]".formatted(targetUserId)));
+//        log.debug("findViewByUserId - modelMapper: [" + this.modelMapper + "]");
         UserViewDto userViewDto = this.modelMapper.map(userViewEntity, UserViewDto.class);
         userViewDto.setAppDatetime(LocalDateTime.now());
         userViewDto.setTimeZone(TimeZone.getDefault());
-        log.debug("findViewByLoginId - targetLoginId: [{}], userViewDto: [{}]", targetLoginId, userViewDto);
+        log.debug("findViewByUserId - targetUserId: [{}], userViewDto: [{}]", targetUserId, userViewDto);
         return userViewDto;
     }
 

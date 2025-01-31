@@ -58,9 +58,9 @@ public class EncryptedBodyAdviceHelper {
 //            , UserEntity userEntity
             , MyKeyDto myKeyDto
     ) throws Exception {
-//        String loginId = userEntity.getLoginId();
-        String loginId = myKeyDto.getLoginId();
-        log.debug("decryptRsaDataBase64ToBodyDetail - loginId: [" + loginId
+//        String userId = userEntity.getUserId();
+        String userId = myKeyDto.getUserId();
+        log.debug("decryptRsaDataBase64ToBodyDetail - userId: [" + userId
                 + "], start");
         byte[] decryptedBodyData = EncryptionUtils.decryptWithRsaPrivateKey(
                 Base64.getDecoder().decode(encryptedRsaDataBase64)
@@ -182,18 +182,18 @@ public class EncryptedBodyAdviceHelper {
 //            , UserEntity userEntity
             , MyKeyDto myKeyDto
     ) throws Exception {
-//        String loginId = userEntity.getLoginId();
-        String loginId = myKeyDto.getLoginId();
-        log.debug("decryptDataBase64ToBodyDetail - loginId: [" + loginId
+//        String userId = userEntity.getUserId();
+        String userId = myKeyDto.getUserId();
+        log.debug("decryptDataBase64ToBodyDetail - userId: [" + userId
                 + "], start");
 //        String encryptedDataBase64Str = this.objectMapper.readValue(encryptedDataBase64, String.class);
-        log.debug("decryptDataBase64ToBodyDetail - loginId: [" + loginId
+        log.debug("decryptDataBase64ToBodyDetail - userId: [" + userId
                 + "], encryptedDataBase64: [" + encryptedDataBase64
 //                + "], encryptedDataBase64Str: [" + encryptedDataBase64Str
                 + "]");
         byte[] encryptedData = Base64.getDecoder().decode(encryptedDataBase64.getBytes(StandardCharsets.UTF_8));
         String encryptedDataStr = new String(encryptedData);
-        log.debug("decryptDataBase64ToBodyDetail - loginId: [" + loginId
+        log.debug("decryptDataBase64ToBodyDetail - userId: [" + userId
                 + "], encryptedDataStr: [" + encryptedDataStr
                 + "]");
 //        String[] encryptedDataArr = StringUtils.split(encryptedDataStr, CIPHER_SEPARATOR);
@@ -203,7 +203,7 @@ public class EncryptedBodyAdviceHelper {
         if (encryptedDataArr.length > 1) {
             encryptedAesContent = encryptedDataArr[1];
         }
-        log.debug("decryptDataBase64ToBodyDetail - loginId: [" + loginId
+        log.debug("decryptDataBase64ToBodyDetail - userId: [" + userId
                 + "], encryptedRsaInfo: [" + encryptedRsaInfo
                 + "], encryptedAesContent: [" + encryptedAesContent
                 + "]");
@@ -213,7 +213,7 @@ public class EncryptedBodyAdviceHelper {
                 , myKeyDto.getPrivateKey()
         );
         String decryptedRsaInfoStr = new String(decryptedRsaInfoData);
-        log.debug("decryptDataBase64ToBodyDetail - loginId: [" + loginId
+        log.debug("decryptDataBase64ToBodyDetail - userId: [" + userId
                 + "], decryptedRsaInfoStr: [" + decryptedRsaInfoStr
                 + "]");
         EncryptedInfo encryptedInfo = this.objectMapper
@@ -228,7 +228,7 @@ public class EncryptedBodyAdviceHelper {
             );
             decryptedAesContentStr = new String(decryptedAesContentData);
         }
-        log.debug("decryptDataBase64ToBodyDetail - loginId: [" + loginId
+        log.debug("decryptDataBase64ToBodyDetail - userId: [" + userId
                 + "], decryptedAesContentData.length: [" + (decryptedAesContentData == null ? "NULL" : decryptedAesContentData.length)
                 + "], decryptedAesContentStr: [" + decryptedAesContentStr
                 + "]");
@@ -237,33 +237,33 @@ public class EncryptedBodyAdviceHelper {
         return encryptedDetail;
     }
 
-    public MyKeyDto resolveMyKeyInfo(String loginId) {
+    public MyKeyDto resolveMyKeyInfo(String userId) {
         String myKeyInfoUrl = this.appCoreProp.getMyKeyInfoUrl();
         MyKeyDto myKeyDto = null;
         if (StringUtils.isNotEmpty(myKeyInfoUrl)) {
             ResponseEntity<MyKeyDto> responseEntity = this.oauth2ClientRestTemplate.exchange(
                     myKeyInfoUrl, HttpMethod.GET, HttpEntity.EMPTY, MyKeyDto.class);
             myKeyDto = responseEntity.getBody();
-            log.debug("resolveMyKeyInfo - loginId: [{}], myKeyInfoUrl: [{}], myKeyDto.getLoginId: [{}]"
+            log.debug("resolveMyKeyInfo - userId: [{}], myKeyInfoUrl: [{}], myKeyDto.getUserId: [{}]"
 //                + ", responseEntity.getBody.toString: [{}]"
-                    , loginId, myKeyInfoUrl, myKeyDto.getLoginId()
+                    , userId, myKeyInfoUrl, myKeyDto.getUserId()
 //                , responseEntity.getBody().toString()
             );
-            if (!loginId.equals(myKeyDto.getLoginId())) {
+            if (!userId.equals(myKeyDto.getUserId())) {
                 throw new EntityNotFoundException(
-                        "User does not match loginId: [%s], myKeyDto.getLoginId: [%s]"
-                                .formatted(loginId, myKeyDto.getLoginId()));
+                        "User does not match userId: [%s], myKeyDto.getUserId: [%s]"
+                                .formatted(userId, myKeyDto.getUserId()));
             }
         } else {
-            log.debug("resolveMyKeyInfo - loginId: [{}], myKeyInfoUrl: [{}]"
-                    , loginId, myKeyInfoUrl
+            log.debug("resolveMyKeyInfo - userId: [{}], myKeyInfoUrl: [{}]"
+                    , userId, myKeyInfoUrl
             );
             throw new RuntimeException(
-                    "User with loginId: [%s] cannot be resolved because of the empty my-user-info"
-                            .formatted(loginId));
+                    "User with userId: [%s] cannot be resolved because of the empty my-user-info"
+                            .formatted(userId));
         }
         return myKeyDto;
-//        return this.authService.resolveMyKeyInfo(loginId);
+//        return this.authService.resolveMyKeyInfo(userId);
     }
 
     public boolean isEncryptedApiController(MethodParameter methodParameter) {

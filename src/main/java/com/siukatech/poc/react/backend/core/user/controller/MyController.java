@@ -33,8 +33,8 @@ public class MyController {
         HttpHeaderUtils.logHttpHeaders(httpHeaders);
         log.debug("getPublicKey - authentication: [{}], authenticationInSc: [{}]"
                 , authentication, authenticationInSc);
-        String loginId = authentication.getName();
-        MyKeyDto myKeyDto = this.userService.findKeyByLoginId(loginId);
+        String userId = authentication.getName();
+        MyKeyDto myKeyDto = this.userService.findKeyByUserId(userId);
 
         String publicKeyBase64 = myKeyDto.getPublicKey();
         return ResponseEntity.ok(publicKeyBase64);
@@ -48,8 +48,8 @@ public class MyController {
         HttpHeaderUtils.logHttpHeaders(httpHeaders);
         log.debug("getKeyInfo - authentication: [{}], authenticationInSc: [{}]"
                 , authentication, authenticationInSc);
-        String loginId = authentication.getName();
-        MyKeyDto myKeyDto = this.userService.findKeyByLoginId(loginId);
+        String userId = authentication.getName();
+        MyKeyDto myKeyDto = this.userService.findKeyByUserId(userId);
 
         return ResponseEntity.ok(myKeyDto);
     }
@@ -62,8 +62,8 @@ public class MyController {
         HttpHeaderUtils.logHttpHeaders(httpHeaders);
         log.debug("getUserInfo - authentication: [{}], authenticationInSc: [{}]"
                 , authentication, authenticationInSc);
-        String loginId = authentication.getName();
-        UserDto userDto = this.userService.findUserByLoginId(loginId);
+        String userId = authentication.getName();
+        UserDto userDto = this.userService.findUserByUserId(userId);
 
         return ResponseEntity.ok(userDto);
     }
@@ -77,9 +77,9 @@ public class MyController {
         HttpHeaderUtils.logHttpHeaders(httpHeaders);
         log.debug("getUserPermissions - authentication: [{}], authenticationInSc: [{}], applicationId: [{}]"
                 , authentication, authenticationInSc, applicationId);
-        String loginId = authentication.getName();
+        String userId = authentication.getName();
         List<UserPermissionDto> userPermissionDtoList = this.userService
-                .findPermissionsByLoginIdAndApplicationId(loginId, applicationId);
+                .findPermissionsByUserIdAndApplicationId(userId, applicationId);
 
         return ResponseEntity.ok(userPermissionDtoList);
     }
@@ -93,15 +93,15 @@ public class MyController {
         HttpHeaderUtils.logHttpHeaders(httpHeaders);
         log.debug("getUserPermissions - authentication: [{}], authenticationInSc: [{}], applicationId: [{}]"
                 , authentication, authenticationInSc, applicationId);
-        String loginId = authentication.getName();
+        String userId = authentication.getName();
         List<UserPermissionDto> userPermissionDtoList = this.userService
-                .findPermissionsByLoginIdAndApplicationId(loginId, applicationId);
+                .findPermissionsByUserIdAndApplicationId(userId, applicationId);
 //        UserPermissionInfoDto userPermissionInfoDto = UserPermissionInfoDto.builder()
-//                .loginId(loginId)
+//                .userId(userId)
 //                .userPermissionList(userPermissionDtoList)
 //                .build();
         UserPermissionInfoDto userPermissionInfoDto = new UserPermissionInfoDto();
-        userPermissionInfoDto.setLoginId(loginId);
+        userPermissionInfoDto.setUserId(userId);
         userPermissionInfoDto.setUserPermissionList(userPermissionDtoList);
 
         return ResponseEntity.ok(userPermissionInfoDto);
@@ -115,8 +115,8 @@ public class MyController {
         HttpHeaderUtils.logHttpHeaders(httpHeaders);
         log.debug("getUserView - authentication: [{}], authenticationInSc: [{}]"
                 , authentication, authenticationInSc);
-        String loginId = authentication.getName();
-        UserViewDto userViewDto = this.userService.findViewByLoginId(loginId);
+        String userId = authentication.getName();
+        UserViewDto userViewDto = this.userService.findViewByUserId(userId);
 
         return ResponseEntity.ok(userViewDto);
     }

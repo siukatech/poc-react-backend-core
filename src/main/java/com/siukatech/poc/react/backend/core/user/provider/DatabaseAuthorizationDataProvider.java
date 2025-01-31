@@ -48,28 +48,28 @@ public class DatabaseAuthorizationDataProvider implements AuthorizationDataProvi
     }
 
     @Override
-    public UserDto findByLoginIdAndTokenValue(String targetLoginId, String tokenValue) {
-        log.debug("findByLoginIdAndTokenValue - start");
-//        UserDto userDto = userService.findByLoginId(targetLoginId);
-        UserEntity userEntity = this.userRepository.findByLoginId(targetLoginId)
-                .orElseThrow(() -> new EntityNotFoundException("User not found [%s]".formatted(targetLoginId)));
-        log.debug("findByLoginId - modelMapper: [" + this.modelMapper + "]");
+    public UserDto findByUserIdAndTokenValue(String targetUserId, String tokenValue) {
+        log.debug("findByUserIdAndTokenValue - start");
+//        UserDto userDto = userService.findByUserId(targetUserId);
+        UserEntity userEntity = this.userRepository.findByUserId(targetUserId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found [%s]".formatted(targetUserId)));
+        log.debug("findByUserId - modelMapper: [" + this.modelMapper + "]");
         UserDto userDto = this.modelMapper.map(userEntity, UserDto.class);
-        log.debug("findByLoginIdAndTokenValue - end");
+        log.debug("findByUserIdAndTokenValue - end");
         return userDto;
     }
 
     @Override
-    public List<UserPermissionDto> findPermissionsByLoginId(String targetLoginId, String tokenValue) {
-        log.debug("findPermissionsByLoginId - start");
+    public List<UserPermissionDto> findPermissionsByUserId(String targetUserId, String tokenValue) {
+        log.debug("findPermissionsByUserId - start");
 //        List<UserPermissionDto> userPermissionDtoList = userService
-//                .findPermissionsByLoginIdAndApplicationId(loginId, appCoreProp.getApplicationId());
-        List<UserPermissionEntity> userPermissionEntityList = this.userPermissionRepository.findByLoginIdAndApplicationId(targetLoginId, appCoreProp.getApplicationId());
+//                .findPermissionsByUserIdAndApplicationId(userId, appCoreProp.getApplicationId());
+        List<UserPermissionEntity> userPermissionEntityList = this.userPermissionRepository.findByUserIdAndApplicationId(targetUserId, appCoreProp.getApplicationId());
         List<UserPermissionDto> userPermissionDtoList = userPermissionEntityList.stream()
                 .map(userPermissionEntity -> this.modelMapper
                         .map(userPermissionEntity, UserPermissionDto.class))
                 .toList();
-        log.debug("findPermissionsByLoginId - end");
+        log.debug("findPermissionsByUserId - end");
         return userPermissionDtoList;
     }
 

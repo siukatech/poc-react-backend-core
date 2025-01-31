@@ -40,7 +40,7 @@ public class UserRepositoryTests extends AbstractJpaTests {
 
     private UserEntity prepareUserEntity_basic() {
         UserEntity userEntity = new UserEntity();
-        userEntity.setLoginId("app-user-01");
+        userEntity.setUserId("app-user-01");
         userEntity.setName("App-User-01");
 ////        userEntity.setId(1L);
 //        userEntity.setId(UUID.randomUUID().toString());
@@ -69,7 +69,7 @@ public class UserRepositoryTests extends AbstractJpaTests {
                 + "]");
         UserEntity userEntity = null;
 //        switch (methodName) {
-//            case "findByLoginId_basic":
+//            case "findByUserId_basic":
 //                userEntity = this.prepareUserEntity_basic();
 //            case "updateUser_version_updated":
 //                userEntity = this.prepareUserEntity_basic();
@@ -94,14 +94,14 @@ public class UserRepositoryTests extends AbstractJpaTests {
                 + "], tags: [" + tags
                 + "]");
 //        List<String> methodNameList = List.of(
-//                "findByLoginId_basic"
+//                "findByUserId_basic"
 //                , "updateUser_version_updated"
 //                , "updateUser_version_not_match_v1"
 //                , "updateUser_version_not_match_v2"
 //        );
 //        if (methodNameList.contains(methodName)) {
         if (tags.contains("data_load")) {
-            Optional<UserEntity> userEntityOptional = this.userRepository.findByLoginId("app-user-01");
+            Optional<UserEntity> userEntityOptional = this.userRepository.findByUserId("app-user-01");
             userEntityOptional.ifPresent(userEntity -> this.userRepository.delete(userEntity));
         }
     }
@@ -111,10 +111,10 @@ public class UserRepositoryTests extends AbstractJpaTests {
             @Tag("basic")
             , @Tag("data_load")
     })
-    public void findByLoginId_basic() {
-        UserEntity userEntity = userRepository.findByLoginId("app-user-01")
+    public void findByUserId_basic() {
+        UserEntity userEntity = userRepository.findByUserId("app-user-01")
                 .orElseThrow(() -> new EntityNotFoundException("User not found [%s]"));
-        Assertions.assertEquals(userEntity.getLoginId(), "app-user-01");
+        Assertions.assertEquals(userEntity.getUserId(), "app-user-01");
     }
 
     @Test
@@ -126,10 +126,10 @@ public class UserRepositoryTests extends AbstractJpaTests {
             , "/scripts/30-user-permissions/01-setup.sql"
             , "/scripts/30-user-permissions/11-data-01-find-by-login-id.sql"
     })
-    public void findByLoginId_complex() {
-        UserEntity userEntity = userRepository.findByLoginId("app-user-02")
+    public void findByUserId_complex() {
+        UserEntity userEntity = userRepository.findByUserId("app-user-02")
                 .orElseThrow(() -> new EntityNotFoundException("User not found [%s]"));
-        Assertions.assertEquals(userEntity.getLoginId(), "app-user-02");
+        Assertions.assertEquals(userEntity.getUserId(), "app-user-02");
     }
 
     @Test
@@ -138,18 +138,18 @@ public class UserRepositoryTests extends AbstractJpaTests {
             , @Tag("data_load")
     })
     public void updateUser_version_updated() {
-        UserEntity userEntity = userRepository.findByLoginId("app-user-01")
+        UserEntity userEntity = userRepository.findByUserId("app-user-01")
                 .orElseThrow(() -> new EntityNotFoundException("User not found [%s]"));
         userEntity.setName("App-User-01-version-updated");
         this.userRepository.save(userEntity);
-        UserEntity userEntityAfterUpdate = userRepository.findByLoginId("app-user-01")
+        UserEntity userEntityAfterUpdate = userRepository.findByUserId("app-user-01")
                 .orElseThrow(() -> new EntityNotFoundException("User not found [%s]"));
         log.debug("updateUser_version_updated - userEntity.getVersionNo: [" + userEntity.getVersionNo()
                 + "], userEntityAfterUpdate.getVersionNo: [" + userEntityAfterUpdate.getVersionNo()
                 + "]");
         Assertions.assertEquals(userEntity.getVersionNo(), 2L);
         Assertions.assertEquals(userEntityAfterUpdate.getVersionNo(), 2L);
-        Assertions.assertEquals(userEntity.getLoginId(), "app-user-01");
+        Assertions.assertEquals(userEntity.getUserId(), "app-user-01");
     }
 
     @Test
@@ -158,21 +158,21 @@ public class UserRepositoryTests extends AbstractJpaTests {
             , @Tag("data_load")
     })
     public void updateUser_version_not_match_v1() {
-        UserEntity userEntity = userRepository.findByLoginId("app-user-01")
+        UserEntity userEntity = userRepository.findByUserId("app-user-01")
                 .orElseThrow(() -> new EntityNotFoundException("User not found [%s]"));
         userEntity.setName("App-User-01-version_updated");
         this.userRepository.save(userEntity);
 
         UserEntity userEntityClone = new UserEntity();
         userEntityClone.setId(userEntity.getId());
-        userEntityClone.setLoginId(userEntity.getLoginId());
+        userEntityClone.setUserId(userEntity.getUserId());
         userEntityClone.setName(userEntity.getName());
         userEntityClone.setPublicKey(userEntity.getPublicKey());
         userEntityClone.setPrivateKey(userEntity.getPrivateKey());
         userEntityClone.setName("App-User-01-version_not_match");
         userEntityClone.setVersionNo(1L);
 
-        UserEntity userEntityAfterUpdate = userRepository.findByLoginId("app-user-01")
+        UserEntity userEntityAfterUpdate = userRepository.findByUserId("app-user-01")
                 .orElseThrow(() -> new EntityNotFoundException("User not found [%s]"));
         log.debug("updateUser_version_not_match_v1 - 1 - userEntity.getId: [" + userEntity.getId()
                 + "], userEntity.getName: [" + userEntity.getName()
@@ -215,21 +215,21 @@ public class UserRepositoryTests extends AbstractJpaTests {
             , @Tag("data_load")
     })
     public void updateUser_version_not_match_v2() {
-        UserEntity userEntity = userRepository.findByLoginId("app-user-01")
+        UserEntity userEntity = userRepository.findByUserId("app-user-01")
                 .orElseThrow(() -> new EntityNotFoundException("User not found [%s]"));
         userEntity.setName("App-User-01-version_updated");
         this.userRepository.save(userEntity);
 
 //        UserEntity userEntityClone = new UserEntity();
 //        userEntityClone.setId(userEntity.getId());
-//        userEntityClone.setLoginId(userEntity.getLoginId());
+//        userEntityClone.setUserId(userEntity.getUserId());
 //        userEntityClone.setName(userEntity.getName());
 //        userEntityClone.setPublicKey(userEntity.getPublicKey());
 //        userEntityClone.setPrivateKey(userEntity.getPrivateKey());
 //        userEntityClone.setName("App-User-01-version_not_match");
 //        userEntityClone.setVersionNo(1L);
 
-        UserEntity userEntityAfterUpdate = userRepository.findByLoginId("app-user-01")
+        UserEntity userEntityAfterUpdate = userRepository.findByUserId("app-user-01")
                 .orElseThrow(() -> new EntityNotFoundException("User not found [%s]"));
         log.debug("updateUser_version_not_match_v2 - 1 - userEntity.getId: [" + userEntity.getId()
                 + "], userEntity.getName: [" + userEntity.getName()

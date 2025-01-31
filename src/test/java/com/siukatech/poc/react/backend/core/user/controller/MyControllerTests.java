@@ -79,7 +79,7 @@ public class MyControllerTests extends AbstractWebTests {
 
     private UserDto prepareUserDto_basic() {
         UserDto userDto = new UserDto();
-        userDto.setLoginId("app-user-01");
+        userDto.setUserId("app-user-01");
         userDto.setName("App-User-01");
         userDto.setPublicKey("public-key");
 //        userDto.setPrivateKey("private-key");
@@ -88,7 +88,7 @@ public class MyControllerTests extends AbstractWebTests {
 
     private UserViewDto prepareUserViewDto_basic() {
         UserViewDto userViewDto = new UserViewDto();
-        userViewDto.setLoginId("app-user-01");
+        userViewDto.setUserId("app-user-01");
         userViewDto.setName("App-User-01");
         userViewDto.setPublicKey("public-key");
 //        userDto.setPrivateKey("private-key");
@@ -97,7 +97,7 @@ public class MyControllerTests extends AbstractWebTests {
 
     private MyKeyDto prepareMyKeyDto_basic() {
         MyKeyDto myKeyDto = new MyKeyDto();
-        myKeyDto.setLoginId("app-user-01");
+        myKeyDto.setUserId("app-user-01");
         myKeyDto.setPublicKey("public-key");
         myKeyDto.setPrivateKey("private-key");
         return myKeyDto;
@@ -114,7 +114,7 @@ public class MyControllerTests extends AbstractWebTests {
         List<UserPermissionDto> userPermissionDtoList = new ArrayList<>();
         for (String[] userPermissionTemps : userPermissionTempsArr) {
             userPermissionDtoList.add(new UserPermissionDto());
-            userPermissionDtoList.get(userPermissionDtoList.size() - 1).setLoginId(userPermissionTemps[0]);
+            userPermissionDtoList.get(userPermissionDtoList.size() - 1).setUserId(userPermissionTemps[0]);
             userPermissionDtoList.get(userPermissionDtoList.size() - 1).setUserId(userPermissionTemps[1]);
             userPermissionDtoList.get(userPermissionDtoList.size() - 1).setUserRoleId(userPermissionTemps[2]);
             userPermissionDtoList.get(userPermissionDtoList.size() - 1).setApplicationId(userPermissionTemps[3]);
@@ -171,7 +171,7 @@ public class MyControllerTests extends AbstractWebTests {
         log.debug("getPublicKey_basic - authentication: [" + authentication + "]");
 
         MyKeyDto myKeyDto = this.prepareMyKeyDto_basic();
-        when(userService.findKeyByLoginId(anyString())).thenReturn(myKeyDto);
+        when(userService.findKeyByUserId(anyString())).thenReturn(myKeyDto);
 
         // when
         RequestBuilder requestBuilder = MockMvcRequestBuilders
@@ -203,7 +203,7 @@ public class MyControllerTests extends AbstractWebTests {
     public void getKeyInfo_basic() throws Exception {
         // given
         MyKeyDto myKeyDto = this.prepareMyKeyDto_basic();
-        when(userService.findKeyByLoginId(anyString())).thenReturn(myKeyDto);
+        when(userService.findKeyByUserId(anyString())).thenReturn(myKeyDto);
 
         // when
         RequestBuilder requestBuilder = MockMvcRequestBuilders
@@ -218,7 +218,7 @@ public class MyControllerTests extends AbstractWebTests {
         // then / verify
         MvcResult mvcResult = this.mockMvc.perform(requestBuilder)
                 .andExpect(status().isOk())
-                .andExpect(content().json("{loginId: \"app-user-01\"}"))
+                .andExpect(content().json("{userId: \"app-user-01\"}"))
                 .andReturn();
 
         // result
@@ -232,7 +232,7 @@ public class MyControllerTests extends AbstractWebTests {
     public void getUserInfo_basic() throws Exception {
         // given
         UserDto userDto = this.prepareUserDto_basic();
-        when(userService.findUserByLoginId(anyString())).thenReturn(userDto);
+        when(userService.findUserByUserId(anyString())).thenReturn(userDto);
 
         // when
         RequestBuilder requestBuilder = MockMvcRequestBuilders
@@ -247,7 +247,7 @@ public class MyControllerTests extends AbstractWebTests {
         // then / verify
         MvcResult mvcResult = this.mockMvc.perform(requestBuilder)
                 .andExpect(status().isOk())
-                .andExpect(content().json("{loginId: \"app-user-01\"}"))
+                .andExpect(content().json("{userId: \"app-user-01\"}"))
                 .andReturn();
 
         // result
@@ -261,7 +261,7 @@ public class MyControllerTests extends AbstractWebTests {
     public void getUserPermissions_basic() throws Exception {
         // given
         List<UserPermissionDto> userPermissionDtoList = this.prepareUserPermissions_basic();
-        when(userService.findPermissionsByLoginIdAndApplicationId(anyString(), anyString())).thenReturn(userPermissionDtoList);
+        when(userService.findPermissionsByUserIdAndApplicationId(anyString(), anyString())).thenReturn(userPermissionDtoList);
 
         // when
         RequestBuilder requestBuilder = MockMvcRequestBuilders
@@ -287,7 +287,7 @@ public class MyControllerTests extends AbstractWebTests {
     public void getUserPermissionInfo_basic() throws Exception {
         // given
         List<UserPermissionDto> userPermissionDtoList = this.prepareUserPermissions_basic();
-        when(userService.findPermissionsByLoginIdAndApplicationId(anyString(), anyString())).thenReturn(userPermissionDtoList);
+        when(userService.findPermissionsByUserIdAndApplicationId(anyString(), anyString())).thenReturn(userPermissionDtoList);
 
         // when
         RequestBuilder requestBuilder = MockMvcRequestBuilders
@@ -314,7 +314,7 @@ public class MyControllerTests extends AbstractWebTests {
     public void getUserView_basic() throws Exception {
         // given
         UserViewDto userViewDto = this.prepareUserViewDto_basic();
-        when(userService.findViewByLoginId(anyString())).thenReturn(userViewDto);
+        when(userService.findViewByUserId(anyString())).thenReturn(userViewDto);
 
         // when
         RequestBuilder requestBuilder = MockMvcRequestBuilders
@@ -327,7 +327,7 @@ public class MyControllerTests extends AbstractWebTests {
         // then / verify
         MvcResult mvcResult = this.mockMvc.perform(requestBuilder)
                 .andExpect(status().isOk())
-                .andExpect(content().json("{loginId: \"app-user-01\"}"))
+                .andExpect(content().json("{userId: \"app-user-01\"}"))
                 .andReturn();
 
         // result

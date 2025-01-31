@@ -44,31 +44,31 @@ public class AuthService {
         this.objectMapper = objectMapper;
     }
 
-//    public MyKeyDto resolveMyKeyInfo(String loginId) {
+//    public MyKeyDto resolveMyKeyInfo(String userId) {
 //        String myKeyInfoUrl = this.appCoreProp.getMyKeyInfoUrl();
 //        MyKeyDto myKeyDto = null;
 //        if (StringUtils.isNotEmpty(myKeyInfoUrl)) {
 //            ResponseEntity<MyKeyDto> responseEntity = this.oauth2ClientRestTemplate.exchange(
 //                    myKeyInfoUrl, HttpMethod.POST, HttpEntity.EMPTY, MyKeyDto.class);
 //            myKeyDto = responseEntity.getBody();
-//            log.debug("resolveMyKeyInfo - loginId: [{}], myKeyInfoUrl: [{}], myKeyDto.getLoginId: [{}]"
+//            log.debug("resolveMyKeyInfo - userId: [{}], myKeyInfoUrl: [{}], myKeyDto.getUserId: [{}]"
 ////                + ", responseEntity.getBody.toString: [{}]"
-//                    , loginId, myKeyInfoUrl, myKeyDto.getLoginId()
+//                    , userId, myKeyInfoUrl, myKeyDto.getUserId()
 ////                , responseEntity.getBody().toString()
 //            );
-//            if (!loginId.equals(myKeyDto.getLoginId())) {
+//            if (!userId.equals(myKeyDto.getUserId())) {
 //                throw new EntityNotFoundException(
-//                        "User does not match loginId: [%s], myKeyDto.getLoginId: [%s]"
-//                                .formatted(loginId, myKeyDto.getLoginId()));
+//                        "User does not match userId: [%s], myKeyDto.getUserId: [%s]"
+//                                .formatted(userId, myKeyDto.getUserId()));
 //            }
 //        }
 //        else {
-//            log.debug("resolveMyKeyInfo - loginId: [{}], myKeyInfoUrl: [{}]"
-//                    , loginId, myKeyInfoUrl
+//            log.debug("resolveMyKeyInfo - userId: [{}], myKeyInfoUrl: [{}]"
+//                    , userId, myKeyInfoUrl
 //            );
 //            throw new RuntimeException(
-//                    "User with loginId: [%s] cannot be resolved because of the empty my-user-info"
-//                            .formatted(loginId));
+//                    "User with userId: [%s] cannot be resolved because of the empty my-user-info"
+//                            .formatted(userId));
 //        }
 //        return myKeyDto;
 //    }

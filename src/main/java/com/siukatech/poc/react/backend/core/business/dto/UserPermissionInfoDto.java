@@ -7,6 +7,6 @@ import java.util.List;
 @Data
 //@Builder  // Cannot be used for jackson.databind
 public class UserPermissionInfoDto {
-    private String loginId;
+    private String userId;
     private List<UserPermissionDto> userPermissionList;
 }

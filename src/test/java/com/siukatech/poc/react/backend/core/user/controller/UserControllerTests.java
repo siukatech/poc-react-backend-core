@@ -98,7 +98,7 @@ public class UserControllerTests {
 
 //    private UserEntity prepareUserEntity_basic() {
 //        UserEntity userEntity = new UserEntity();
-//        userEntity.setLoginId("app-user-01");
+//        userEntity.setUserId("app-user-01");
 //        userEntity.setName("App-User-01");
 //        userEntity.setPublicKey("public-key");
 //        userEntity.setPrivateKey("private-key");
@@ -107,7 +107,7 @@ public class UserControllerTests {
 
     private UserDto prepareUserDto_basic() {
         UserDto userDto = new UserDto();
-        userDto.setLoginId("app-user-01");
+        userDto.setUserId("app-user-01");
         userDto.setName("App-User-01");
         userDto.setPublicKey("public-key");
 //        userDto.setPrivateKey("private-key");
@@ -116,7 +116,7 @@ public class UserControllerTests {
 
     private UserViewDto prepareUserViewDto_basic() {
         UserViewDto userViewDto = new UserViewDto();
-        userViewDto.setLoginId("app-user-01");
+        userViewDto.setUserId("app-user-01");
         userViewDto.setName("App-User-01");
         userViewDto.setPublicKey("public-key");
 //        userViewDto.setPrivateKey("private-key");
@@ -160,9 +160,9 @@ public class UserControllerTests {
 //    public void getPublicKey_basic() throws Exception {
 //        // given
 ////        UserEntity userEntity = this.prepareUserEntity_basic();
-////        when(userRepository.findByLoginId(anyString())).thenReturn(Optional.of(userEntity));
+////        when(userRepository.findByUserId(anyString())).thenReturn(Optional.of(userEntity));
 //        UserDto userDto = this.prepareUserDto_basic();
-//        when(userService.findByLoginId(anyString())).thenReturn(userDto);
+//        when(userService.findByUserId(anyString())).thenReturn(userDto);
 //
 //        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 //        log.debug("getPublicKey_basic - authentication: [" + authentication + "]");
@@ -170,7 +170,7 @@ public class UserControllerTests {
 //        // when
 //        RequestBuilder requestBuilder = MockMvcRequestBuilders
 //                .post(ProtectedApiV1Controller.REQUEST_MAPPING_URI_PREFIX
-//                        + "/users/{targetLoginId}/public-key", userDto.getLoginId())
+//                        + "/users/{targetUserId}/public-key", userDto.getUserId())
 //                .with(authentication(prepareAuthenticationToken_basic()))
 //                .with(csrf())
 //                //.with(SecurityMockMvcRequestPostProcessors.user((UserDetails) authentication.getPrincipal()))
@@ -194,16 +194,16 @@ public class UserControllerTests {
     public void getUserInfo_basic() throws Exception {
         // given
 //        UserDto userDto = this.prepareUserDto_basic();
-//        when(userService.findByLoginId(anyString())).thenReturn(userDto);
+//        when(userService.findByUserId(anyString())).thenReturn(userDto);
         UserViewDto userViewDto = this.prepareUserViewDto_basic();
-        when(userService.findUserByLoginId(anyString())).thenReturn(userViewDto);
+        when(userService.findUserByUserId(anyString())).thenReturn(userViewDto);
 
         // when
         RequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post(ProtectedApiV1Controller.REQUEST_MAPPING_URI_PREFIX
-                        + "/users/{targetLoginId}/user-info"
-//                        , userDto.getLoginId()
-                        , userViewDto.getLoginId()
+                        + "/users/{targetUserId}/user-info"
+//                        , userDto.getUserId()
+                        , userViewDto.getUserId()
                 )
                 .with(authentication(prepareAuthenticationToken_basic()))
                 .with(csrf())
@@ -214,7 +214,7 @@ public class UserControllerTests {
                 .perform(requestBuilder)
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json("{loginId: \"app-user-01\"}"))
+                .andExpect(content().json("{userId: \"app-user-01\"}"))
                 .andReturn();
 
         // result

@@ -3,13 +3,13 @@ package com.siukatech.poc.react.backend.core.user.entity;
 import com.siukatech.poc.react.backend.core.data.entity.AbstractEntity;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 
 import java.util.List;
 
 @Data
-@Entity(name = "user_roles")
+//@Entity(name = "user_roles")
+@Entity
+@Table(name = "user_roles")
 @NamedEntityGraph(name = "UserRoleEntity.basic"
     , attributeNodes = {
         @NamedAttributeNode(value = "userRoleUserEntities"
@@ -29,6 +29,9 @@ public class UserRoleEntity extends AbstractEntity<String> {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
+    @Column(name = "user_role_id")
+    protected String userRoleId;
+
     @Column(name = "name")
     private String name;
 
@@ -38,6 +41,6 @@ public class UserRoleEntity extends AbstractEntity<String> {
 
     @ToString.Exclude
     @OneToMany(mappedBy = "userRoleEntity", fetch = FetchType.EAGER)
-    private List<UserRolePermissionEntity> userRolePermissionEntities;
+    private List<UserPermissionJpaEntity> userPermissionJpaEntities;
 
 }

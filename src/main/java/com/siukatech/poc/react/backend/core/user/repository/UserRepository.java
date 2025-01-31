@@ -11,7 +11,7 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<UserEntity, String> {
 
     @EntityGraph(value = "UserEntity.basic")
-    Optional<UserEntity> findByLoginId(String loginId);
+    Optional<UserEntity> findByUserId(String userId);
 
 }
 

@@ -115,7 +115,7 @@ public class AuthServicePkceTests extends AbstractUnitTests {
     private MyKeyDto prepareMyKeyDto_basic() throws NoSuchAlgorithmException {
         KeyPair keyPair = EncryptionUtils.generateRsaKeyPair();
         MyKeyDto myKeyDto = new MyKeyDto();
-        myKeyDto.setLoginId("app-user-01");
+        myKeyDto.setUserId("app-user-01");
 //        myKeyDto.setName("App User 01");
 //        myKeyDto.setPublicKey("public-key");
 //        myKeyDto.setPrivateKey("private-key");

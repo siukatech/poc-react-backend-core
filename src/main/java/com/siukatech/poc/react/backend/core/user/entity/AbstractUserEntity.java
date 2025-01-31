@@ -14,8 +14,8 @@ public abstract class AbstractUserEntity extends AbstractEntity<String> {
     @GeneratedValue(strategy = GenerationType.UUID)
     protected String id;
 
-    @Column(name = "login_id")
-    protected String loginId;
+    @Column(name = "user_id")
+    protected String userId;
 
     @Column
     protected String name;

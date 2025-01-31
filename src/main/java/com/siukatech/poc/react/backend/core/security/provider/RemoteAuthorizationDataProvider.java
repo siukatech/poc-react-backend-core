@@ -40,8 +40,8 @@ public class RemoteAuthorizationDataProvider implements AuthorizationDataProvide
     }
 
     @Override
-    public UserDto findByLoginIdAndTokenValue(String loginId, String tokenValue) {
-        log.debug("findByLoginId - start");
+    public UserDto findByUserIdAndTokenValue(String userId, String tokenValue) {
+        log.debug("findByUserId - start");
         String myUserInfoUrl = this.appCoreProp.getMyUserInfoUrl();
         UserDto userDto = null;
         if (StringUtils.isNotEmpty(myUserInfoUrl)) {
@@ -55,17 +55,17 @@ public class RemoteAuthorizationDataProvider implements AuthorizationDataProvide
                         , httpEntity
                         , UserDto.class);
                 userDto = responseEntity.getBody();
-                log.debug("findByLoginId - loginId: [{}], myUserInfoUrl: [{}]"
-                                + ", userDto.getLoginId: [{}]"
+                log.debug("findByUserId - userId: [{}], myUserInfoUrl: [{}]"
+                                + ", userDto.getUserId: [{}]"
 //                                + ", responseEntity.getBody.toString: [{}]"
-                        , loginId, myUserInfoUrl
-                        , (userDto == null ? "NULL" : userDto.getLoginId())
+                        , userId, myUserInfoUrl
+                        , (userDto == null ? "NULL" : userDto.getUserId())
 //                        , responseEntity.getBody().toString()
                 );
-                if (!loginId.equals(userDto.getLoginId())) {
+                if (!userId.equals(userDto.getUserId())) {
                     throw new EntityNotFoundException(
-                            "User does not match loginId: [%s], userDto.getLoginId: [%s]"
-                                    .formatted(loginId, userDto.getLoginId()));
+                            "User does not match userId: [%s], userDto.getUserId: [%s]"
+                                    .formatted(userId, userDto.getUserId()));
                 }
             } catch (Exception e) {
                 throw new RuntimeException(
@@ -73,20 +73,20 @@ public class RemoteAuthorizationDataProvider implements AuthorizationDataProvide
                         , e);
             }
         } else {
-            log.debug("findByLoginId - loginId: [{}], myUserInfoUrl: [{}]"
-                    , loginId, myUserInfoUrl
+            log.debug("findByUserId - userId: [{}], myUserInfoUrl: [{}]"
+                    , userId, myUserInfoUrl
             );
             throw new RuntimeException(
-                    "User with loginId: [%s] cannot be resolved because of the empty my-user-info"
-                            .formatted(loginId));
+                    "User with userId: [%s] cannot be resolved because of the empty my-user-info"
+                            .formatted(userId));
         }
-        log.debug("findByLoginId - end");
+        log.debug("findByUserId - end");
         return userDto;
     }
 
     @Override
-    public List<UserPermissionDto> findPermissionsByLoginId(String loginId, String tokenValue) {
-        log.debug("findPermissionsByLoginId - start");
+    public List<UserPermissionDto> findPermissionsByUserId(String userId, String tokenValue) {
+        log.debug("findPermissionsByUserId - start");
         List<UserPermissionDto> userPermissionDtoList = new ArrayList<>();
         //
         String myPermissionInfoUrl = this.appCoreProp.getMyPermissionInfoUrl();
@@ -106,30 +106,30 @@ public class RemoteAuthorizationDataProvider implements AuthorizationDataProvide
                     , UserPermissionInfoDto.class
                     );
             userPermissionInfoDto = responseEntity.getBody();
-            log.debug("findPermissionsByLoginId - loginId: [{}], myPermissionInfoUriTemplate: [{}], userPermissionInfoDto.getLoginId: [{}], userPermissionDtoList.size: [{}]"
+            log.debug("findPermissionsByUserId - userId: [{}], myPermissionInfoUriTemplate: [{}], userPermissionInfoDto.getUserId: [{}], userPermissionDtoList.size: [{}]"
 //                + ", responseEntity.getBody.toString: [{}]"
-                    , loginId, myPermissionInfoUriTemplate, userPermissionInfoDto.getLoginId()
+                    , userId, myPermissionInfoUriTemplate, userPermissionInfoDto.getUserId()
                     , userPermissionInfoDto.getUserPermissionList().size()
 //                , responseEntity.getBody().toString()
             );
             userPermissionDtoList.addAll(userPermissionInfoDto.getUserPermissionList());
-            log.debug("findPermissionsByLoginId - loginId: [{}], userPermissionDtoList: [{}]"
-                    , loginId, userPermissionDtoList.size()
+            log.debug("findPermissionsByUserId - userId: [{}], userPermissionDtoList: [{}]"
+                    , userId, userPermissionDtoList.size()
             );
-            if (!loginId.equals(userPermissionInfoDto.getLoginId())) {
+            if (!userId.equals(userPermissionInfoDto.getUserId())) {
                 throw new EntityNotFoundException(
-                        "User does not match loginId: [%s], userPermissionInfoDto.getLoginId: [%s]"
-                                .formatted(loginId, userPermissionInfoDto.getLoginId()));
+                        "User does not match userId: [%s], userPermissionInfoDto.getUserId: [%s]"
+                                .formatted(userId, userPermissionInfoDto.getUserId()));
             }
         } else {
-            log.debug("findPermissionsByLoginId - loginId: [{}], myUserPermissionInfoUrl: [{}]"
-                    , loginId, myPermissionInfoUrl
+            log.debug("findPermissionsByUserId - userId: [{}], myUserPermissionInfoUrl: [{}]"
+                    , userId, myPermissionInfoUrl
             );
             throw new RuntimeException(
-                    "User with loginId: [%s] cannot be resolved because of the empty my-user-info"
-                            .formatted(loginId));
+                    "User with userId: [%s] cannot be resolved because of the empty my-user-info"
+                            .formatted(userId));
         }
-        log.debug("findPermissionsByLoginId - end");
+        log.debug("findPermissionsByUserId - end");
         return userPermissionDtoList;
     }
 

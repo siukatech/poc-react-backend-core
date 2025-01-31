@@ -4,9 +4,10 @@ package com.siukatech.poc.react.backend.core.data.listener;
 import com.siukatech.poc.react.backend.core.data.entity.AbstractEntity;
 import jakarta.persistence.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 @Slf4j
-//@Component
+@Component
 public class AbstractEntityToPersistListener {
 
     @PrePersist

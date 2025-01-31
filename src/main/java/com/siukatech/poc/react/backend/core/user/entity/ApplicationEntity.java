@@ -3,8 +3,6 @@ package com.siukatech.poc.react.backend.core.user.entity;
 import com.siukatech.poc.react.backend.core.data.entity.AbstractEntity;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 
 import java.util.List;
 
@@ -16,11 +14,11 @@ import java.util.List;
     @NamedEntityGraph(name = "ApplicationEntity.appResourceEntities"
         , attributeNodes = {
             @NamedAttributeNode(value = "appResourceEntities")
-//        , @NamedAttributeNode(value = "userRolePermissionEntities")
+//        , @NamedAttributeNode(value = "userPermissionJpaEntities")
     })
-    , @NamedEntityGraph(name = "ApplicationEntity.userRolePermissionEntities"
+    , @NamedEntityGraph(name = "ApplicationEntity.userPermissionJpaEntities"
         , attributeNodes = {
-            @NamedAttributeNode(value = "userRolePermissionEntities")
+            @NamedAttributeNode(value = "userPermissionJpaEntities")
     })
 })
 public class ApplicationEntity extends AbstractEntity<String> {
@@ -28,6 +26,9 @@ public class ApplicationEntity extends AbstractEntity<String> {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
+
+    @Column(name = "application_id")
+    protected String applicationId;
 
     @Column(name = "name")
     private String name;
@@ -41,6 +42,6 @@ public class ApplicationEntity extends AbstractEntity<String> {
 
     @ToString.Exclude
     @OneToMany(mappedBy = "applicationEntity", fetch = FetchType.EAGER)
-    private List<UserRolePermissionEntity> userRolePermissionEntities;
+    private List<UserPermissionJpaEntity> userPermissionJpaEntities;
 
 }

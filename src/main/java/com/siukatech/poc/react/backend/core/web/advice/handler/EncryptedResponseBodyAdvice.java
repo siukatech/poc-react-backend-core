@@ -78,7 +78,7 @@ public class EncryptedResponseBodyAdvice implements ResponseBodyAdvice {
             , ServerHttpRequest request, ServerHttpResponse response) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String loginId = authentication.getName();
+        String userId = authentication.getName();
 
         log.debug("beforeBodyWrite - returnType.getMethod.getName: [" + returnType.getMethod().getName()
                 + "], returnType.getParameterName: [" + returnType.getParameterName()
@@ -87,7 +87,7 @@ public class EncryptedResponseBodyAdvice implements ResponseBodyAdvice {
                 + "], object: [" + body.getClass().getName()
                 + "], authentication.getName: [" + (authentication == null ? "NULL" : authentication.getName())
                 + "], authentication.isAuthenticated: [" + (authentication == null ? "NULL" : authentication.isAuthenticated())
-                + "], loginId: [" + loginId
+                + "], userId: [" + userId
                 + "]");
 
 //        UserEntity userEntity = this.encryptedBodyContext.getUserEntity();
@@ -97,21 +97,21 @@ public class EncryptedResponseBodyAdvice implements ResponseBodyAdvice {
         EncryptedInfo encryptedInfo = null;
         log.debug("beforeBodyWrite - returnType.getMethod.getName: [" + returnType.getMethod().getName()
 //                + "], userEntity.getId: [" + (userEntity == null ? "NULL" : userEntity.getId())
-                + "], myKeyDto.getLoginId: [" + (myKeyDto == null ? "NULL" : myKeyDto.getLoginId())
+                + "], myKeyDto.getUserId: [" + (myKeyDto == null ? "NULL" : myKeyDto.getUserId())
                 + "], encryptedBodyDetail.encryptedInfoModel.key: [" + (encryptedDetail == null ? "NULL" : encryptedDetail.encryptedInfo().key())
                 + "], encryptedRsaDataBase64: [" + encryptedRsaDataBase64
                 + "]");
 //        if (userEntity == null) {
-//            String finalLoginId = loginId;
-//            userEntity = this.userRepository.findByLoginId(loginId)
-//                    .orElseThrow(() -> new EntityNotFoundException("User not found [" + finalLoginId + "]"));
+//            String finalUserId = userId;
+//            userEntity = this.userRepository.findByUserId(userId)
+//                    .orElseThrow(() -> new EntityNotFoundException("User not found [" + finalUserId + "]"));
 //        }
         if (myKeyDto == null) {
-            myKeyDto = this.encryptedBodyAdviceHelper.resolveMyKeyInfo(loginId);
+            myKeyDto = this.encryptedBodyAdviceHelper.resolveMyKeyInfo(userId);
         }
         if (encryptedDetail == null) {
 //            // should obtain from SecurityContext again
-//            loginId = loginId == null ? "app-user-01" : loginId;
+//            userId = userId == null ? "app-user-01" : userId;
             try {
 //                encryptedBodyDetail = this.encryptedBodyAdviceHelper
 //                        .decryptRsaDataBase64ToBodyDetail(encryptedRsaDataBase64, userEntity);
@@ -125,12 +125,12 @@ public class EncryptedResponseBodyAdvice implements ResponseBodyAdvice {
                 throw new RuntimeException(e);
             }
         } else {
-//            loginId = userEntity.getLoginId();
+//            userId = userEntity.getUserId();
             encryptedInfo = encryptedDetail.encryptedInfo();
         }
 
         log.debug("beforeBodyWrite - returnType.getMethod.getName: [" + returnType.getMethod().getName()
-                + "], loginId: [" + loginId
+                + "], userId: [" + userId
                 + "], encryptedInfoModel.key: [" + encryptedInfo.key()
                 + "], encryptedInfoModel.iv: [" + encryptedInfo.iv()
                 + "]");

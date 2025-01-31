@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 //@EqualsAndHashCode(callSuper = true)
 public class UserDto {
     private String id;
-    private String loginId;
+    private String userId;
     private String name;
     private String publicKey;
 //    private String privateKey;

@@ -12,14 +12,14 @@ import lombok.*;
  */
 @Data
 @Entity
-@Table(name = "user_role_permissions")
-@NamedEntityGraph(name = "UserRolePermissionEntity.basic"
+@Table(name = "user_permissions")
+@NamedEntityGraph(name = "UserPermissionJpaEntity.basic"
     , attributeNodes = {
         @NamedAttributeNode(value = "userRoleEntity")
         , @NamedAttributeNode(value = "applicationEntity")
         , @NamedAttributeNode(value = "appResourceEntity")
 })
-public class UserRolePermissionEntity extends AbstractEntity<String> {
+public class UserPermissionJpaEntity extends AbstractEntity<String> {
 
     @Id
     private String id;
@@ -29,17 +29,17 @@ public class UserRolePermissionEntity extends AbstractEntity<String> {
 
     @ToString.Exclude
     @ManyToOne
-    @JoinColumn(name = "user_role_id", referencedColumnName = "id")
+    @JoinColumn(name = "user_role_id", referencedColumnName = "user_role_id")
     private UserRoleEntity userRoleEntity;
 
     @ToString.Exclude
     @ManyToOne
-    @JoinColumn(name = "application_id", referencedColumnName = "id")
+    @JoinColumn(name = "application_id", referencedColumnName = "application_id")
     private ApplicationEntity applicationEntity;
 
     @ToString.Exclude
     @ManyToOne
-    @JoinColumn(name = "app_resource_id", referencedColumnName = "id")
+    @JoinColumn(name = "app_resource_id", referencedColumnName = "app_resource_id")
     private AppResourceEntity appResourceEntity;
 
 }

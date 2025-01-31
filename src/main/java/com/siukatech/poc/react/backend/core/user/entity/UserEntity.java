@@ -11,7 +11,9 @@ import java.util.List;
 
 @Data
 //@EqualsAndHashCode(callSuper = true)
-@Entity(name = "users")
+//@Entity(name = "users")
+@Entity
+@Table(name = "users")
 @NamedEntityGraph(name = "UserEntity.basic"
     , attributeNodes = {
         @NamedAttributeNode(value = "userRoleUserEntities"
@@ -25,20 +27,20 @@ import java.util.List;
         })
 ////        , @NamedSubgraph(name = "UserEntity.userRoleUserEntities.userRoleEntity"
 ////            , attributeNodes = {
-////                @NamedAttributeNode(value = "userRolePermissionEntities")
+////                @NamedAttributeNode(value = "userPermissionJpaEntities")
 ////        })
 //        , @NamedSubgraph(name = "UserEntity.userRoleUserEntities.userRoleEntity"
 //            , attributeNodes = {
-//                @NamedAttributeNode(value = "userRolePermissionEntities"
-//                    , subgraph = "UserEntity.userRoleUserEntities.userRoleEntity.userRolePermissionEntities")
+//                @NamedAttributeNode(value = "userPermissionJpaEntities"
+//                    , subgraph = "UserEntity.userRoleUserEntities.userRoleEntity.userPermissionJpaEntities")
 //        })
-//        , @NamedSubgraph(name = "UserEntity.userRoleUserEntities.userRoleEntity.userRolePermissionEntities"
+//        , @NamedSubgraph(name = "UserEntity.userRoleUserEntities.userRoleEntity.userPermissionJpaEntities"
 //            , attributeNodes = {
 //                @NamedAttributeNode(value = "applicationEntity"
-//                    , subgraph = "UserEntity.userRoleUserEntities.userRoleEntity.userRolePermissionEntities.applicationEntity")
+//                    , subgraph = "UserEntity.userRoleUserEntities.userRoleEntity.userPermissionJpaEntities.applicationEntity")
 //                , @NamedAttributeNode(value = "appResourceEntity")
 //        })
-//        , @NamedSubgraph(name = "UserEntity.userRoleUserEntities.userRoleEntity.userRolePermissionEntities.applicationEntity"
+//        , @NamedSubgraph(name = "UserEntity.userRoleUserEntities.userRoleEntity.userPermissionJpaEntities.applicationEntity"
 //            , attributeNodes = {
 //                @NamedAttributeNode(value = "appResourceEntities")
 //        })

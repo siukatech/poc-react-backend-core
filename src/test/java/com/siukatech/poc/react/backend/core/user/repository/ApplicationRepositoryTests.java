@@ -3,7 +3,7 @@ package com.siukatech.poc.react.backend.core.user.repository;
 import com.siukatech.poc.react.backend.core.AbstractJpaTests;
 import com.siukatech.poc.react.backend.core.user.entity.AppResourceEntity;
 import com.siukatech.poc.react.backend.core.user.entity.ApplicationEntity;
-import com.siukatech.poc.react.backend.core.user.entity.UserRolePermissionEntity;
+import com.siukatech.poc.react.backend.core.user.entity.UserPermissionJpaEntity;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -48,15 +48,15 @@ public class ApplicationRepositoryTests extends AbstractJpaTests {
             , "/scripts/30-user-permissions/01-setup.sql"
             , "/scripts/30-user-permissions/11-data-01-find-by-login-id.sql"
     })
-    public void findWithGraphAttrPathById_basic() {
-        ApplicationEntity applicationEntity = applicationRepository.findWithGraphAttrPathById("frontend-app")
+    public void findWithGraphAttrPathByApplicationId_basic() {
+        ApplicationEntity applicationEntity = applicationRepository.findWithGraphAttrPathByApplicationId("frontend-app")
                 .orElseThrow(() -> new EntityNotFoundException("Application not found [%s]"));
-        Assertions.assertEquals(applicationEntity.getId(), "frontend-app");
+        Assertions.assertEquals(applicationEntity.getApplicationId(), "frontend-app");
 
-        log.debug("findWithGraphAttrPathById - applicationEntity.getAppResourceEntities.size: [{}]"
-                        + ", applicationEntity.getUserRolePermissionEntities.size: [{}]"
+        log.debug("findWithGraphAttrPathByApplicationId_basic - applicationEntity.getAppResourceEntities.size: [{}]"
+                        + ", applicationEntity.getUserPermissionJpaEntities.size: [{}]"
                 , applicationEntity.getAppResourceEntities().size()
-                , applicationEntity.getUserRolePermissionEntities().size()
+                , applicationEntity.getUserPermissionJpaEntities().size()
         );
     }
 
@@ -70,15 +70,15 @@ public class ApplicationRepositoryTests extends AbstractJpaTests {
             , "/scripts/30-user-permissions/01-setup.sql"
             , "/scripts/30-user-permissions/11-data-01-find-by-login-id.sql"
     })
-    public void findWithJpqlAppResourcesById_basic() {
-        ApplicationEntity applicationEntity = applicationRepository.findWithJpqlAppResourcesById("frontend-app")
+    public void findWithJpqlAppResourcesByApplicationId_basic() {
+        ApplicationEntity applicationEntity = applicationRepository.findWithJpqlAppResourcesByApplicationId("frontend-app")
                 .orElseThrow(() -> new EntityNotFoundException("Application not found [%s]"));
-        Assertions.assertEquals(applicationEntity.getId(), "frontend-app");
+        Assertions.assertEquals(applicationEntity.getApplicationId(), "frontend-app");
 
-        log.debug("findWithJpqlAppResourcesById - applicationEntity.getAppResourceEntities.size: [{}]"
-                        + ", applicationEntity.getUserRolePermissionEntities.size: [{}]"
+        log.debug("findWithJpqlAppResourcesByApplicationId_basic - applicationEntity.getAppResourceEntities.size: [{}]"
+                        + ", applicationEntity.getUserPermissionJpaEntities.size: [{}]"
                 , applicationEntity.getAppResourceEntities().size()
-                , applicationEntity.getUserRolePermissionEntities().size()
+                , applicationEntity.getUserPermissionJpaEntities().size()
         );
     }
 
@@ -92,15 +92,15 @@ public class ApplicationRepositoryTests extends AbstractJpaTests {
             , "/scripts/30-user-permissions/01-setup.sql"
             , "/scripts/30-user-permissions/11-data-01-find-by-login-id.sql"
     })
-    public void findWithJpqlUserRolePermissionEntitiesById_basic() {
-        ApplicationEntity applicationEntity = applicationRepository.findWithJpqlUserRolePermissionEntitiesById("frontend-app")
+    public void findWithJpqlUserPermissionJpaEntitiesByApplicationId_basic() {
+        ApplicationEntity applicationEntity = applicationRepository.findWithJpqlUserPermissionJpaEntitiesByApplicationId("frontend-app")
                 .orElseThrow(() -> new EntityNotFoundException("Application not found [%s]"));
-        Assertions.assertEquals(applicationEntity.getId(), "frontend-app");
+        Assertions.assertEquals(applicationEntity.getApplicationId(), "frontend-app");
 
-        log.debug("findWithJpqlUserRolePermissionEntitiesById - applicationEntity.getAppResourceEntities.size: [{}]"
-                        + ", applicationEntity.getUserRolePermissionEntities.size: [{}]"
+        log.debug("findWithJpqlUserPermissionJpaEntitiesByApplicationId_basic - applicationEntity.getAppResourceEntities.size: [{}]"
+                        + ", applicationEntity.getUserPermissionJpaEntities.size: [{}]"
                 , applicationEntity.getAppResourceEntities().size()
-                , applicationEntity.getUserRolePermissionEntities().size()
+                , applicationEntity.getUserPermissionJpaEntities().size()
         );
     }
 
@@ -114,19 +114,19 @@ public class ApplicationRepositoryTests extends AbstractJpaTests {
             , "/scripts/30-user-permissions/01-setup.sql"
             , "/scripts/30-user-permissions/11-data-01-find-by-login-id.sql"
     })
-    public void findWithAppResourceEntitiesById_basic() {
-        ApplicationEntity applicationEntity = applicationRepository.findWithAppResourceEntitiesById("frontend-app")
+    public void findWithAppResourceEntitiesByApplicationId_basic() {
+        ApplicationEntity applicationEntity = applicationRepository.findWithAppResourceEntitiesByApplicationId("frontend-app")
                 .orElseThrow(() -> new EntityNotFoundException("Application not found [%s]"));
-        Assertions.assertEquals(applicationEntity.getId(), "frontend-app");
+        Assertions.assertEquals(applicationEntity.getApplicationId(), "frontend-app");
 
-        log.debug("findWithAppResourceEntitiesById_basic - applicationEntity.getAppResourceEntities.size: [{}]"
-                        + ", applicationEntity.getUserRolePermissionEntities.size: [{}]"
+        log.debug("findWithAppResourceEntitiesByApplicationId_basic - applicationEntity.getAppResourceEntities.size: [{}]"
+                        + ", applicationEntity.getUserPermissionJpaEntities.size: [{}]"
                 , applicationEntity.getAppResourceEntities().size()
-                , applicationEntity.getUserRolePermissionEntities().size()
+                , applicationEntity.getUserPermissionJpaEntities().size()
         );
 //        if (applicationEntity.getAppResourceEntities() != null) {
 //            applicationEntity.getAppResourceEntities().forEach(appResourceEntity -> {
-//                log.debug("findWithAppResourceEntitiesById_basic - appResourceEntity.getId: [{}]"
+//                log.debug("findWithAppResourceEntitiesByApplicationId_basic - appResourceEntity.getId: [{}]"
 //                        , appResourceEntity.getId());
 //            });
 //        }
@@ -134,7 +134,7 @@ public class ApplicationRepositoryTests extends AbstractJpaTests {
                 applicationEntity.getAppResourceEntities().stream()
                         .map(AppResourceEntity::getId).toList()
         );
-        log.debug("findWithAppResourceEntitiesById_basic - appResourceEntityIdsStr: [{}]"
+        log.debug("findWithAppResourceEntitiesByApplicationId_basic - appResourceEntityIdsStr: [{}]"
                 , appResourceEntityIdsStr);
     }
 
@@ -148,27 +148,27 @@ public class ApplicationRepositoryTests extends AbstractJpaTests {
             , "/scripts/30-user-permissions/01-setup.sql"
             , "/scripts/30-user-permissions/11-data-01-find-by-login-id.sql"
     })
-    public void findWithUserRolePermissionEntitiesById_basic() {
-        ApplicationEntity applicationEntity = applicationRepository.findWithUserRolePermissionEntitiesById("frontend-app")
+    public void findWithUserPermissionJpaEntitiesByApplicationId_basic() {
+        ApplicationEntity applicationEntity = applicationRepository.findWithUserPermissionJpaEntitiesByApplicationId("frontend-app")
                 .orElseThrow(() -> new EntityNotFoundException("Application not found [%s]"));
-        Assertions.assertEquals(applicationEntity.getId(), "frontend-app");
+        Assertions.assertEquals(applicationEntity.getApplicationId(), "frontend-app");
 
-        log.debug("findWithUserRolePermissionEntitiesById_basic - applicationEntity.getAppResourceEntities.size: [{}]"
-                        + ", applicationEntity.getUserRolePermissionEntities.size: [{}]"
+        log.debug("findWithUserPermissionJpaEntitiesByApplicationId_basic - applicationEntity.getAppResourceEntities.size: [{}]"
+                        + ", applicationEntity.getUserPermissionJpaEntities.size: [{}]"
                 , applicationEntity.getAppResourceEntities().size()
-                , applicationEntity.getUserRolePermissionEntities().size()
+                , applicationEntity.getUserPermissionJpaEntities().size()
         );
-        if (applicationEntity.getUserRolePermissionEntities() != null) {
-//            applicationEntity.getUserRolePermissionEntities().forEach(userRolePermissionEntity -> {
-//                log.debug("findWithUserRolePermissionEntitiesById_basic - userRolePermissionEntity.getId: [{}]"
-//                        , userRolePermissionEntity.getId());
+        if (applicationEntity.getUserPermissionJpaEntities() != null) {
+//            applicationEntity.getUserPermissionJpaEntities().forEach(userPermissionJpaEntity -> {
+//                log.debug("findWithUserPermissionJpaEntitiesByApplicationId_basic - userPermissionJpaEntity.getId: [{}]"
+//                        , userPermissionJpaEntity.getId());
 //            });
-            String userRolePermissionEntityIdsStr = StringUtils.join(
-                    applicationEntity.getUserRolePermissionEntities().stream()
-                            .map(UserRolePermissionEntity::getId).toList()
+            String userPermissionJpaEntityIdsStr = StringUtils.join(
+                    applicationEntity.getUserPermissionJpaEntities().stream()
+                            .map(UserPermissionJpaEntity::getId).toList()
             );
-            log.debug("findWithUserRolePermissionEntitiesById_basic - userRolePermissionEntityIdsStr: [{}]"
-                    , userRolePermissionEntityIdsStr);
+            log.debug("findWithUserPermissionJpaEntitiesByApplicationId_basic - userPermissionJpaEntityIdsStr: [{}]"
+                    , userPermissionJpaEntityIdsStr);
         }
     }
 

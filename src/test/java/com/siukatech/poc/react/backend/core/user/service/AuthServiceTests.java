@@ -160,7 +160,7 @@ public class AuthServiceTests extends AbstractUnitTests {
     private MyKeyDto prepareMyKeyDto_basic() throws NoSuchAlgorithmException {
         KeyPair keyPair = EncryptionUtils.generateRsaKeyPair();
         MyKeyDto myKeyDto = new MyKeyDto();
-        myKeyDto.setLoginId("app-user-01");
+        myKeyDto.setUserId("app-user-01");
 //        myKeyDto.setName("App User 01");
 //        myKeyDto.setPublicKey("public-key");
 //        myKeyDto.setPrivateKey("private-key");
@@ -185,7 +185,7 @@ public class AuthServiceTests extends AbstractUnitTests {
 //
 //        // given
 //        MyKeyDto myKeyDto = prepareMyKeyDto_basic();
-//        String loginId = myKeyDto.getLoginId();
+//        String userId = myKeyDto.getUserId();
 //        when(this.appCoreProp.getMyKeyInfoUrl())
 //                .thenReturn(this.appCorePropForTests.getMyKeyInfoUrl());
 ////        when(oauth2ClientRestTemplate.exchange(anyString()
@@ -197,7 +197,7 @@ public class AuthServiceTests extends AbstractUnitTests {
 //        ;
 //
 //        // when
-//        MyKeyDto myKeyRet = this.authService.resolveMyKeyInfo(loginId);
+//        MyKeyDto myKeyRet = this.authService.resolveMyKeyInfo(userId);
 //
 //        // then
 //        log.debug("resolveMyKeyInfo_basic - myKeyRet: [{}]", myKeyRet);
