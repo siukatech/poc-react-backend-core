@@ -15,6 +15,7 @@ plugins {
 ////	id 'org.springframework.boot' version '3.1.0' apply false
 ////	id 'io.spring.dependency-management' version '1.1.0'
     id 'org.springframework.boot' version '3.3.7' apply false
+//    id 'org.springframework.boot' version '3.4.2' apply false
 //    id "org.sonarqube" version "3.5.0.2730"
     id 'jacoco'
     id 'org.sonarqube' version '4.0.0.2929'
@@ -124,10 +125,12 @@ dependencies {
     api 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
 //	api 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.15.2'
 
-////	api 'org.apache.httpcomponents:httpclient:4.5.13'
-//	api 'org.apache.httpcomponents.client5:httpclient5:5.2.2'
-    api 'org.apache.httpcomponents.core5:httpcore5:5.2.4'
-    api 'org.apache.httpcomponents.client5:httpclient5:5.3.1'
+//////	api 'org.apache.httpcomponents:httpclient:4.5.13'
+////	api 'org.apache.httpcomponents.client5:httpclient5:5.2.2'
+//    api 'org.apache.httpcomponents.core5:httpcore5:5.2.4'
+//    api 'org.apache.httpcomponents.client5:httpclient5:5.3.1'
+    api 'org.apache.httpcomponents.core5:httpcore5:5.3.1'
+    api 'org.apache.httpcomponents.client5:httpclient5:5.4.1'
 
     api 'commons-codec:commons-codec:1.17.0'
 

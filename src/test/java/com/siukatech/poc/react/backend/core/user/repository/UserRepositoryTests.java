@@ -15,6 +15,7 @@ import java.lang.reflect.Method;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 @Slf4j
@@ -41,8 +42,8 @@ public class UserRepositoryTests extends AbstractJpaTests {
         UserEntity userEntity = new UserEntity();
         userEntity.setLoginId("app-user-01");
         userEntity.setName("App-User-01");
-//        userEntity.setId(1L);
-        userEntity.setId(UUID.randomUUID().toString());
+////        userEntity.setId(1L);
+//        userEntity.setId(UUID.randomUUID().toString());
         userEntity.setVersionNo(1L);
         userEntity.setPublicKey("public-key");
         userEntity.setPrivateKey("private-key");
@@ -60,17 +61,23 @@ public class UserRepositoryTests extends AbstractJpaTests {
     @BeforeEach
     public void setup(TestInfo testInfo) {
         Method method = testInfo.getTestMethod().get();
+        String methodName = method.getName();
+        Set<String> tags = testInfo.getTags();
         log.debug("setup - testInfo: [" + testInfo
-                + "], method.getName: [" + method.getName()
+                + "], methodName: [" + methodName
+                + "], tags: [" + tags
                 + "]");
         UserEntity userEntity = null;
-        switch (method.getName()) {
-            case "findByLoginId_basic":
-                userEntity = this.prepareUserEntity_basic();
-            case "updateUser_version_updated":
-                userEntity = this.prepareUserEntity_basic();
-            case "updateUser_version_not_match":
-                userEntity = this.prepareUserEntity_basic();
+//        switch (methodName) {
+//            case "findByLoginId_basic":
+//                userEntity = this.prepareUserEntity_basic();
+//            case "updateUser_version_updated":
+//                userEntity = this.prepareUserEntity_basic();
+//            case "updateUser_version_not_match":
+//                userEntity = this.prepareUserEntity_basic();
+//        }
+        if (tags.contains("data_load")) {
+            userEntity = this.prepareUserEntity_basic();
         }
         if (userEntity != null) {
             this.userRepository.save(userEntity);
@@ -81,25 +88,32 @@ public class UserRepositoryTests extends AbstractJpaTests {
     public void teardown(TestInfo testInfo) {
         Method method = testInfo.getTestMethod().get();
         String methodName = method.getName();
+        Set<String> tags = testInfo.getTags();
         log.debug("teardown - testInfo: [" + testInfo
                 + "], methodName: [" + methodName
+                + "], tags: [" + tags
                 + "]");
-        List<String> methodNameList = List.of(
-                "findByLoginId_basic"
-                , "updateUser_version_updated"
-                , "updateUser_version_not_match"
-        );
-        if (methodNameList.contains(methodName)) {
+//        List<String> methodNameList = List.of(
+//                "findByLoginId_basic"
+//                , "updateUser_version_updated"
+//                , "updateUser_version_not_match_v1"
+//                , "updateUser_version_not_match_v2"
+//        );
+//        if (methodNameList.contains(methodName)) {
+        if (tags.contains("data_load")) {
             Optional<UserEntity> userEntityOptional = this.userRepository.findByLoginId("app-user-01");
             userEntityOptional.ifPresent(userEntity -> this.userRepository.delete(userEntity));
         }
     }
 
     @Test
-    @Tag("basic")
+    @Tags(value = {
+            @Tag("basic")
+            , @Tag("data_load")
+    })
     public void findByLoginId_basic() {
         UserEntity userEntity = userRepository.findByLoginId("app-user-01")
-                .orElseThrow(() -> new EntityNotFoundException("No such user [%s]"));
+                .orElseThrow(() -> new EntityNotFoundException("User not found [%s]"));
         Assertions.assertEquals(userEntity.getLoginId(), "app-user-01");
     }
 
@@ -114,19 +128,22 @@ public class UserRepositoryTests extends AbstractJpaTests {
     })
     public void findByLoginId_complex() {
         UserEntity userEntity = userRepository.findByLoginId("app-user-02")
-                .orElseThrow(() -> new EntityNotFoundException("No such user [%s]"));
+                .orElseThrow(() -> new EntityNotFoundException("User not found [%s]"));
         Assertions.assertEquals(userEntity.getLoginId(), "app-user-02");
     }
 
     @Test
-    @Tag("version_updated")
+    @Tags(value = {
+            @Tag("version_updated")
+            , @Tag("data_load")
+    })
     public void updateUser_version_updated() {
         UserEntity userEntity = userRepository.findByLoginId("app-user-01")
-                .orElseThrow(() -> new EntityNotFoundException("No such user [%s]"));
+                .orElseThrow(() -> new EntityNotFoundException("User not found [%s]"));
         userEntity.setName("App-User-01-version-updated");
         this.userRepository.save(userEntity);
         UserEntity userEntityAfterUpdate = userRepository.findByLoginId("app-user-01")
-                .orElseThrow(() -> new EntityNotFoundException("No such user [%s]"));
+                .orElseThrow(() -> new EntityNotFoundException("User not found [%s]"));
         log.debug("updateUser_version_updated - userEntity.getVersionNo: [" + userEntity.getVersionNo()
                 + "], userEntityAfterUpdate.getVersionNo: [" + userEntityAfterUpdate.getVersionNo()
                 + "]");
@@ -136,10 +153,13 @@ public class UserRepositoryTests extends AbstractJpaTests {
     }
 
     @Test
-    @Tag("version_not_match")
-    public void updateUser_version_not_match() {
+    @Tags(value = {
+            @Tag("version_not_match")
+            , @Tag("data_load")
+    })
+    public void updateUser_version_not_match_v1() {
         UserEntity userEntity = userRepository.findByLoginId("app-user-01")
-                .orElseThrow(() -> new EntityNotFoundException("No such user [%s]"));
+                .orElseThrow(() -> new EntityNotFoundException("User not found [%s]"));
         userEntity.setName("App-User-01-version_updated");
         this.userRepository.save(userEntity);
 
@@ -153,8 +173,8 @@ public class UserRepositoryTests extends AbstractJpaTests {
         userEntityClone.setVersionNo(1L);
 
         UserEntity userEntityAfterUpdate = userRepository.findByLoginId("app-user-01")
-                .orElseThrow(() -> new EntityNotFoundException("No such user [%s]"));
-        log.debug("updateUser_version_not_match - 1 - userEntity.getId: [" + userEntity.getId()
+                .orElseThrow(() -> new EntityNotFoundException("User not found [%s]"));
+        log.debug("updateUser_version_not_match_v1 - 1 - userEntity.getId: [" + userEntity.getId()
                 + "], userEntity.getName: [" + userEntity.getName()
                 + "], userEntity.getVersionNo: [" + userEntity.getVersionNo()
                 + "], userEntityAfterUpdate.getId: [" + userEntityAfterUpdate.getId()
@@ -168,7 +188,7 @@ public class UserRepositoryTests extends AbstractJpaTests {
         Exception objectOptimisticLockingFailureException = Assertions.assertThrows(ObjectOptimisticLockingFailureException.class, () -> {
             this.userRepository.save(userEntityClone);
         });
-        log.debug("updateUser_version_not_match - 2 - userEntity.getId: [" + userEntity.getId()
+        log.debug("updateUser_version_not_match_v1 - 2 - userEntity.getId: [" + userEntity.getId()
                 + "], userEntity.getName: [" + userEntity.getName()
                 + "], userEntity.getVersionNo: [" + userEntity.getVersionNo()
                 + "], userEntityAfterUpdate.getId: [" + userEntityAfterUpdate.getId()
@@ -177,6 +197,68 @@ public class UserRepositoryTests extends AbstractJpaTests {
                 + "], userEntityClone.getId: [" + userEntityClone.getId()
                 + "], userEntityClone.getName: [" + userEntityClone.getName()
                 + "], userEntityClone.getVersionNo: [" + userEntityClone.getVersionNo()
+                + "], objectOptimisticLockingFailureException.getMessage: [" + (objectOptimisticLockingFailureException == null ? "NULL" : objectOptimisticLockingFailureException.getMessage())
+                + "]");
+        log.error(objectOptimisticLockingFailureException.getMessage(), objectOptimisticLockingFailureException);
+
+        Assertions.assertNotNull(objectOptimisticLockingFailureException);
+        Assertions.assertTrue(objectOptimisticLockingFailureException.getMessage().contains("Row was updated or deleted by another transaction"));
+    }
+
+    /**
+     * This test case is invalid
+     * Using the same entity to perform the update would not trigger the ObjectOptimisticLockingFailureException
+     */
+//    @Test
+    @Tags(value = {
+            @Tag("version_not_match")
+            , @Tag("data_load")
+    })
+    public void updateUser_version_not_match_v2() {
+        UserEntity userEntity = userRepository.findByLoginId("app-user-01")
+                .orElseThrow(() -> new EntityNotFoundException("User not found [%s]"));
+        userEntity.setName("App-User-01-version_updated");
+        this.userRepository.save(userEntity);
+
+//        UserEntity userEntityClone = new UserEntity();
+//        userEntityClone.setId(userEntity.getId());
+//        userEntityClone.setLoginId(userEntity.getLoginId());
+//        userEntityClone.setName(userEntity.getName());
+//        userEntityClone.setPublicKey(userEntity.getPublicKey());
+//        userEntityClone.setPrivateKey(userEntity.getPrivateKey());
+//        userEntityClone.setName("App-User-01-version_not_match");
+//        userEntityClone.setVersionNo(1L);
+
+        UserEntity userEntityAfterUpdate = userRepository.findByLoginId("app-user-01")
+                .orElseThrow(() -> new EntityNotFoundException("User not found [%s]"));
+        log.debug("updateUser_version_not_match_v2 - 1 - userEntity.getId: [" + userEntity.getId()
+                + "], userEntity.getName: [" + userEntity.getName()
+                + "], userEntity.getVersionNo: [" + userEntity.getVersionNo()
+                + "], userEntityAfterUpdate.getId: [" + userEntityAfterUpdate.getId()
+                + "], userEntityAfterUpdate.getName: [" + userEntityAfterUpdate.getName()
+                + "], userEntityAfterUpdate.getVersionNo: [" + userEntityAfterUpdate.getVersionNo()
+//                + "], userEntityClone.getId: [" + userEntityClone.getId()
+//                + "], userEntityClone.getName: [" + userEntityClone.getName()
+//                + "], userEntityClone.getVersionNo: [" + userEntityClone.getVersionNo()
+                + "]");
+
+
+        userEntity.setName("App-User-01-version_not_match");
+        userEntity.setVersionNo(1L);
+
+        Exception objectOptimisticLockingFailureException = Assertions.assertThrows(ObjectOptimisticLockingFailureException.class, () -> {
+//            this.userRepository.save(userEntityClone);
+            this.userRepository.save(userEntity);
+        });
+        log.debug("updateUser_version_not_match_v2 - 2 - userEntity.getId: [" + userEntity.getId()
+                + "], userEntity.getName: [" + userEntity.getName()
+                + "], userEntity.getVersionNo: [" + userEntity.getVersionNo()
+                + "], userEntityAfterUpdate.getId: [" + userEntityAfterUpdate.getId()
+                + "], userEntityAfterUpdate.getName: [" + userEntityAfterUpdate.getName()
+                + "], userEntityAfterUpdate.getVersionNo: [" + userEntityAfterUpdate.getVersionNo()
+//                + "], userEntityClone.getId: [" + userEntityClone.getId()
+//                + "], userEntityClone.getName: [" + userEntityClone.getName()
+//                + "], userEntityClone.getVersionNo: [" + userEntityClone.getVersionNo()
                 + "], objectOptimisticLockingFailureException.getMessage: [" + (objectOptimisticLockingFailureException == null ? "NULL" : objectOptimisticLockingFailureException.getMessage())
                 + "]");
 
