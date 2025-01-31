@@ -136,7 +136,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 , "/login"
                 , "/logout"
                 , "/error"
-//                , "/auth/**"excludedPathPatternList
+//                , "/auth/**"
+                , PublicControllerHelper.resolveExcludePath()
         );
         registry.addInterceptor(correlationIdInterceptor)
                 .addPathPatterns("/**")
