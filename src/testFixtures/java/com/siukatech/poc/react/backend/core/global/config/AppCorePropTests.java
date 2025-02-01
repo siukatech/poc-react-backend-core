@@ -51,8 +51,8 @@ public class AppCorePropTests extends AbstractUnitTests {
     }
 
     @Test
-    public void appCoreProp_basic() {
-        log.debug("appCoreProp_basic - hostName: [{}]"
+    public void test_appCoreProp_basic() {
+        log.debug("test_appCoreProp_basic - hostName: [{}]"
                         + ", myUserInfo: [{}]"
                         + ", myKeyInfo: [{}]"
                 , appCoreProp.getHostName()

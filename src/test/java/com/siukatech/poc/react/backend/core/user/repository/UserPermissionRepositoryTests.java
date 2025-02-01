@@ -60,13 +60,13 @@ public class UserPermissionRepositoryTests extends AbstractJpaTests {
             "/scripts/30-user-permissions/01-setup.sql"
             , "/scripts/30-user-permissions/11-data-01-find-by-login-id.sql"
     })
-    public void findByUserIdAndApplicationId_basic() {
+    public void test_findByUserIdAndApplicationId_basic() {
         Optional<UserEntity> userEntityOptional = userRepository.findByUserId("app-user-02");
-        log.debug("findByUserIdAndApplicationId_basic - userEntityOptional.get: [" + userEntityOptional.get() + "]");
+        log.debug("test_findByUserIdAndApplicationId_basic - userEntityOptional.get: [" + userEntityOptional.get() + "]");
         List<UserPermissionEntity> userPermissionEntityList = userPermissionRepository
                 .findByUserIdAndApplicationId("app-user-02", "frontend-app");
 
-        log.debug("findByUserIdAndApplicationId_basic - userPermissionEntityList.size: [" + userPermissionEntityList.size()
+        log.debug("test_findByUserIdAndApplicationId_basic - userPermissionEntityList.size: [" + userPermissionEntityList.size()
                 + "], userPermissionEntityList: [" + userPermissionEntityList
                 + "]");
         Assertions.assertEquals(userPermissionEntityList.get(0).getUserId(), "app-user-02");

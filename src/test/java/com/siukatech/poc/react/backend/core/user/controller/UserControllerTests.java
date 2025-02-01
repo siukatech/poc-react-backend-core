@@ -2,6 +2,7 @@ package com.siukatech.poc.react.backend.core.user.controller;
 
 import com.siukatech.poc.react.backend.core.business.dto.UserDto;
 import com.siukatech.poc.react.backend.core.business.dto.UserViewDto;
+import com.siukatech.poc.react.backend.core.user.helper.UserTestDataHelper;
 import com.siukatech.poc.react.backend.core.user.service.UserService;
 import com.siukatech.poc.react.backend.core.security.evaluator.PermissionControlEvaluator;
 import com.siukatech.poc.react.backend.core.security.provider.AuthorizationDataProvider;
@@ -94,34 +95,9 @@ public class UserControllerTests {
     private OAuth2ClientProperties oAuth2ClientProperties;
     // @MockBean
     // protected ProblemDetailExtMapper problemDetailExtMapper;
+    @SpyBean
+    private UserTestDataHelper userTestDataHelper;
 
-
-//    private UserEntity prepareUserEntity_basic() {
-//        UserEntity userEntity = new UserEntity();
-//        userEntity.setUserId("app-user-01");
-//        userEntity.setName("App-User-01");
-//        userEntity.setPublicKey("public-key");
-//        userEntity.setPrivateKey("private-key");
-//        return userEntity;
-//    }
-
-    private UserDto prepareUserDto_basic() {
-        UserDto userDto = new UserDto();
-        userDto.setUserId("app-user-01");
-        userDto.setName("App-User-01");
-        userDto.setPublicKey("public-key");
-//        userDto.setPrivateKey("private-key");
-        return userDto;
-    }
-
-    private UserViewDto prepareUserViewDto_basic() {
-        UserViewDto userViewDto = new UserViewDto();
-        userViewDto.setUserId("app-user-01");
-        userViewDto.setName("App-User-01");
-        userViewDto.setPublicKey("public-key");
-//        userViewDto.setPrivateKey("private-key");
-        return userViewDto;
-    }
 
     private UsernamePasswordAuthenticationToken prepareAuthenticationToken_basic() {
         List<GrantedAuthority> convertedAuthorities = new ArrayList<GrantedAuthority>();
@@ -157,7 +133,7 @@ public class UserControllerTests {
 //
 //    @Test
 ////    @WithMockUser("app-user-01")
-//    public void getPublicKey_basic() throws Exception {
+//    public void test_getPublicKey_basic() throws Exception {
 //        // given
 ////        UserEntity userEntity = this.prepareUserEntity_basic();
 ////        when(userRepository.findByUserId(anyString())).thenReturn(Optional.of(userEntity));
@@ -165,7 +141,7 @@ public class UserControllerTests {
 //        when(userService.findByUserId(anyString())).thenReturn(userDto);
 //
 //        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        log.debug("getPublicKey_basic - authentication: [" + authentication + "]");
+//        log.debug("test_getPublicKey_basic - authentication: [" + authentication + "]");
 //
 //        // when
 //        RequestBuilder requestBuilder = MockMvcRequestBuilders
@@ -184,18 +160,18 @@ public class UserControllerTests {
 //                .andReturn();
 //
 //        // result
-//        log.debug("getPublicKey_basic - mvcResult.getResponse.getContentAsString: ["
+//        log.debug("test_getPublicKey_basic - mvcResult.getResponse.getContentAsString: ["
 //                + mvcResult.getResponse().getContentAsString()
 //                + "], end");
 //
 //    }
 
     @Test
-    public void getUserInfo_basic() throws Exception {
+    public void test_getUserInfo_basic() throws Exception {
         // given
 //        UserDto userDto = this.prepareUserDto_basic();
 //        when(userService.findByUserId(anyString())).thenReturn(userDto);
-        UserViewDto userViewDto = this.prepareUserViewDto_basic();
+        UserViewDto userViewDto = this.userTestDataHelper.prepareUserViewDto_basic();
         when(userService.findUserByUserId(anyString())).thenReturn(userViewDto);
 
         // when
@@ -218,7 +194,7 @@ public class UserControllerTests {
                 .andReturn();
 
         // result
-        log.debug("getUserInfo_basic - mvcResult.getResponse.getContentAsString: ["
+        log.debug("test_getUserInfo_basic - mvcResult.getResponse.getContentAsString: ["
                 + mvcResult.getResponse().getContentAsString()
                 + "], end");
 

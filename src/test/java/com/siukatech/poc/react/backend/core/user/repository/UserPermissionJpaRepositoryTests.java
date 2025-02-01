@@ -58,22 +58,22 @@ public class UserPermissionJpaRepositoryTests extends AbstractJpaTests {
             "/scripts/30-user-permissions/01-setup.sql"
             , "/scripts/30-user-permissions/11-data-01-find-by-login-id.sql"
     })
-    public void findByUserRoleEntityUserRoleUserEntitiesUserEntityUserIdAndApplicationEntityApplicationId_basic() {
+    public void test_findByUserRoleEntityUserRoleUserEntitiesUserEntityUserIdAndApplicationEntityApplicationId_basic() {
         Optional<UserEntity> userEntityOptional = userRepository.findByUserId("app-user-02");
         Optional<ApplicationEntity> applicationEntityOptional = applicationRepository.findWithAppResourceEntitiesByApplicationId("frontend-app");
-        log.debug("findByUserRoleEntityUserRoleUserEntitiesUserEntityUserIdAndApplicationEntityApplicationId_basic - userEntityOptional.get: [{}], applicationEntityOptional: [{}]"
+        log.debug("test_findByUserRoleEntityUserRoleUserEntitiesUserEntityUserIdAndApplicationEntityApplicationId_basic - userEntityOptional.get: [{}], applicationEntityOptional: [{}]"
                 , userEntityOptional.get(), applicationEntityOptional.get());
         List<UserPermissionJpaEntity> userPermissionJpaEntityList_UserIdJpa = userPermissionJpaRepository
                 .findByUserRoleEntityUserRoleUserEntitiesUserEntityUserId("app-user-02");
         List<UserPermissionJpaEntity> userPermissionEntityList_ApplicationJpaEntityId = userPermissionJpaRepository
                 .findByApplicationEntityApplicationId("frontend-app");
-        log.debug("findByUserRoleEntityUserRoleUserEntitiesUserEntityUserIdAndApplicationEntityApplicationId_basic - "
+        log.debug("test_findByUserRoleEntityUserRoleUserEntitiesUserEntityUserIdAndApplicationEntityApplicationId_basic - "
                         + "userPermissionJpaEntityList_UserId.size: [{}], userPermissionJpaEntityList_ApplicationEntityId.size: [{}]"
                 , userPermissionJpaEntityList_UserIdJpa.size(), userPermissionEntityList_ApplicationJpaEntityId.size());
         List<UserPermissionJpaEntity> userPermissionJpaEntityList = userPermissionJpaRepository
                 .findByUserRoleEntityUserRoleUserEntitiesUserEntityUserIdAndApplicationEntityApplicationId("app-user-02", "frontend-app");
 
-        log.debug("findByUserRoleEntityUserRoleUserEntitiesUserEntityUserIdAndApplicationEntityApplicationId_basic - userPermissionEntityList.size: [" + userPermissionJpaEntityList.size()
+        log.debug("test_findByUserRoleEntityUserRoleUserEntitiesUserEntityUserIdAndApplicationEntityApplicationId_basic - userPermissionEntityList.size: [" + userPermissionJpaEntityList.size()
                 + "], userPermissionEntityList: [" + userPermissionJpaEntityList
                 + "]");
 //        Assertions.assertEquals(userPermissionJpaEntityList.get(0).getUserRoleEntity().getUserRoleUserEntities().get(0).getUserEntity().getUserId(), "app-user-02");

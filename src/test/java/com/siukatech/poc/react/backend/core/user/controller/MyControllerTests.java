@@ -2,6 +2,7 @@ package com.siukatech.poc.react.backend.core.user.controller;
 
 import com.siukatech.poc.react.backend.core.AbstractWebTests;
 import com.siukatech.poc.react.backend.core.business.dto.*;
+import com.siukatech.poc.react.backend.core.user.helper.UserTestDataHelper;
 import com.siukatech.poc.react.backend.core.user.service.UserService;
 import com.siukatech.poc.react.backend.core.security.model.MyAuthenticationToken;
 import com.siukatech.poc.react.backend.core.web.annotation.v1.ProtectedApiV1Controller;
@@ -14,6 +15,7 @@ import org.springframework.boot.autoconfigure.security.oauth2.client.OAuth2Clien
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -69,6 +71,9 @@ public class MyControllerTests extends AbstractWebTests {
     @MockBean
     private OAuth2ClientProperties oAuth2ClientProperties;
 
+    @SpyBean
+    private UserTestDataHelper userTestDataHelper;
+
 //    @MockBean
 //    private AppCoreProp appCoreProp;
 //    @MockBean
@@ -76,53 +81,6 @@ public class MyControllerTests extends AbstractWebTests {
 //    @MockBean
 //    private RestTemplate oauth2ClientRestTemplate;
 
-
-    private UserDto prepareUserDto_basic() {
-        UserDto userDto = new UserDto();
-        userDto.setUserId("app-user-01");
-        userDto.setName("App-User-01");
-        userDto.setPublicKey("public-key");
-//        userDto.setPrivateKey("private-key");
-        return userDto;
-    }
-
-    private UserViewDto prepareUserViewDto_basic() {
-        UserViewDto userViewDto = new UserViewDto();
-        userViewDto.setUserId("app-user-01");
-        userViewDto.setName("App-User-01");
-        userViewDto.setPublicKey("public-key");
-//        userDto.setPrivateKey("private-key");
-        return userViewDto;
-    }
-
-    private MyKeyDto prepareMyKeyDto_basic() {
-        MyKeyDto myKeyDto = new MyKeyDto();
-        myKeyDto.setUserId("app-user-01");
-        myKeyDto.setPublicKey("public-key");
-        myKeyDto.setPrivateKey("private-key");
-        return myKeyDto;
-    }
-
-
-    private List<UserPermissionDto> prepareUserPermissions_basic() {
-        String[][] userPermissionTempsArr = new String[][]{
-                new String[]{"app-user-01", "1", "role-users-01", "frontend-app", "menu.home", "view"}
-                , new String[]{"app-user-01", "1", "role-users-01", "frontend-app", "menu.items", "*"}
-//                , new String[]{"app-user-01", "1", "role-users-01", "frontend-app", "menu.shops", "view"}
-                , new String[]{"app-user-01", "1", "role-users-01", "frontend-app", "menu.merchants", "view"}
-        };
-        List<UserPermissionDto> userPermissionDtoList = new ArrayList<>();
-        for (String[] userPermissionTemps : userPermissionTempsArr) {
-            userPermissionDtoList.add(new UserPermissionDto());
-            userPermissionDtoList.get(userPermissionDtoList.size() - 1).setUserId(userPermissionTemps[0]);
-            userPermissionDtoList.get(userPermissionDtoList.size() - 1).setUserId(userPermissionTemps[1]);
-            userPermissionDtoList.get(userPermissionDtoList.size() - 1).setUserRoleId(userPermissionTemps[2]);
-            userPermissionDtoList.get(userPermissionDtoList.size() - 1).setApplicationId(userPermissionTemps[3]);
-            userPermissionDtoList.get(userPermissionDtoList.size() - 1).setAppResourceId(userPermissionTemps[4]);
-            userPermissionDtoList.get(userPermissionDtoList.size() - 1).setAccessRight(userPermissionTemps[5]);
-        }
-        return userPermissionDtoList;
-    }
 
     private UsernamePasswordAuthenticationToken prepareUsernamePasswordAuthenticationToken_basic() {
         return prepareUsernamePasswordAuthenticationToken("app-user-01");
@@ -165,12 +123,12 @@ public class MyControllerTests extends AbstractWebTests {
 
     @Test
 //    @WithMockUser("app-user-01")
-    public void getPublicKey_basic() throws Exception {
+    public void test_getPublicKey_basic() throws Exception {
         // given
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        log.debug("getPublicKey_basic - authentication: [" + authentication + "]");
+        log.debug("test_getPublicKey_basic - authentication: [" + authentication + "]");
 
-        MyKeyDto myKeyDto = this.prepareMyKeyDto_basic();
+        MyKeyDto myKeyDto = this.userTestDataHelper.prepareMyKeyDto_basic();
         when(userService.findKeyByUserId(anyString())).thenReturn(myKeyDto);
 
         // when
@@ -193,16 +151,16 @@ public class MyControllerTests extends AbstractWebTests {
                 .andReturn();
 
         // result
-        log.debug("getPublicKey_basic - mvcResult.getResponse.getContentAsString: ["
+        log.debug("test_getPublicKey_basic - mvcResult.getResponse.getContentAsString: ["
                 + mvcResult.getResponse().getContentAsString()
                 + "], end");
 
     }
 
     @Test
-    public void getKeyInfo_basic() throws Exception {
+    public void test_getKeyInfo_basic() throws Exception {
         // given
-        MyKeyDto myKeyDto = this.prepareMyKeyDto_basic();
+        MyKeyDto myKeyDto = this.userTestDataHelper.prepareMyKeyDto_basic();
         when(userService.findKeyByUserId(anyString())).thenReturn(myKeyDto);
 
         // when
@@ -222,16 +180,16 @@ public class MyControllerTests extends AbstractWebTests {
                 .andReturn();
 
         // result
-        log.debug("getKeyInfo_basic - mvcResult.getResponse.getContentAsString: ["
+        log.debug("test_getKeyInfo_basic - mvcResult.getResponse.getContentAsString: ["
                 + mvcResult.getResponse().getContentAsString()
                 + "], end");
 
     }
 
     @Test
-    public void getUserInfo_basic() throws Exception {
+    public void test_getUserInfo_basic() throws Exception {
         // given
-        UserDto userDto = this.prepareUserDto_basic();
+        UserDto userDto = this.userTestDataHelper.prepareUserDto_basic();
         when(userService.findUserByUserId(anyString())).thenReturn(userDto);
 
         // when
@@ -251,16 +209,16 @@ public class MyControllerTests extends AbstractWebTests {
                 .andReturn();
 
         // result
-        log.debug("getUserInfo_basic - mvcResult.getResponse.getContentAsString: ["
+        log.debug("test_getUserInfo_basic - mvcResult.getResponse.getContentAsString: ["
                 + mvcResult.getResponse().getContentAsString()
                 + "], end");
 
     }
 
     @Test
-    public void getUserPermissions_basic() throws Exception {
+    public void test_getUserPermissions_basic() throws Exception {
         // given
-        List<UserPermissionDto> userPermissionDtoList = this.prepareUserPermissions_basic();
+        List<UserPermissionDto> userPermissionDtoList = this.userTestDataHelper.prepareUserPermissions_basic();
         when(userService.findPermissionsByUserIdAndApplicationId(anyString(), anyString())).thenReturn(userPermissionDtoList);
 
         // when
@@ -278,15 +236,15 @@ public class MyControllerTests extends AbstractWebTests {
                 .andReturn();
 
         // result
-        log.debug("getUserPermissions_basic -  mvcResult.getResponse.getContentAsString: ["
+        log.debug("test_getUserPermissions_basic -  mvcResult.getResponse.getContentAsString: ["
                 + mvcResult.getResponse().getContentAsString()
                 + "], end");
     }
 
     @Test
-    public void getUserPermissionInfo_basic() throws Exception {
+    public void test_getUserPermissionInfo_basic() throws Exception {
         // given
-        List<UserPermissionDto> userPermissionDtoList = this.prepareUserPermissions_basic();
+        List<UserPermissionDto> userPermissionDtoList = this.userTestDataHelper.prepareUserPermissions_basic();
         when(userService.findPermissionsByUserIdAndApplicationId(anyString(), anyString())).thenReturn(userPermissionDtoList);
 
         // when
@@ -305,7 +263,7 @@ public class MyControllerTests extends AbstractWebTests {
                 .andReturn();
 
         // result
-        log.debug("getUserPermissionInfo_basic - mvcResult.getResponse.getContentAsString: ["
+        log.debug("test_getUserPermissionInfo_basic - mvcResult.getResponse.getContentAsString: ["
                 + mvcResult.getResponse().getContentAsString()
                 + "], end");
     }
@@ -313,7 +271,7 @@ public class MyControllerTests extends AbstractWebTests {
     @Test
     public void getUserView_basic() throws Exception {
         // given
-        UserViewDto userViewDto = this.prepareUserViewDto_basic();
+        UserViewDto userViewDto = this.userTestDataHelper.prepareUserViewDto_basic();
         when(userService.findViewByUserId(anyString())).thenReturn(userViewDto);
 
         // when
@@ -331,7 +289,7 @@ public class MyControllerTests extends AbstractWebTests {
                 .andReturn();
 
         // result
-        log.debug("getUserView_basic - mvcResult.getResponse.getContentAsString: ["
+        log.debug("test_getUserView_basic - mvcResult.getResponse.getContentAsString: ["
                 + mvcResult.getResponse().getContentAsString()
                 + "], end");
 

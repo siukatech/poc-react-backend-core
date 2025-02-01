@@ -121,14 +121,14 @@ public class EncryptedBodyAdviceHelperTests extends AbstractUnitTests {
     }
 
     @Test
-    public void encryptBodyToDataBase64_basic() throws Exception {
+    public void test_encryptBodyToDataBase64_basic() throws Exception {
         // given
         MyKeyDto body = this.prepareMyKeyDto_basic();
         String bodyStr = this.objectMapper.writeValueAsString(body);
         EncryptedInfo encryptedInfo = this.prepareEncryptedInfo_basic();
         byte[] aesKey = EncryptionUtils.encryptWithRsaPublicKey(encryptedInfo.key(), body.getPublicKey());
         String aesKeyBase64 = Base64.getEncoder().encodeToString(aesKey);
-        log.debug("encryptBodyToDataBase64_basic - aesKeyBase64.length: [{}]"
+        log.debug("test_encryptBodyToDataBase64_basic - aesKeyBase64.length: [{}]"
                         + ", bodyStr: [{}]"
                 , aesKeyBase64.length()
                 , bodyStr
@@ -138,20 +138,20 @@ public class EncryptedBodyAdviceHelperTests extends AbstractUnitTests {
         String cipherText = this.encryptedBodyAdviceHelper.encryptBodyToDataBase64(body, encryptedInfo);
 
         // then
-        log.debug("encryptBodyToDataBase64_basic - cipherText: [{}]", cipherText);
+        log.debug("test_encryptBodyToDataBase64_basic - cipherText: [{}]", cipherText);
         byte[] data = Base64.getDecoder().decode(cipherText);
         byte[] secret = Base64.getDecoder().decode(encryptedInfo.key());
         byte[] iv = Base64.getDecoder().decode(encryptedInfo.iv());
         byte[] content = EncryptionUtils.decryptWithAesCbcSecret(data, secret, iv);
         String contentStr = new String(content);
-        log.debug("encryptBodyToDataBase64_basic - contentStr: [{}]", contentStr);
+        log.debug("test_encryptBodyToDataBase64_basic - contentStr: [{}]", contentStr);
 
         assertThat(bodyStr).isEqualTo(contentStr);
 
     }
 
 //    @Test
-//    public void resolveRsaInfoAesContent_basic() throws Exception {
+//    public void test_resolveRsaInfoAesContent_basic() throws Exception {
 //        // given
 //        MyKeyDto body = this.prepareMyKeyDto_basic();
 //        String bodyStr = this.objectMapper.writeValueAsString(body);
@@ -167,7 +167,7 @@ public class EncryptedBodyAdviceHelperTests extends AbstractUnitTests {
 //    }
 
     @Test
-    public void decryptDataBase64ToBodyDetail_basic() throws Exception {
+    public void test_decryptDataBase64ToBodyDetail_basic() throws Exception {
         // given
         MyKeyDto userDto = this.prepareMyKeyDto_basic();
         String userDtoStr = this.objectMapper.writeValueAsString(userDto);
@@ -183,7 +183,7 @@ public class EncryptedBodyAdviceHelperTests extends AbstractUnitTests {
         String bodyDataBase64 = Base64.getEncoder().encodeToString(bodyData);
         String encryptedBody = headerDataBase64 + bodyDataBase64;
         String encryptedDataBase64 = Base64.getEncoder().encodeToString(encryptedBody.getBytes(StandardCharsets.UTF_8));
-        log.debug("decryptDataBase64ToBodyDetail_basic - headerDataBase64.length: [{}]"
+        log.debug("test_decryptDataBase64ToBodyDetail_basic - headerDataBase64.length: [{}]"
                         + ", bodyDataBase64.length: [{}]"
                 , headerDataBase64.length()
                 , bodyDataBase64.length()
@@ -193,7 +193,7 @@ public class EncryptedBodyAdviceHelperTests extends AbstractUnitTests {
         EncryptedDetail encryptedDetail = this.encryptedBodyAdviceHelper.decryptDataBase64ToBodyDetail(encryptedDataBase64, userDto);
 
         // then
-        log.debug("decryptDataBase64ToBodyDetail_basic - encryptedDetail: [{}]"
+        log.debug("test_decryptDataBase64ToBodyDetail_basic - encryptedDetail: [{}]"
                         + ""
                 , encryptedDetail
         );
@@ -202,8 +202,8 @@ public class EncryptedBodyAdviceHelperTests extends AbstractUnitTests {
     }
 
     @Test
-    public void resolveMyKeyInfo_basic() throws NoSuchAlgorithmException {
-        log.debug("resolveMyKeyInfo_basic - appCorePropForTests.myUserInfoUrl: [{}]"
+    public void test_resolveMyKeyInfo_basic() throws NoSuchAlgorithmException {
+        log.debug("test_resolveMyKeyInfo_basic - appCorePropForTests.myUserInfoUrl: [{}]"
                         + ", appCoreProp.myUserInfoUrl: [{}]"
                         + ", appCoreProp.getMyKeyInfoUrl: [{}]"
                         + ", appCoreProp.getMyKeyInfoUrl: [{}]"
@@ -233,7 +233,7 @@ public class EncryptedBodyAdviceHelperTests extends AbstractUnitTests {
         MyKeyDto myKeyRet = this.encryptedBodyAdviceHelper.resolveMyKeyInfo(userId);
 
         // then
-        log.debug("resolveMyKeyInfo_basic - myKeyRet: [{}]", myKeyRet);
+        log.debug("test_resolveMyKeyInfo_basic - myKeyRet: [{}]", myKeyRet);
         assertThat(myKeyRet).hasFieldOrProperty("privateKey")
                 .has(new Condition<>(u -> u.getPrivateKey().contains(myKeyDto.getPrivateKey())
                         , "Has %s", "private-key"))
@@ -242,7 +242,7 @@ public class EncryptedBodyAdviceHelperTests extends AbstractUnitTests {
     }
 
     @Test
-    public void isEncryptedApiController_basic() {
+    public void test_isEncryptedApiController_basic() {
         // given
         Method methodForTrue = Arrays.stream(EncryptedForTestController.class.getMethods()).findFirst().get();
         MethodParameter methodParameterForTrue = new MethodParameter(methodForTrue, 0);
@@ -254,7 +254,7 @@ public class EncryptedBodyAdviceHelperTests extends AbstractUnitTests {
         boolean resultForFalse = this.encryptedBodyAdviceHelper.isEncryptedApiController(methodParameterForFalse);
 
         // then
-        log.debug("isEncryptedApiController_basic - resultForTrue: [{}]"
+        log.debug("test_isEncryptedApiController_basic - resultForTrue: [{}]"
                         + ", resultForFalse: [{}]"
                 , resultForTrue
                 , resultForFalse

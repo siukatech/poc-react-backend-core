@@ -25,7 +25,7 @@ public class URLEncoderUtilsTests extends AbstractUnitTests {
      * @throws Exception
      */
     @Test
-    void urlEncoderUtils_encodeToQueryString_basic() throws Exception {
+    void test_urlEncoderUtils_encodeToQueryString_basic() throws Exception {
         List<NameValuePair> nameValuePairList = Arrays.asList(
                 new BasicNameValuePair("name1", "https://www.google.com/")
                 , new BasicNameValuePair("name2", "https://www.google.com/")
@@ -36,7 +36,7 @@ public class URLEncoderUtilsTests extends AbstractUnitTests {
                 + "&" + "name2=https%3A%2F%2Fwww.google.com%2F"
                 + "&" + "name3=https%3A%2F%2Fwww.google.com%2F"
                 ;
-        log.debug("test_urlEncoderUtils_encodeToQueryString - queryStringExpected: [{}]", queryStringExpected);
+        log.debug("test_urlEncoderUtils_encodeToQueryString_basic - queryStringExpected: [{}]", queryStringExpected);
         assertEquals("queryString should be encoded", queryString, queryStringExpected);
     }
 

@@ -145,7 +145,7 @@ public class AuthServicePkceTests extends AbstractUnitTests {
 //    }
 
     @Test
-    public void doAuthCodeFlow_basic() throws UnsupportedEncodingException, NoSuchAlgorithmException {
+    public void test_doAuthCodeFlow_basic() throws UnsupportedEncodingException, NoSuchAlgorithmException {
         // given
         String clientName = CLIENT_NAME;
         String codeVerifier = EncryptionUtils.generateCodeVerifier();
@@ -154,7 +154,7 @@ public class AuthServicePkceTests extends AbstractUnitTests {
                 .when(this.oAuth2ClientProperties).getRegistration();
         doReturn(this.oAuth2ClientPropertiesForTests.getProvider())
                 .when(this.oAuth2ClientProperties).getProvider();
-        log.debug("getAuthCodeLoginUrl_basic - oAuth2ClientPropertiesForTests.getRegistration.size: [{}]"
+        log.debug("test_getAuthCodeLoginUrl_basic - oAuth2ClientPropertiesForTests.getRegistration.size: [{}]"
                 , this.oAuth2ClientPropertiesForTests.getRegistration().size()
         );
 
@@ -187,7 +187,7 @@ public class AuthServicePkceTests extends AbstractUnitTests {
         if (resultContent == null) {
             try (CloseableHttpResponse response = httpclient.execute(httpGet)) {
                 // Get status code
-                log.debug("doAuthCodeFlow_basic - 1 - response.getVersion: [{}]"
+                log.debug("test_doAuthCodeFlow_basic - 1 - response.getVersion: [{}]"
                                 + ", response.getCode: [{}]"
                                 + ", response.getReasonPhrase: [{}]"
                         , response.getVersion() // HTTP/1.1
@@ -202,7 +202,7 @@ public class AuthServicePkceTests extends AbstractUnitTests {
                 actionUrl = actionUrl.substring(actionUrl.indexOf("action=\"") + "action=\"".length());
                 actionUrl = actionUrl.substring(0, actionUrl.indexOf("\" method=\"post\""));
                 actionUrl = actionUrl.replaceAll("&amp;", "&");
-                log.debug("doAuthCodeFlow_basic - 1 - resultContent: [{}], actionUrl: [{}]", resultContent, actionUrl);
+                log.debug("test_doAuthCodeFlow_basic - 1 - resultContent: [{}], actionUrl: [{}]", resultContent, actionUrl);
             } catch (IOException | ParseException e) {
                 log.error(e.getMessage(), e.fillInStackTrace());
             }
@@ -214,7 +214,7 @@ public class AuthServicePkceTests extends AbstractUnitTests {
             nvps.add(new BasicNameValuePair("password", "admin01"));
             httpPost.setEntity(new UrlEncodedFormEntity(nvps));
             try (CloseableHttpResponse response = httpclient.execute(httpPost)) {
-                log.debug("doAuthCodeFlow_basic - 2 - response.getVersion: [{}]"
+                log.debug("test_doAuthCodeFlow_basic - 2 - response.getVersion: [{}]"
                                 + ", response.getCode: [{}]"
                                 + ", response.getReasonPhrase: [{}]"
                         , response.getVersion() // HTTP/1.1
@@ -226,7 +226,7 @@ public class AuthServicePkceTests extends AbstractUnitTests {
                 redirectUrl = header.getValue().trim();
                 code = redirectUrl;
                 code = code.substring(code.indexOf("code=") + "code=".length());
-                log.debug("doAuthCodeFlow_basic - 2 - redirectUrl: [{}], code: [{}]", redirectUrl, code);
+                log.debug("test_doAuthCodeFlow_basic - 2 - redirectUrl: [{}], code: [{}]", redirectUrl, code);
                 //
             } catch (IOException | ProtocolException e) {
                 throw new RuntimeException(e);
@@ -234,7 +234,7 @@ public class AuthServicePkceTests extends AbstractUnitTests {
         }
         if (code != null) {
             TokenRes tokenRes = this.authService.resolveAuthCodeTokenRes(clientName, code, codeVerifier);
-            log.debug("doAuthCodeFlow_basic - 3 - tokenRes: [{}]", tokenRes);
+            log.debug("test_doAuthCodeFlow_basic - 3 - tokenRes: [{}]", tokenRes);
 
             // then
             assertThat(tokenRes)

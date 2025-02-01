@@ -4,7 +4,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public abstract class AbstractHelper {
+public abstract class AbstractTestDataHelper {
 
     protected File getResourceFile(String subDir, String resourceName) {
         Path resourceFilePath = Paths.get("src", "test", "resources", subDir, resourceName);

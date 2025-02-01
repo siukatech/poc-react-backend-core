@@ -181,7 +181,7 @@ public class AuthControllerTests extends AbstractWebTests {
     }
 
     @Test
-    public void doAuthCodeLogin_basic() throws Exception {
+    public void test_doAuthCodeLogin_basic() throws Exception {
         // given
         String clientName = CLIENT_NAME_KEYCLOAK;
         String codeChallenge = null;
@@ -207,7 +207,7 @@ public class AuthControllerTests extends AbstractWebTests {
     }
 
     @Test
-    public void doAuthCodeToken_basic() throws Exception {
+    public void test_doAuthCodeToken_basic() throws Exception {
         // given
         String clientName = CLIENT_NAME_KEYCLOAK;
         String code = "this-is-an-unit-test-code";
@@ -238,7 +238,7 @@ public class AuthControllerTests extends AbstractWebTests {
     }
 
     @Test
-    public void doPasswordLogin_basic() throws Exception {
+    public void test_doPasswordLogin_basic() throws Exception {
         // given
         String clientName = CLIENT_NAME_KEYCLOAK;
         LoginForm loginForm = new LoginForm();
@@ -269,7 +269,7 @@ public class AuthControllerTests extends AbstractWebTests {
     }
 
     @Test
-    public void doAuthTokenRefresh_basic() throws Exception {
+    public void test_doAuthTokenRefresh_basic() throws Exception {
         // given
         String clientName = CLIENT_NAME_KEYCLOAK;
         RefreshTokenForm refreshTokenForm = new RefreshTokenForm();
@@ -300,7 +300,7 @@ public class AuthControllerTests extends AbstractWebTests {
     }
 
     @Test
-    public void doAuthLogout_basic() throws Exception {
+    public void test_doAuthLogout_basic() throws Exception {
         // given
         when(authService.doAuthLogout(anyString()))
                 .thenReturn(HttpStatusCode.valueOf(HttpStatus.OK.value()));

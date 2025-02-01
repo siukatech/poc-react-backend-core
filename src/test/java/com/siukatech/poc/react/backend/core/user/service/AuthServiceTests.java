@@ -172,8 +172,8 @@ public class AuthServiceTests extends AbstractUnitTests {
     }
 
 //    @Test
-//    public void resolveMyKeyInfo_basic() throws NoSuchAlgorithmException {
-//        log.debug("resolveMyKeyInfo_basic - appCorePropForTests.myUserInfoUrl: [{}]"
+//    public void test_resolveMyKeyInfo_basic() throws NoSuchAlgorithmException {
+//        log.debug("test_resolveMyKeyInfo_basic - appCorePropForTests.myUserInfoUrl: [{}]"
 //                        + ", appCoreProp.myUserInfoUrl: [{}]"
 //                        + ", appCoreProp.getMyKeyInfoUrl: [{}]"
 //                        + ", appCoreProp.getMyKeyInfoUrl: [{}]"
@@ -200,7 +200,7 @@ public class AuthServiceTests extends AbstractUnitTests {
 //        MyKeyDto myKeyRet = this.authService.resolveMyKeyInfo(userId);
 //
 //        // then
-//        log.debug("resolveMyKeyInfo_basic - myKeyRet: [{}]", myKeyRet);
+//        log.debug("test_resolveMyKeyInfo_basic - myKeyRet: [{}]", myKeyRet);
 //        assertThat(myKeyRet).hasFieldOrProperty("privateKey")
 //                .has(new Condition<>(u -> u.getPrivateKey().contains(myKeyDto.getPrivateKey())
 //                        , "Has %s", "private-key"))
@@ -209,7 +209,7 @@ public class AuthServiceTests extends AbstractUnitTests {
 //    }
 
     @Test
-    public void getAuthCodeLoginUrl_basic() {
+    public void test_getAuthCodeLoginUrl_basic() {
         // given
         String clientName = CLIENT_NAME;
         String codeChallenge = null;
@@ -225,7 +225,7 @@ public class AuthServiceTests extends AbstractUnitTests {
                 .when(this.oAuth2ClientProperties).getRegistration();
         doReturn(this.oAuth2ClientPropertiesForTests.getProvider())
                 .when(this.oAuth2ClientProperties).getProvider();
-        log.debug("getAuthCodeLoginUrl_basic - oAuth2ClientPropertiesForTests.getRegistration.size: [{}]"
+        log.debug("test_getAuthCodeLoginUrl_basic - oAuth2ClientPropertiesForTests.getRegistration.size: [{}]"
                 , this.oAuth2ClientPropertiesForTests.getRegistration().size()
         );
 
@@ -237,7 +237,7 @@ public class AuthServiceTests extends AbstractUnitTests {
     }
 
     @Test
-    public void resolveAuthCodeTokenRes_basic() {
+    public void test_resolveAuthCodeTokenRes_basic() {
         // given
         String clientName = CLIENT_NAME;
         String code = "this-is-an-unit-test-code";
@@ -271,7 +271,7 @@ public class AuthServiceTests extends AbstractUnitTests {
     }
 
     @Test
-    public void resolvePasswordTokenRes_basic() {
+    public void test_resolvePasswordTokenRes_basic() {
         // given
         String clientName = CLIENT_NAME;
         LoginForm loginForm = new LoginForm();
@@ -299,7 +299,7 @@ public class AuthServiceTests extends AbstractUnitTests {
     }
 
     @Test
-    public void resolveRefreshTokenTokenRes_basic() {
+    public void test_resolveRefreshTokenTokenRes_basic() {
         // given
         String clientName = CLIENT_NAME;
         RefreshTokenForm refreshTokenForm = new RefreshTokenForm();
@@ -327,7 +327,7 @@ public class AuthServiceTests extends AbstractUnitTests {
     }
 
     @Test
-    public void doAuthLogout_basic() throws URISyntaxException {
+    public void test_doAuthLogout_basic() throws URISyntaxException {
 //        public HttpStatusCode doAuthLogout(String logoutApi) {
         // given
         String logoutApi = "http://localhost:8080/logout";

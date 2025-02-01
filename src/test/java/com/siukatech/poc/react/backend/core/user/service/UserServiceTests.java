@@ -153,7 +153,7 @@ public class UserServiceTests extends AbstractUnitTests {
     }
 
     @Test
-    public void findUserByUserId_basic() {
+    public void test_findUserByUserId_basic() {
         // given
         UserEntity userEntity = this.prepareUserEntity_basic();
         when(this.userRepository.findByUserId(anyString())).thenReturn(Optional.of(userEntity));
@@ -166,12 +166,12 @@ public class UserServiceTests extends AbstractUnitTests {
     }
 
     @Test
-    public void findPermissionsByUserIdAndApplicationId_basic() {
+    public void test_findPermissionsByUserIdAndApplicationId_basic() {
         // given
         List<UserPermissionEntity> userPermissionEntityListTemp = prepareUserPermissions_basic();
         when(this.userPermissionRepository.findByUserIdAndApplicationId(anyString(), anyString())).thenReturn(userPermissionEntityListTemp);
 //        doReturn(userPermissionEntityListTemp).when(userPermissionRepository).findByUserIdAndApplicationId(anyString(), anyString());
-        log.info("findPermissionsByUserIdAndApplicationId_basic - modelMapper.getConfiguration: [{}]"
+        log.info("test_findPermissionsByUserIdAndApplicationId_basic - modelMapper.getConfiguration: [{}]"
                 , modelMapper.getConfiguration());
 
         // when
@@ -183,7 +183,7 @@ public class UserServiceTests extends AbstractUnitTests {
     }
 
     @Test
-    public void findViewByUserId_basic() {
+    public void test_findViewByUserId_basic() {
         // given
         UserViewEntity userViewEntity = this.prepareUserViewEntity_basic();
         when(this.userViewRepository.findByUserId(anyString())).thenReturn(Optional.of(userViewEntity));
