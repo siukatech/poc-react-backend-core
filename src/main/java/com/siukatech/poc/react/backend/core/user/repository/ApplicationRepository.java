@@ -39,7 +39,7 @@ public interface ApplicationRepository extends JpaRepository<ApplicationEntity, 
     @EntityGraph(value = "ApplicationEntity.appResourceEntities")
     Optional<ApplicationEntity> findWithAppResourceEntitiesByApplicationId(String applicationId);
 
-    @EntityGraph(value = "ApplicationEntity.userPermissionJpaEntities")
+//    @EntityGraph(value = "ApplicationEntity.userPermissionJpaEntities")
     Optional<ApplicationEntity> findWithUserPermissionJpaEntitiesByApplicationId(String applicationId);
 
 }
