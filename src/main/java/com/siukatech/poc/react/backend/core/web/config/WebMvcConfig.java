@@ -16,7 +16,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -36,7 +35,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     public WebMvcConfig(ObjectMapper objectMapper
             , AuthorizationDataInterceptor authorizationDataInterceptor
-            , PermissionControlInterceptor permissionControlInterceptor, CorrelationIdInterceptor correlationIdInterceptor) {
+            , PermissionControlInterceptor permissionControlInterceptor
+            , CorrelationIdInterceptor correlationIdInterceptor
+    ) {
         this.objectMapper = objectMapper;
         this.authorizationDataInterceptor = authorizationDataInterceptor;
         this.permissionControlInterceptor = permissionControlInterceptor;
@@ -142,6 +143,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addInterceptor(correlationIdInterceptor)
                 .addPathPatterns("/**")
         ;
+        //
         registry.addInterceptor(authorizationDataInterceptor)
 //                .addPathPatterns("/**")
 ////                .excludePathPatterns("/auth/**", "/logout")
@@ -149,9 +151,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 //                .excludePathPatterns(PublicControllerHelper.resolveExcludePath())
         ;
         registry.addInterceptor(permissionControlInterceptor)
-//                .addPathPatterns("/**")
                 .excludePathPatterns(excludedPathPatternList.toArray(String[]::new))
-//                .excludePathPatterns(PublicControllerHelper.resolveExcludePath())
         ;
         log.debug("addInterceptors - end");
     }

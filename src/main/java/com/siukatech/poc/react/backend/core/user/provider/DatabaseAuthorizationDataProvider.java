@@ -1,5 +1,7 @@
 package com.siukatech.poc.react.backend.core.user.provider;
 
+import com.siukatech.poc.react.backend.core.business.dto.MyKeyDto;
+import com.siukatech.poc.react.backend.core.business.dto.UserDossierDto;
 import com.siukatech.poc.react.backend.core.business.dto.UserDto;
 import com.siukatech.poc.react.backend.core.business.dto.UserPermissionDto;
 import com.siukatech.poc.react.backend.core.security.provider.AuthorizationDataProvider;
@@ -48,29 +50,46 @@ public class DatabaseAuthorizationDataProvider implements AuthorizationDataProvi
     }
 
     @Override
-    public UserDto findByUserIdAndTokenValue(String targetUserId, String tokenValue) {
+    public UserDto findUserByUserIdAndTokenValue(String targetUserId, String tokenValue) {
         log.debug("findByUserIdAndTokenValue - start");
 //        UserDto userDto = userService.findByUserId(targetUserId);
         UserEntity userEntity = this.userRepository.findByUserId(targetUserId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found [%s]".formatted(targetUserId)));
-        log.debug("findByUserId - modelMapper: [" + this.modelMapper + "]");
+        log.debug("findByUserIdAndTokenValue - modelMapper: [" + this.modelMapper + "]");
         UserDto userDto = this.modelMapper.map(userEntity, UserDto.class);
         log.debug("findByUserIdAndTokenValue - end");
         return userDto;
     }
 
     @Override
-    public List<UserPermissionDto> findPermissionsByUserId(String targetUserId, String tokenValue) {
-        log.debug("findPermissionsByUserId - start");
+    public List<UserPermissionDto> findPermissionsByUserIdAndTokenValue(String targetUserId, String tokenValue) {
+        log.debug("findPermissionsByUserIdAndTokenValue - start");
 //        List<UserPermissionDto> userPermissionDtoList = userService
 //                .findPermissionsByUserIdAndApplicationId(userId, appCoreProp.getApplicationId());
-        List<UserPermissionEntity> userPermissionEntityList = this.userPermissionRepository.findByUserIdAndApplicationId(targetUserId, appCoreProp.getApplicationId());
+        List<UserPermissionEntity> userPermissionEntityList = this.userPermissionRepository
+                .findByUserIdAndApplicationId(targetUserId, appCoreProp.getApplicationId());
         List<UserPermissionDto> userPermissionDtoList = userPermissionEntityList.stream()
                 .map(userPermissionEntity -> this.modelMapper
                         .map(userPermissionEntity, UserPermissionDto.class))
                 .toList();
-        log.debug("findPermissionsByUserId - end");
+        log.debug("findPermissionsByUserIdAndTokenValue - end");
         return userPermissionDtoList;
+    }
+
+    @Override
+    public UserDossierDto findDossierByUserIdAndTokenValue(String targetUserId, String tokenValue) {
+        UserEntity userEntity = this.userRepository.findByUserId(targetUserId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found [%s]".formatted(targetUserId)));
+        UserDto userDto = this.modelMapper.map(userEntity, UserDto.class);
+        MyKeyDto myKeyDto = this.modelMapper.map(userEntity, MyKeyDto.class);
+        List<UserPermissionEntity> userPermissionEntityList = this.userPermissionRepository
+                .findByUserIdAndApplicationId(targetUserId, appCoreProp.getApplicationId());
+        List<UserPermissionDto> userPermissionDtoList = userPermissionEntityList.stream()
+                .map(userPermissionEntity -> this.modelMapper
+                        .map(userPermissionEntity, UserPermissionDto.class))
+                .toList();
+        UserDossierDto userDossierDto = new UserDossierDto(userDto, myKeyDto, userPermissionDtoList);
+        return null;
     }
 
 }

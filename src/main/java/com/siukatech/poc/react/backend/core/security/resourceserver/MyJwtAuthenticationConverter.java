@@ -82,9 +82,9 @@ public class MyJwtAuthenticationConverter implements Converter<Jwt, AbstractAuth
         UserDto userDto = null;
 //        if (SecurityContextHolder.getContext().getAuthentication() != null) {
 //        userDto = userService.findByUserId(userId);
-            userDto = authorizationDataProvider.findByUserIdAndTokenValue(userId, tokenValue);
+            userDto = authorizationDataProvider.findUserByUserIdAndTokenValue(userId, tokenValue);
 
-        List<UserPermissionDto> userPermissionDtoList = authorizationDataProvider.findPermissionsByUserId(userId, tokenValue);
+        List<UserPermissionDto> userPermissionDtoList = authorizationDataProvider.findPermissionsByUserIdAndTokenValue(userId, tokenValue);
         log.debug("convert - userId: [{}], userPermissionDtoList: [{}]", userId, userPermissionDtoList);
         userPermissionDtoList.forEach(userPermissionDto -> {
             convertedAuthorities.add(MyGrantedAuthority.builder()

@@ -29,7 +29,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -216,14 +215,16 @@ public class MyControllerTests extends AbstractWebTests {
     }
 
     @Test
-    public void test_getUserPermissions_basic() throws Exception {
+    public void test_getPermissionInfo_basic() throws Exception {
         // given
-        List<UserPermissionDto> userPermissionDtoList = this.userTestDataHelper.prepareUserPermissions_basic();
+        MyPermissionDto myPermissionDto = this.userTestDataHelper.prepareMyPermissionDto_basic();
+        String userId = myPermissionDto.getUserId();
+        List<UserPermissionDto> userPermissionDtoList = myPermissionDto.getUserPermissionList();
         when(userService.findPermissionsByUserIdAndApplicationId(anyString(), anyString())).thenReturn(userPermissionDtoList);
 
         // when
         RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get(ProtectedApiV1Controller.REQUEST_MAPPING_URI_PREFIX + "/my/permissions?applicationId={applicationId}", "frontend-app")
+                .get(ProtectedApiV1Controller.REQUEST_MAPPING_URI_PREFIX + "/my/permission-info?applicationId={applicationId}", "frontend-app")
                 .with(authentication(prepareUsernamePasswordAuthenticationToken_basic()))
                 .with(csrf())
                 .accept(MediaType.APPLICATION_JSON);
@@ -236,20 +237,20 @@ public class MyControllerTests extends AbstractWebTests {
                 .andReturn();
 
         // result
-        log.debug("test_getUserPermissions_basic -  mvcResult.getResponse.getContentAsString: ["
+        log.debug("test_getPermissionInfo_basic -  mvcResult.getResponse.getContentAsString: ["
                 + mvcResult.getResponse().getContentAsString()
                 + "], end");
     }
 
     @Test
-    public void test_getUserPermissionInfo_basic() throws Exception {
+    public void test_getUserDossier_basic() throws Exception {
         // given
-        List<UserPermissionDto> userPermissionDtoList = this.userTestDataHelper.prepareUserPermissions_basic();
-        when(userService.findPermissionsByUserIdAndApplicationId(anyString(), anyString())).thenReturn(userPermissionDtoList);
+        UserDossierDto userDossierDto = this.userTestDataHelper.prepareUserDossierDto_basic();
+        when(userService.findUserDossierByUserIdAndApplicationId(anyString(), anyString())).thenReturn(userDossierDto);
 
         // when
         RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get(ProtectedApiV1Controller.REQUEST_MAPPING_URI_PREFIX + "/my/permission-info?applicationId={applicationId}", "frontend-app")
+                .get(ProtectedApiV1Controller.REQUEST_MAPPING_URI_PREFIX + "/my/user-dossier?applicationId={applicationId}", "frontend-app")
                 .with(authentication(prepareUsernamePasswordAuthenticationToken_basic()))
                 .with(csrf())
                 .accept(MediaType.APPLICATION_JSON);
@@ -263,7 +264,7 @@ public class MyControllerTests extends AbstractWebTests {
                 .andReturn();
 
         // result
-        log.debug("test_getUserPermissionInfo_basic - mvcResult.getResponse.getContentAsString: ["
+        log.debug("test_getUserDossier_basic - mvcResult.getResponse.getContentAsString: ["
                 + mvcResult.getResponse().getContentAsString()
                 + "], end");
     }

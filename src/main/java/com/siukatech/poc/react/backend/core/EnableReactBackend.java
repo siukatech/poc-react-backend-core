@@ -1,6 +1,8 @@
 package com.siukatech.poc.react.backend.core;
 
 
+import com.siukatech.poc.react.backend.core.caching.CachingConfigImport;
+import com.siukatech.poc.react.backend.core.data.DataConfigImport;
 import com.siukatech.poc.react.backend.core.global.GlobalConfigImport;
 import com.siukatech.poc.react.backend.core.security.SecurityConfigImport;
 import com.siukatech.poc.react.backend.core.web.WebConfigImport;
@@ -12,8 +14,10 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Import({
-        GlobalConfigImport.class,
-        WebConfigImport.class
+        GlobalConfigImport.class
+        , CachingConfigImport.class
+        , DataConfigImport.class
+        , WebConfigImport.class
         , SecurityConfigImport.class
 })
 public @interface EnableReactBackend {

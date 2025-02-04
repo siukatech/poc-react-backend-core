@@ -23,7 +23,7 @@ public class CorrelationIdInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response
             , Object handler) throws Exception {
         log.debug("preHandle - start");
-        log.debug("preHandle - request.getRequestURI: [${}]", request.getRequestURI());
+        log.debug("preHandle - request.getRequestURI: [{}]", request.getRequestURI());
 
         response.setHeader(CorrelationIdHandler.HEADER_X_CORRELATION_ID
                 , this.correlationIdHandler.getCorrelationId());

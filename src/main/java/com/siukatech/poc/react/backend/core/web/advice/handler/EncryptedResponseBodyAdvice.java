@@ -4,7 +4,7 @@ import com.siukatech.poc.react.backend.core.business.dto.MyKeyDto;
 import com.siukatech.poc.react.backend.core.business.form.encrypted.EncryptedDetail;
 import com.siukatech.poc.react.backend.core.business.form.encrypted.EncryptedInfo;
 import com.siukatech.poc.react.backend.core.web.context.EncryptedBodyContext;
-import com.siukatech.poc.react.backend.core.web.helper.EncryptedBodyAdviceHelper;
+import com.siukatech.poc.react.backend.core.web.advice.helper.EncryptedBodyAdviceHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;

@@ -9,6 +9,7 @@ import com.siukatech.poc.react.backend.core.user.service.AuthService;
 import com.siukatech.poc.react.backend.core.global.config.AppCoreProp;
 import com.siukatech.poc.react.backend.core.security.provider.AuthorizationDataProvider;
 import com.siukatech.poc.react.backend.core.util.EncryptionUtils;
+import com.siukatech.poc.react.backend.core.web.advice.helper.EncryptedBodyAdviceHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Condition;
 import org.junit.jupiter.api.BeforeEach;

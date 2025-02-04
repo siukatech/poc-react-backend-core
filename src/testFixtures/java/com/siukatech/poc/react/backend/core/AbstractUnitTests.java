@@ -2,13 +2,19 @@ package com.siukatech.poc.react.backend.core;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.LoggerContext;
+import com.siukatech.poc.react.backend.core.global.log.MemoryAppender;
 import com.siukatech.poc.react.backend.core.web.advice.mapper.ProblemDetailExtMapper;
+import lombok.Getter;
+import org.javatuples.Pair;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
 import org.springframework.test.context.TestPropertySource;
+
+import java.util.List;
 
 
 //@Slf4j
@@ -41,6 +47,8 @@ public abstract class AbstractUnitTests {
 
     protected static final org.slf4j.Logger log = LoggerFactory.getLogger(AbstractUnitTests.class);
 
+    @Getter
+    private MemoryAppender memoryAppender;
 
     // The InMemoryClientRegistrationRepository is used to mock the OAuth2 configuration
     /**
@@ -94,6 +102,17 @@ public abstract class AbstractUnitTests {
     @AfterAll
     public static void terminate() {
         log.debug("AbstractUnitTests.terminate............");
+    }
+
+    public void initMemoryAppender(List<Pair<String, Level>> loggerInfoList) {
+        if (memoryAppender == null) memoryAppender = new MemoryAppender();
+        loggerInfoList.forEach(loggerInfo -> {
+            Logger logger = (Logger) LoggerFactory.getLogger(loggerInfo.getValue0());
+            logger.setLevel(loggerInfo.getValue1());
+            logger.addAppender(memoryAppender);
+        });
+        memoryAppender.setContext((LoggerContext) LoggerFactory.getILoggerFactory());
+        memoryAppender.start();
     }
 
 }

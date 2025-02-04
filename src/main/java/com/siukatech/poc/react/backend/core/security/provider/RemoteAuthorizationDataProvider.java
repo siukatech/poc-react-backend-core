@@ -1,8 +1,9 @@
 package com.siukatech.poc.react.backend.core.security.provider;
 
+import com.siukatech.poc.react.backend.core.business.dto.MyPermissionDto;
 import com.siukatech.poc.react.backend.core.business.dto.UserDto;
 import com.siukatech.poc.react.backend.core.business.dto.UserPermissionDto;
-import com.siukatech.poc.react.backend.core.business.dto.UserPermissionInfoDto;
+import com.siukatech.poc.react.backend.core.business.dto.UserDossierDto;
 import com.siukatech.poc.react.backend.core.global.config.AppCoreProp;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
@@ -40,8 +41,8 @@ public class RemoteAuthorizationDataProvider implements AuthorizationDataProvide
     }
 
     @Override
-    public UserDto findByUserIdAndTokenValue(String userId, String tokenValue) {
-        log.debug("findByUserId - start");
+    public UserDto findUserByUserIdAndTokenValue(String userId, String tokenValue) {
+        log.debug("findUserByUserIdAndTokenValue - start");
         String myUserInfoUrl = this.appCoreProp.getMyUserInfoUrl();
         UserDto userDto = null;
         if (StringUtils.isNotEmpty(myUserInfoUrl)) {
@@ -55,7 +56,7 @@ public class RemoteAuthorizationDataProvider implements AuthorizationDataProvide
                         , httpEntity
                         , UserDto.class);
                 userDto = responseEntity.getBody();
-                log.debug("findByUserId - userId: [{}], myUserInfoUrl: [{}]"
+                log.debug("findUserByUserIdAndTokenValue - userId: [{}], myUserInfoUrl: [{}]"
                                 + ", userDto.getUserId: [{}]"
 //                                + ", responseEntity.getBody.toString: [{}]"
                         , userId, myUserInfoUrl
@@ -73,24 +74,24 @@ public class RemoteAuthorizationDataProvider implements AuthorizationDataProvide
                         , e);
             }
         } else {
-            log.debug("findByUserId - userId: [{}], myUserInfoUrl: [{}]"
+            log.debug("findUserByUserIdAndTokenValue - userId: [{}], myUserInfoUrl: [{}]"
                     , userId, myUserInfoUrl
             );
             throw new RuntimeException(
                     "User with userId: [%s] cannot be resolved because of the empty my-user-info"
                             .formatted(userId));
         }
-        log.debug("findByUserId - end");
+        log.debug("findUserByUserIdAndTokenValue - end");
         return userDto;
     }
 
     @Override
-    public List<UserPermissionDto> findPermissionsByUserId(String userId, String tokenValue) {
+    public List<UserPermissionDto> findPermissionsByUserIdAndTokenValue(String userId, String tokenValue) {
         log.debug("findPermissionsByUserId - start");
         List<UserPermissionDto> userPermissionDtoList = new ArrayList<>();
         //
         String myPermissionInfoUrl = this.appCoreProp.getMyPermissionInfoUrl();
-        UserPermissionInfoDto userPermissionInfoDto = null;
+        MyPermissionDto myPermissionDto = null;
         if (StringUtils.isNotEmpty(myPermissionInfoUrl)) {
             UriComponentsBuilder myPermissionInfoUriBuilder = UriComponentsBuilder.fromUriString(myPermissionInfoUrl)
                     .queryParam("applicationId", this.appCoreProp.getApplicationId());
@@ -98,28 +99,28 @@ public class RemoteAuthorizationDataProvider implements AuthorizationDataProvide
             HttpHeaders httpHeaders = new HttpHeaders();
             prepareHttpHeaders(httpHeaders, tokenValue);
             HttpEntity<String> httpEntity = new HttpEntity<>(httpHeaders);
-            ResponseEntity<UserPermissionInfoDto> responseEntity = this.oauth2ClientRestTemplate.exchange(
+            ResponseEntity<MyPermissionDto> responseEntity = this.oauth2ClientRestTemplate.exchange(
                     myPermissionInfoUriTemplate, HttpMethod.GET
                     , httpEntity
 //                    , new ParameterizedTypeReference<UserPermissionInfoDto>() {
 //                    }
-                    , UserPermissionInfoDto.class
+                    , MyPermissionDto.class
                     );
-            userPermissionInfoDto = responseEntity.getBody();
+            myPermissionDto = responseEntity.getBody();
             log.debug("findPermissionsByUserId - userId: [{}], myPermissionInfoUriTemplate: [{}], userPermissionInfoDto.getUserId: [{}], userPermissionDtoList.size: [{}]"
 //                + ", responseEntity.getBody.toString: [{}]"
-                    , userId, myPermissionInfoUriTemplate, userPermissionInfoDto.getUserId()
-                    , userPermissionInfoDto.getUserPermissionList().size()
+                    , userId, myPermissionInfoUriTemplate, myPermissionDto.getUserId()
+                    , myPermissionDto.getUserPermissionList().size()
 //                , responseEntity.getBody().toString()
             );
-            userPermissionDtoList.addAll(userPermissionInfoDto.getUserPermissionList());
+            userPermissionDtoList.addAll(myPermissionDto.getUserPermissionList());
             log.debug("findPermissionsByUserId - userId: [{}], userPermissionDtoList: [{}]"
                     , userId, userPermissionDtoList.size()
             );
-            if (!userId.equals(userPermissionInfoDto.getUserId())) {
+            if (!userId.equals(myPermissionDto.getUserId())) {
                 throw new EntityNotFoundException(
                         "User does not match userId: [%s], userPermissionInfoDto.getUserId: [%s]"
-                                .formatted(userId, userPermissionInfoDto.getUserId()));
+                                .formatted(userId, myPermissionDto.getUserId()));
             }
         } else {
             log.debug("findPermissionsByUserId - userId: [{}], myUserPermissionInfoUrl: [{}]"
@@ -131,6 +132,11 @@ public class RemoteAuthorizationDataProvider implements AuthorizationDataProvide
         }
         log.debug("findPermissionsByUserId - end");
         return userPermissionDtoList;
+    }
+
+    @Override
+    public UserDossierDto findDossierByUserIdAndTokenValue(String userId, String tokenValue) {
+        return null;
     }
 
 }

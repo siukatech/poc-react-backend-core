@@ -1,9 +1,6 @@
 package com.siukatech.poc.react.backend.core.user.service;
 
-import com.siukatech.poc.react.backend.core.business.dto.MyKeyDto;
-import com.siukatech.poc.react.backend.core.business.dto.UserDto;
-import com.siukatech.poc.react.backend.core.business.dto.UserPermissionDto;
-import com.siukatech.poc.react.backend.core.business.dto.UserViewDto;
+import com.siukatech.poc.react.backend.core.business.dto.*;
 import com.siukatech.poc.react.backend.core.user.entity.UserEntity;
 import com.siukatech.poc.react.backend.core.user.entity.UserPermissionEntity;
 import com.siukatech.poc.react.backend.core.user.entity.UserViewEntity;
@@ -70,6 +67,14 @@ public class UserService {
                         .map(userPermissionEntity, UserPermissionDto.class))
                 .toList();
         return userPermissionDtoList;
+    }
+
+    public UserDossierDto findUserDossierByUserIdAndApplicationId(String targetUserId, String applicationId) {
+        UserDto userDto = findUserByUserId(targetUserId);
+        MyKeyDto myKeyDto = findKeyByUserId(targetUserId);
+        List<UserPermissionDto> userPermissionDtoList = this.findPermissionsByUserIdAndApplicationId(targetUserId, applicationId);
+        UserDossierDto userDossierDto = new UserDossierDto(userDto, myKeyDto, userPermissionDtoList);
+        return userDossierDto;
     }
 
     public UserViewDto findViewByUserId(String targetUserId) {

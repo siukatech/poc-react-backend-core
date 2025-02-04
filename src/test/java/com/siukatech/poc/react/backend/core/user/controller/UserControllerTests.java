@@ -1,6 +1,5 @@
 package com.siukatech.poc.react.backend.core.user.controller;
 
-import com.siukatech.poc.react.backend.core.business.dto.UserDto;
 import com.siukatech.poc.react.backend.core.business.dto.UserViewDto;
 import com.siukatech.poc.react.backend.core.user.helper.UserTestDataHelper;
 import com.siukatech.poc.react.backend.core.user.service.UserService;
@@ -8,7 +7,7 @@ import com.siukatech.poc.react.backend.core.security.evaluator.PermissionControl
 import com.siukatech.poc.react.backend.core.security.provider.AuthorizationDataProvider;
 import com.siukatech.poc.react.backend.core.web.annotation.v1.ProtectedApiV1Controller;
 import com.siukatech.poc.react.backend.core.web.context.EncryptedBodyContext;
-import com.siukatech.poc.react.backend.core.web.helper.EncryptedBodyAdviceHelper;
+import com.siukatech.poc.react.backend.core.web.advice.helper.EncryptedBodyAdviceHelper;
 import com.siukatech.poc.react.backend.core.web.micrometer.CorrelationIdHandler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

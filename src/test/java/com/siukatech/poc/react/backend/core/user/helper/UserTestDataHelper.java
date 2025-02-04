@@ -1,9 +1,6 @@
 package com.siukatech.poc.react.backend.core.user.helper;
 
-import com.siukatech.poc.react.backend.core.business.dto.MyKeyDto;
-import com.siukatech.poc.react.backend.core.business.dto.UserDto;
-import com.siukatech.poc.react.backend.core.business.dto.UserPermissionDto;
-import com.siukatech.poc.react.backend.core.business.dto.UserViewDto;
+import com.siukatech.poc.react.backend.core.business.dto.*;
 import com.siukatech.poc.react.backend.core.global.helper.AbstractTestDataHelper;
 import com.siukatech.poc.react.backend.core.user.entity.UserEntity;
 import lombok.extern.slf4j.Slf4j;
@@ -63,7 +60,6 @@ public class UserTestDataHelper extends AbstractTestDataHelper {
         return myKeyDto;
     }
 
-
     public List<UserPermissionDto> prepareUserPermissions_basic() {
         String[][] userPermissionTempsArr = new String[][]{
                 new String[]{"app-user-01", "1", "role-users-01", "frontend-app", "menu.home", "view"}
@@ -82,6 +78,21 @@ public class UserTestDataHelper extends AbstractTestDataHelper {
             userPermissionDtoList.get(userPermissionDtoList.size() - 1).setAccessRight(userPermissionTemps[5]);
         }
         return userPermissionDtoList;
+    }
+
+    public MyPermissionDto prepareMyPermissionDto_basic() {
+        UserDto userDto = this.prepareUserDto_basic();
+        List<UserPermissionDto> userPermissionDtoList = this.prepareUserPermissions_basic();
+        MyPermissionDto myPermissionDto = new MyPermissionDto(userDto.getUserId(), userPermissionDtoList);
+        return myPermissionDto;
+    }
+
+    public UserDossierDto prepareUserDossierDto_basic() {
+        UserDto userDto = this.prepareUserDto_basic();
+        MyKeyDto myKeyDto = this.prepareMyKeyDto_basic();
+        List<UserPermissionDto> userPermissionDtoList = this.prepareUserPermissions_basic();
+        UserDossierDto userDossierDto = new UserDossierDto(userDto, myKeyDto, userPermissionDtoList);
+        return userDossierDto;
     }
 
 }

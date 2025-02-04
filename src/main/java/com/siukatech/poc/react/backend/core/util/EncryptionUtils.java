@@ -1,5 +1,6 @@
 package com.siukatech.poc.react.backend.core.util;
 
+import jakarta.xml.bind.DatatypeConverter;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.crypto.Cipher;
@@ -200,6 +201,14 @@ public class EncryptionUtils {
         byte[] digest = md.digest();
         String challenge = org.apache.commons.codec.binary.Base64.encodeBase64URLSafeString(digest);
         return challenge;
+    }
+
+    public static String generateMD5Hash(byte[] content) throws NoSuchAlgorithmException {
+        MessageDigest md = MessageDigest.getInstance(HASHING_ALGORITHM_MD5);
+        md.update(content);
+        byte[] digest = md.digest();
+        String hashStr = DatatypeConverter.printHexBinary(digest).toUpperCase();
+        return hashStr;
     }
 
 }

@@ -68,43 +68,37 @@ public class MyController {
         return ResponseEntity.ok(userDto);
     }
 
-    @GetMapping("/my/permissions")
-    @PermissionControl(appResourceId = "core.my.getUserPermissions", accessRight = "view")
-    public ResponseEntity getUserPermissions(@RequestHeader HttpHeaders httpHeaders
+    @GetMapping("/my/permission-info")
+    @PermissionControl(appResourceId = "core.my.getPermissionInfo", accessRight = "view")
+    public ResponseEntity getPermissionInfo(@RequestHeader HttpHeaders httpHeaders
             , @RequestParam(required = true) String applicationId
             , Authentication authentication) {
         Authentication authenticationInSc = SecurityContextHolder.getContext().getAuthentication();
         HttpHeaderUtils.logHttpHeaders(httpHeaders);
-        log.debug("getUserPermissions - authentication: [{}], authenticationInSc: [{}], applicationId: [{}]"
+        log.debug("getPermissionInfo - authentication: [{}], authenticationInSc: [{}], applicationId: [{}]"
                 , authentication, authenticationInSc, applicationId);
         String userId = authentication.getName();
         List<UserPermissionDto> userPermissionDtoList = this.userService
                 .findPermissionsByUserIdAndApplicationId(userId, applicationId);
+        MyPermissionDto myPermissionDto = new MyPermissionDto(userId, userPermissionDtoList);
 
-        return ResponseEntity.ok(userPermissionDtoList);
+        return ResponseEntity.ok(myPermissionDto);
     }
 
-    @GetMapping("/my/permission-info")
-    @PermissionControl(appResourceId = "core.my.getUserPermissionInfo", accessRight = "view")
-    public ResponseEntity getUserPermissionInfo(@RequestHeader HttpHeaders httpHeaders
+    @GetMapping("/my/user-dossier")
+    @PermissionControl(appResourceId = "core.my.getUserDossier", accessRight = "view")
+    public ResponseEntity getUserDossier(@RequestHeader HttpHeaders httpHeaders
             , @RequestParam(required = true) String applicationId
             , Authentication authentication) {
         Authentication authenticationInSc = SecurityContextHolder.getContext().getAuthentication();
         HttpHeaderUtils.logHttpHeaders(httpHeaders);
-        log.debug("getUserPermissions - authentication: [{}], authenticationInSc: [{}], applicationId: [{}]"
+        log.debug("getUserDossier - authentication: [{}], authenticationInSc: [{}], applicationId: [{}]"
                 , authentication, authenticationInSc, applicationId);
         String userId = authentication.getName();
-        List<UserPermissionDto> userPermissionDtoList = this.userService
-                .findPermissionsByUserIdAndApplicationId(userId, applicationId);
-//        UserPermissionInfoDto userPermissionInfoDto = UserPermissionInfoDto.builder()
-//                .userId(userId)
-//                .userPermissionList(userPermissionDtoList)
-//                .build();
-        UserPermissionInfoDto userPermissionInfoDto = new UserPermissionInfoDto();
-        userPermissionInfoDto.setUserId(userId);
-        userPermissionInfoDto.setUserPermissionList(userPermissionDtoList);
+        UserDossierDto userDossierDto = this.userService
+                .findUserDossierByUserIdAndApplicationId(userId, applicationId);
 
-        return ResponseEntity.ok(userPermissionInfoDto);
+        return ResponseEntity.ok(userDossierDto);
     }
 
     @GetMapping("/my/user-view")

@@ -6,7 +6,7 @@ import com.siukatech.poc.react.backend.core.security.model.MyAuthenticationToken
 import com.siukatech.poc.react.backend.core.security.evaluator.PermissionControlEvaluator;
 import com.siukatech.poc.react.backend.core.security.provider.AuthorizationDataProvider;
 import com.siukatech.poc.react.backend.core.web.context.EncryptedBodyContext;
-import com.siukatech.poc.react.backend.core.web.helper.EncryptedBodyAdviceHelper;
+import com.siukatech.poc.react.backend.core.web.advice.helper.EncryptedBodyAdviceHelper;
 import com.siukatech.poc.react.backend.core.web.micrometer.CorrelationIdHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
