@@ -419,7 +419,7 @@ Two encryption algorithms are used for the solution.
 
 18 `backend: RestControllerAdvice` Sends ~~`aes-ecb-str`~~ `aes-cbc-str` as response
 
-19 & 20 `frontend: AxiosInterceptor` decrypts ~~`aes-ecb-str`~~ `aes-cbc-str` by `crypto-js` (~~AES/ECB/PKCS7Padding~~ AES/CBC/PKCS7Padding) to `response-entity-str`
+19 & 20 `frontend: AxiosInterceptor` decrypts ~~`aes-ecb-str`~~ `aes-cbc-str` by `CryptoJs` (~~AES/ECB/PKCS7Padding~~ AES/CBC/PKCS7Padding) to `response-entity-str`
 
 21 & 22 `frontend: AxiosInterceptor` parses `response-entity-str` to `response-entity` by `JSON.parse`
 
@@ -446,81 +446,86 @@ https://mermaid.js.org/syntax/sequenceDiagram.html
 title: E2EE sequence diagram
 ---
 sequenceDiagram
-    autonumber
     
     participant AxiosInterceptor as frontend: <br/>AxiosInterceptor
     participant JSON as frontend: <br/>JSON
     participant CryptoJs as frontend: <br/>CryptoJs
     participant Jsencrypt as frontend: <br/>Jsencrypt
-    participant RestControllerAdvice as backend: <br/>@RestControllerAdvice
+    participant MyController as backend: <br/>MyController
+    participant RestControllerAdvice as backend: <br/>With @RestControllerAdvice
+    participant EncryptedResponseBodyAdvice as backend: <br/>EncryptedResponseBodyAdvice
     participant EncryptedRequestBodyAdvice as backend: <br/>EncryptedRequestBodyAdvice
     participant EncryptedBodyAdviceHelper as backend: <br/>EncryptedBodyAdviceHelper
+    
+    autonumber 1
+    AxiosInterceptor ->> MyController: Request /v1/protected/my/public-key
+    autonumber 2
+    MyController -->> AxiosInterceptor: Reply `user-public-key`
 
-    %%1
-    AxiosInterceptor ->> RestControllerAdvice: Request /v1/protected/my/public-key
-    %%2
-    RestControllerAdvice -->> AxiosInterceptor: Reply `user-public-key`
-
-    %%3
+    autonumber 3
     AxiosInterceptor ->> CryptoJs: Generate `aes-key` (SHA3)
-    %%4
+    autonumber 4
     CryptoJs -->> AxiosInterceptor : Reply `aes-key`
 
-    %%5
+    autonumber 5
     AxiosInterceptor ->> CryptoJs: Encrypt `original-payload-str` <br/>with `aes-key` <br/>(AES/CBC/PKCS5Padding)
-    %%6
+    autonumber 6
     CryptoJs -->> AxiosInterceptor: Reply `aes-cbc-str`
 
-    %%7
+    autonumber 7
     AxiosInterceptor ->> Jsencrypt: Encrypt `aes-key` with `user-public-key`
-    %%8
+    autonumber 8
     Jsencrypt -->> AxiosInterceptor: Reply `aes-key-rsa`
 
-    %%9
+    autonumber 9
     AxiosInterceptor ->> AxiosInterceptor: Combine `aes-cbc-str` <br/>and `aes-key-rsa` <br/>to `request-body-str`
 
-    %%10
+    autonumber 10
     %% https://mermaid.js.org/syntax/sequenceDiagram.html#activations
     %% ++ / -- Shortcut syntax for activation, deactivation, creation
     AxiosInterceptor ->> +RestControllerAdvice: Send `request-body-str`
 
-    %%11
-    RestControllerAdvice ->> EncryptedRequestBodyAdvice: Split `request-body-str` into <br/>`aes-cbc-str` and `aes-key-rsa` in <br/>`RequestBodyAdviceAdapter.beforeBodyRead`
+    autonumber 11
+    RestControllerAdvice ->> EncryptedRequestBodyAdvice: Pass `request-body-str` to <br/>`EncryptedRequestBodyAdvice.beforeBodyRead`
+    autonumber 11
+    EncryptedRequestBodyAdvice ->> EncryptedBodyAdviceHelper: Split `request-body-str` into <br/>`aes-cbc-str` and `aes-key-rsa` in <br/>`RequestBodyAdviceAdapter.beforeBodyRead`
 
-    %%12
-    EncryptedRequestBodyAdvice ->> EncryptedBodyAdviceHelper: Decrypt `aes-key-rsa` <br/>by `user-private-key` <br/>to `aes-key` by <br/>`EncryptedBodyAdviceHelper.ecryptDataBase64ToBodyDetail`
-    %%13
-    EncryptedBodyAdviceHelper -->> EncryptedRequestBodyAdvice: Reply `aes-key`
+    critical Method: <br/>EncryptedBodyAdviceHelper<br/>.ecryptDataBase64ToBodyDetail 
+    autonumber 12
+    EncryptedBodyAdviceHelper ->> EncryptedBodyAdviceHelper: Decrypt `aes-key-rsa` <br/>by `user-private-key` <br/>to `aes-key`
+    autonumber 13
+    EncryptedBodyAdviceHelper -->> EncryptedBodyAdviceHelper: Reply `aes-key`
 
-    %%14
+    autonumber 14
     EncryptedBodyAdviceHelper ->> EncryptedBodyAdviceHelper: Decrypt `aes-cbc-str` <br/>by `aes-key` <br/>(AES/CBC/PKCS5Padding) to <br/>`original-payload-str`
+    end
 
-    %%15
+    autonumber 15
     EncryptedBodyAdviceHelper ->> RestControllerAdvice: Pass `original-payload-str` to controller <br/>through the return of <br/>`RequestBodyAdviceAdapter.beforeBodyRead`
 
-    %%16
+    autonumber 16
     %% ~~`aes-ecb-str`~~
     %% ~~AES/ECB/PKCS7Padding~~
-    RestControllerAdvice ->> EncryptedRequestBodyAdvice: Encrypt `original-response-entity` <br/>by `aes-key` to `aes-cbc-str` <br/>(AES/CBC/PKCS7Padding)
+    RestControllerAdvice ->> EncryptedResponseBodyAdvice: Encrypt `original-response-entity` <br/>by `aes-key` to `aes-cbc-str` <br/>(AES/CBC/PKCS7Padding)
 
-    %%17
+    autonumber 17
     %% ~~`aes-ecb-str`~~
-    EncryptedRequestBodyAdvice -->> RestControllerAdvice: Reply `aes-cbc-str` <br/>as response through <br/>`ResponseBodyAdvice.beforeBodyWrite`
+    EncryptedResponseBodyAdvice -->> RestControllerAdvice: Reply `aes-cbc-str` <br/>as response through <br/>`ResponseBodyAdvice.beforeBodyWrite`
 
-    %%18
+    autonumber 18
     %% ~~`aes-ecb-str`~~
     RestControllerAdvice -->> -AxiosInterceptor: Reply `aes-cbc-str` as response
 
-    %%19
+    autonumber 19
     %% ~~`aes-ecb-str`~~
     %% ~~AES/ECB/PKCS7Padding~~
-    AxiosInterceptor ->> CryptoJs: Decrypt `aes-cbc-str` <br/>by `crypto-js` (AES/CBC/PKCS7Padding) <br/>to `response-entity-str`
-    %%20
+    AxiosInterceptor ->> CryptoJs: Decrypt `aes-cbc-str` <br/>by `CryptoJs` (AES/CBC/PKCS7Padding) <br/>to `response-entity-str`
+    autonumber 20
     CryptoJs -->> AxiosInterceptor: Reply `response-entity-str`
 
-    %%21
+    autonumber 21
     AxiosInterceptor ->> JSON: Parse `response-entity-str` to <br/>`response-entity` by `JSON.parse`
-    %%22
+    autonumber 22
     JSON -->> AxiosInterceptor: Reply `response-entity`
 
 
@@ -547,12 +552,12 @@ classDiagram
         +handleEmptyBody()
     }
     class EncryptedRequestBodyAdvice {
-    %%        -EncryptedBodyContext encryptedBodyContext
-    %%        -EncryptedBodyAdviceHelper encryptedBodyAdviceHelper
-    %%        +supports()
-    %%        +beforeBodyRead()
-    %%        +afterBodyRead()
-    %%        +handleEmptyBody()
+%%        -EncryptedBodyContext encryptedBodyContext
+%%        -EncryptedBodyAdviceHelper encryptedBodyAdviceHelper
+%%        +supports()
+%%        +beforeBodyRead()
+%%        +afterBodyRead()
+%%        +handleEmptyBody()
     }
     class ResponseBodyAdvice {
         <<interface>>
@@ -560,15 +565,15 @@ classDiagram
         +beforeBodyWrite()
     }
     class EncryptedResponseBodyAdvice {
-    %%        -EncryptedBodyContext encryptedBodyContext
-    %%        -EncryptedBodyAdviceHelper encryptedBodyAdviceHelper
-    %%        +support()
-    %%        +beforeBodyWrite()
+%%        -EncryptedBodyContext encryptedBodyContext
+%%        -EncryptedBodyAdviceHelper encryptedBodyAdviceHelper
+%%        +support()
+%%        +beforeBodyWrite()
     }
     class EncryptedBodyAdviceHelper {
-    %%        -ObjectMapper objectMapper
-    %%        -RestTemplate oauth2ClientRestTemplate
-    %%        -AppCoreProp appCoreProp
+%%        -ObjectMapper objectMapper
+%%        -RestTemplate oauth2ClientRestTemplate
+%%        -AppCoreProp appCoreProp
         +decryptRsaDataBase64ToBodyDetail()
         +encryptBodyToDataBase64()
         +resolveRsaInfoAesContent()
@@ -596,6 +601,8 @@ title: ReactBackend initialization state
 stateDiagram-v2
     [*] --> EnableReactBackend
     EnableReactBackend --> GlobalConfigImport
+    EnableReactBackend --> CachingConfigImport
+    EnableReactBackend --> DataConfigImport
     EnableReactBackend --> WebConfigImport
     EnableReactBackend --> SecurityConfigImport
     
@@ -603,7 +610,9 @@ stateDiagram-v2
     
     state EnableReactBackend {
         [*] --> GlobalConfigImport
-        GlobalConfigImport --> WebConfigImport
+        GlobalConfigImport --> CachingConfigImport
+        CachingConfigImport --> DataConfigImport
+        DataConfigImport --> WebConfigImport
         WebConfigImport --> SecurityConfigImport
         SecurityConfigImport --> [*]
     }
@@ -613,9 +622,18 @@ stateDiagram-v2
         MapperConfig --> PostAppConfig
         PostAppConfig --> [*]
     }
-    state WebConfigImport {
+    state CachingConfigImport {
+        [*] --> SimpleCachingConfig
+        SimpleCachingConfig --> EhcacheCachingConfig
+        EhcacheCachingConfig --> RedisCachingConfig
+        RedisCachingConfig --> [*]
+    }
+    state DataConfigImport {
         [*] --> DataConfig
-        DataConfig --> WebComponentConfig
+        DataConfig --> [*]
+    }
+    state WebConfigImport {
+        [*] --> WebComponentConfig
         WebComponentConfig --> NoopTracingConfig
         NoopTracingConfig --> WebMvcConfig
         WebMvcConfig --> [*]
@@ -623,7 +641,8 @@ stateDiagram-v2
     state SecurityConfigImport {
         [*] --> Oauth2ClientRestTemplateConfig
         Oauth2ClientRestTemplateConfig --> AuthorizationDataProviderConfig
-        AuthorizationDataProviderConfig --> WebSecurityConfig
+        AuthorizationDataProviderConfig --> OAuth2ResourceServerConfig
+        OAuth2ResourceServerConfig --> WebSecurityConfig
         WebSecurityConfig --> [*]
     }
 
@@ -649,11 +668,11 @@ A RuntimeException will be thrown if the `my-key-info` api is not available when
 
 
 ## Findings
-The `jsencrypt` does not support using `user-public-key` to decrypt.  
+The `Jsencrypt` does not support using `user-public-key` to decrypt.  
 The better approach should be using `user-private-key` to encrypt data at backend and frontend uses the `user-public-key` for decryption.  
-~~On frontend, the `crypto-js` (AES/CBC) is hard to decrypt the java `aes-cbc-str` (AES/CBC).~~  
-~~Finally only the `crypto-js` (AES/ECB) can decrypt java `aes-ecb-str` (AES/ECB).~~  
-On frontend, the `crypto-js` (AES/CBC) can decrypt the java `aes-cbc-str` (AES/CBC) with correct `iv`.  
+~~On frontend, the `CryptoJs` (AES/CBC) is hard to decrypt the java `aes-cbc-str` (AES/CBC).~~  
+~~Finally only the `CryptoJs` (AES/ECB) can decrypt java `aes-ecb-str` (AES/ECB).~~  
+On frontend, the `CryptoJs` (AES/CBC) can decrypt the java `aes-cbc-str` (AES/CBC) with correct `iv`.  
 The `iv` is required the byte array format which means the decoding should be happened before.  
 The `CryptoJS.enc.Base64.parse([base64-str])` decodes `base64-str` to `byte-array`.
 
@@ -708,9 +727,37 @@ So the AES/CBC is default encryption algorithm.
 
 
 
-# Springboot Upgrade ***
+# Idempotent Request Validation
+
+
+## Flowchart
+```mermaid
+---
+title: Idempotent Requestion Validation flowchart
+---
+%% LR: from Left to Right; TD: from Top to Down
+flowchart TD
+    C1[Client]
+    B1[Backend]
+    L1{Does request MD5 <br/>hash has exist?}
+    D1[(Cache)]
+
+    C1 -->|Http POST/PUT/PATCH Request| B1
+    B1 --> L1
+    %% Reference:
+    %% https://stackoverflow.com/a/42746389
+    L1 -->|Yes, with Http Status 409 'Conflict'| C1
+    L1 -->|No, generate MD5 hash| D1
+```
+
+## Sequence diagram
+1 & 2 `frontend: AxiosInterceptor` requests `user-public-key` from `backend` (/v1/protected/my/public-key)
+
+
+
+# Spring Boot Upgrade ***
 ## From 3.1.0 => 3.2.1
-After upgrade to `springboot` `3.2.1`, `@PathVariable` behavior is changed.  
+After upgrade to `Spring Boot` `3.2.1`, `@PathVariable` behavior is changed.  
 This can be fixed by update build.gradle or adding maven plugin.
 
 Manually indicate the name of the variable one by one.
@@ -751,6 +798,22 @@ tasks.withType(JavaCompile).configureEach {
 **Reference:**  
 https://stackoverflow.com/a/77691302    
 https://github.com/spring-projects/spring-framework/wiki/Upgrading-to-Spring-Framework-6.x#parameter-name-retention
+
+
+
+## From 3.3.7 => 3.4.2
+Hibernate would be upgraded to 6.6.2.Final by following the `Spring Boot` upgrade.  
+Version 6.6 introduces a lot of breaking changes which behavior differently with 6.5 or lower versions.  
+
+### SQL Generation
+
+
+### Optimistic Lock Exception detection mechanism
+
+
+
+**Reference:**  
+https://stackoverflow.com/a/79229425
 
 
 
