@@ -1,8 +1,10 @@
 package com.siukatech.poc.react.backend.core.web.advice.handler;
 
 import com.siukatech.poc.react.backend.core.business.dto.MyKeyDto;
+import com.siukatech.poc.react.backend.core.business.dto.UserDossierDto;
 import com.siukatech.poc.react.backend.core.business.form.encrypted.EncryptedDetail;
 import com.siukatech.poc.react.backend.core.business.form.encrypted.EncryptedInfo;
+import com.siukatech.poc.react.backend.core.security.model.MyAuthenticationToken;
 import com.siukatech.poc.react.backend.core.web.context.EncryptedBodyContext;
 import com.siukatech.poc.react.backend.core.web.advice.helper.EncryptedBodyAdviceHelper;
 import lombok.extern.slf4j.Slf4j;
@@ -107,7 +109,11 @@ public class EncryptedResponseBodyAdvice implements ResponseBodyAdvice {
 //                    .orElseThrow(() -> new EntityNotFoundException("User not found [" + finalUserId + "]"));
 //        }
         if (myKeyDto == null) {
-            myKeyDto = this.encryptedBodyAdviceHelper.resolveMyKeyInfo(userId);
+//            myKeyDto = this.encryptedBodyAdviceHelper.resolveMyKeyInfo(userId);
+            if (authentication instanceof MyAuthenticationToken myAuthenticationToken) {
+                UserDossierDto userDossierDto = myAuthenticationToken.getUserDossierDto();
+                myKeyDto = userDossierDto.getMyKeyDto();
+            }
         }
         if (encryptedDetail == null) {
 //            // should obtain from SecurityContext again

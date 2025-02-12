@@ -1,8 +1,10 @@
 package com.siukatech.poc.react.backend.core.web.advice.handler;
 
 import com.siukatech.poc.react.backend.core.business.dto.MyKeyDto;
+import com.siukatech.poc.react.backend.core.business.dto.UserDossierDto;
 import com.siukatech.poc.react.backend.core.business.form.encrypted.EncryptedDetail;
 import com.siukatech.poc.react.backend.core.business.form.encrypted.EncryptedInfo;
+import com.siukatech.poc.react.backend.core.security.model.MyAuthenticationToken;
 import com.siukatech.poc.react.backend.core.web.context.EncryptedBodyContext;
 import com.siukatech.poc.react.backend.core.web.advice.helper.EncryptedBodyAdviceHelper;
 import lombok.extern.slf4j.Slf4j;
@@ -89,7 +91,13 @@ public class EncryptedRequestBodyAdvice extends RequestBodyAdviceAdapter {
 //        String finalUserId = userId;
 //        UserEntity userEntity = this.userRepository.findByUserId(userId)
 //                .orElseThrow(() -> new EntityNotFoundException("User not found [" + finalUserId + "]"));
-        MyKeyDto myKeyDto = this.encryptedBodyAdviceHelper.resolveMyKeyInfo(userId);
+        UserDossierDto userDossierDto = null;
+        MyKeyDto myKeyDto = null;
+//        myKeyDto = this.encryptedBodyAdviceHelper.resolveMyKeyInfo(userId);
+        if (authentication instanceof MyAuthenticationToken myAuthenticationToken) {
+            userDossierDto = myAuthenticationToken.getUserDossierDto();
+            myKeyDto = userDossierDto.getMyKeyDto();
+        }
 
         log.debug("beforeBodyRead - methodParameter.getMethod.getName: [" + methodParameter.getMethod().getName()
                 + "], methodParameter.getParameterType.getName: [" + methodParameter.getParameterType().getName()

@@ -3,14 +3,16 @@ package com.siukatech.poc.react.backend.core;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
+import com.siukatech.poc.react.backend.core.global.helper.UserTestDataHelper;
 import com.siukatech.poc.react.backend.core.global.log.MemoryAppender;
-import com.siukatech.poc.react.backend.core.web.advice.mapper.ProblemDetailExtMapper;
 import lombok.Getter;
 import org.javatuples.Pair;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.mockito.Spy;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
 import org.springframework.test.context.TestPropertySource;
 
@@ -88,6 +90,7 @@ public abstract class AbstractUnitTests {
     protected InMemoryClientRegistrationRepository clientRegistrationRepository;
     // @MockBean
     // protected ProblemDetailExtMapper problemDetailExtMapper;
+
 
     @BeforeAll
     public static void init() {

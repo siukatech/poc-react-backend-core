@@ -1,5 +1,6 @@
 package com.siukatech.poc.react.backend.core.security.model;
 
+import com.siukatech.poc.react.backend.core.business.dto.UserDossierDto;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -11,6 +12,8 @@ public class MyAuthenticationToken extends OAuth2AuthenticationToken {
     public static final String ATTR_TOKEN_VALUE = "ATTR_TOKEN_VALUE";
     public static final String ATTR_USER_ID = "ATTR_USER_ID";
     public static final String ATTR_PUBLIC_KEY = "ATTR_PUBLIC_KEY";
+    public static final String ATTR_PRIVATE_KEY = "ATTR_PRIVATE_KEY";
+    public static final String ATTR_USER_DOSSIER_DTO = "ATTR_USER_DOSSIER_DTO";
 
     /**
      * Constructs an {@code OAuth2AuthenticationToken} using the provided parameters.
@@ -36,6 +39,14 @@ public class MyAuthenticationToken extends OAuth2AuthenticationToken {
 
     public String getPublicKey() {
         return this.getPrincipal().getAttribute(ATTR_PUBLIC_KEY);
+    }
+
+    public String getPrivateKey() {
+        return this.getPrincipal().getAttribute(ATTR_PRIVATE_KEY);
+    }
+
+    public UserDossierDto getUserDossierDto() {
+        return this.getPrincipal().getAttribute(ATTR_USER_DOSSIER_DTO);
     }
 
 }

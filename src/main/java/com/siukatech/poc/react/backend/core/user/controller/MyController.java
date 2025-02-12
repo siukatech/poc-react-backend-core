@@ -2,6 +2,8 @@ package com.siukatech.poc.react.backend.core.user.controller;
 
 import com.siukatech.poc.react.backend.core.business.dto.*;
 import com.siukatech.poc.react.backend.core.security.annotation.PermissionControl;
+import com.siukatech.poc.react.backend.core.user.mapper.UserMapper;
+import com.siukatech.poc.react.backend.core.security.model.MyAuthenticationToken;
 import com.siukatech.poc.react.backend.core.user.service.UserService;
 import com.siukatech.poc.react.backend.core.util.HttpHeaderUtils;
 import com.siukatech.poc.react.backend.core.web.annotation.v1.ProtectedApiV1Controller;
@@ -13,8 +15,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.List;
 
 @Slf4j
 @ProtectedApiV1Controller
@@ -78,9 +78,15 @@ public class MyController {
         log.debug("getPermissionInfo - authentication: [{}], authenticationInSc: [{}], applicationId: [{}]"
                 , authentication, authenticationInSc, applicationId);
         String userId = authentication.getName();
-        List<UserPermissionDto> userPermissionDtoList = this.userService
-                .findPermissionsByUserIdAndApplicationId(userId, applicationId);
-        MyPermissionDto myPermissionDto = new MyPermissionDto(userId, userPermissionDtoList);
+        UserDossierDto userDossierDto = null;
+        MyPermissionDto myPermissionDto = null;
+//        List<UserPermissionDto> userPermissionDtoList = this.userService
+//                .findPermissionsByUserIdAndApplicationId(userId, applicationId);
+//        myPermissionDto = new MyPermissionDto(userId, userPermissionDtoList);
+        if (authentication instanceof MyAuthenticationToken myAuthenticationToken) {
+            userDossierDto = myAuthenticationToken.getUserDossierDto();
+            myPermissionDto = new MyPermissionDto(userId, userDossierDto.getUserPermissionList());
+        }
 
         return ResponseEntity.ok(myPermissionDto);
     }
@@ -95,8 +101,12 @@ public class MyController {
         log.debug("getUserDossier - authentication: [{}], authenticationInSc: [{}], applicationId: [{}]"
                 , authentication, authenticationInSc, applicationId);
         String userId = authentication.getName();
-        UserDossierDto userDossierDto = this.userService
-                .findUserDossierByUserIdAndApplicationId(userId, applicationId);
+        UserDossierDto userDossierDto = null;
+//        userDossierDto = this.userService
+//                .findUserDossierByUserIdAndApplicationId(userId, applicationId);
+        if (authentication instanceof MyAuthenticationToken myAuthenticationToken) {
+            userDossierDto = myAuthenticationToken.getUserDossierDto();
+        }
 
         return ResponseEntity.ok(userDossierDto);
     }
@@ -110,7 +120,13 @@ public class MyController {
         log.debug("getUserView - authentication: [{}], authenticationInSc: [{}]"
                 , authentication, authenticationInSc);
         String userId = authentication.getName();
-        UserViewDto userViewDto = this.userService.findViewByUserId(userId);
+        UserDossierDto userDossierDto = null;
+        UserViewDto userViewDto = null;
+//        userViewDto = this.userService.findViewByUserId(userId);
+        if (authentication instanceof MyAuthenticationToken myAuthenticationToken) {
+            userDossierDto = myAuthenticationToken.getUserDossierDto();
+            userViewDto = UserMapper.INSTANCE.convertDtoToView(userDossierDto.getUserDto());
+        }
 
         return ResponseEntity.ok(userViewDto);
     }

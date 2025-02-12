@@ -1,7 +1,9 @@
 package com.siukatech.poc.react.backend.core.user.controller;
 
+import com.siukatech.poc.react.backend.core.business.dto.UserDossierDto;
 import com.siukatech.poc.react.backend.core.business.dto.UserViewDto;
-import com.siukatech.poc.react.backend.core.user.helper.UserTestDataHelper;
+import com.siukatech.poc.react.backend.core.global.helper.UserTestDataHelper;
+import com.siukatech.poc.react.backend.core.security.model.MyAuthenticationToken;
 import com.siukatech.poc.react.backend.core.user.service.UserService;
 import com.siukatech.poc.react.backend.core.security.evaluator.PermissionControlEvaluator;
 import com.siukatech.poc.react.backend.core.security.provider.AuthorizationDataProvider;
@@ -26,6 +28,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.oidc.StandardClaimNames;
+import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -35,8 +40,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -99,9 +103,28 @@ public class UserControllerTests {
 
 
     private UsernamePasswordAuthenticationToken prepareAuthenticationToken_basic() {
-        List<GrantedAuthority> convertedAuthorities = new ArrayList<GrantedAuthority>();
+        List<GrantedAuthority> convertedAuthorities = new ArrayList<>();
         UserDetails userDetails = new User("app-user-01", "", convertedAuthorities);
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        return authenticationToken;
+    }
+
+    private MyAuthenticationToken prepareMyAuthenticationToken_basic() {
+        return prepareMyAuthenticationToken("app-user-01"
+                , UUID.randomUUID().toString(), this.userTestDataHelper);
+    }
+
+    protected MyAuthenticationToken prepareMyAuthenticationToken(
+            String userId, String randomId, UserTestDataHelper userTestDataHelper) {
+        UserDossierDto userDossierDto = userTestDataHelper.prepareUserDossierDto_basic();
+        List<GrantedAuthority> convertedAuthorities = new ArrayList<>();
+        Map<String, Object> attributeMap = new HashMap<>();
+        attributeMap.put(StandardClaimNames.PREFERRED_USERNAME, userId);
+        attributeMap.put(MyAuthenticationToken.ATTR_TOKEN_VALUE, "TOKEN");
+        attributeMap.put(MyAuthenticationToken.ATTR_USER_ID, userId);
+        attributeMap.put(MyAuthenticationToken.ATTR_USER_DOSSIER_DTO, userDossierDto);
+        OAuth2User oAuth2User = new DefaultOAuth2User(convertedAuthorities, attributeMap, StandardClaimNames.PREFERRED_USERNAME);
+        MyAuthenticationToken authenticationToken = new MyAuthenticationToken(oAuth2User, convertedAuthorities, "keycloak");
         return authenticationToken;
     }
 
@@ -180,7 +203,8 @@ public class UserControllerTests {
 //                        , userDto.getUserId()
                         , userViewDto.getUserId()
                 )
-                .with(authentication(prepareAuthenticationToken_basic()))
+//                .with(authentication(this.prepareAuthenticationToken_basic()))
+                .with(authentication(this.prepareMyAuthenticationToken_basic()))
                 .with(csrf())
                 .accept(MediaType.APPLICATION_JSON);
 

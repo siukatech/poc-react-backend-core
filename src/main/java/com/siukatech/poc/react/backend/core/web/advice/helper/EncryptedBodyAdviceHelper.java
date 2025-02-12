@@ -237,34 +237,34 @@ public class EncryptedBodyAdviceHelper {
         return encryptedDetail;
     }
 
-    public MyKeyDto resolveMyKeyInfo(String userId) {
-        String myKeyInfoUrl = this.appCoreProp.getMyKeyInfoUrl();
-        MyKeyDto myKeyDto = null;
-        if (StringUtils.isNotEmpty(myKeyInfoUrl)) {
-            ResponseEntity<MyKeyDto> responseEntity = this.oauth2ClientRestTemplate.exchange(
-                    myKeyInfoUrl, HttpMethod.GET, HttpEntity.EMPTY, MyKeyDto.class);
-            myKeyDto = responseEntity.getBody();
-            log.debug("resolveMyKeyInfo - userId: [{}], myKeyInfoUrl: [{}], myKeyDto.getUserId: [{}]"
-//                + ", responseEntity.getBody.toString: [{}]"
-                    , userId, myKeyInfoUrl, myKeyDto.getUserId()
-//                , responseEntity.getBody().toString()
-            );
-            if (!userId.equals(myKeyDto.getUserId())) {
-                throw new EntityNotFoundException(
-                        "User does not match userId: [%s], myKeyDto.getUserId: [%s]"
-                                .formatted(userId, myKeyDto.getUserId()));
-            }
-        } else {
-            log.debug("resolveMyKeyInfo - userId: [{}], myKeyInfoUrl: [{}]"
-                    , userId, myKeyInfoUrl
-            );
-            throw new RuntimeException(
-                    "User with userId: [%s] cannot be resolved because of the empty my-user-info"
-                            .formatted(userId));
-        }
-        return myKeyDto;
-//        return this.authService.resolveMyKeyInfo(userId);
-    }
+//    public MyKeyDto resolveMyKeyInfo(String userId) {
+//        String myKeyInfoUrl = this.appCoreProp.getMyKeyInfoUrl();
+//        MyKeyDto myKeyDto = null;
+//        if (StringUtils.isNotEmpty(myKeyInfoUrl)) {
+//            ResponseEntity<MyKeyDto> responseEntity = this.oauth2ClientRestTemplate.exchange(
+//                    myKeyInfoUrl, HttpMethod.GET, HttpEntity.EMPTY, MyKeyDto.class);
+//            myKeyDto = responseEntity.getBody();
+//            log.debug("resolveMyKeyInfo - userId: [{}], myKeyInfoUrl: [{}], myKeyDto.getUserId: [{}]"
+////                + ", responseEntity.getBody.toString: [{}]"
+//                    , userId, myKeyInfoUrl, myKeyDto.getUserId()
+////                , responseEntity.getBody().toString()
+//            );
+//            if (!userId.equals(myKeyDto.getUserId())) {
+//                throw new EntityNotFoundException(
+//                        "User does not match userId: [%s], myKeyDto.getUserId: [%s]"
+//                                .formatted(userId, myKeyDto.getUserId()));
+//            }
+//        } else {
+//            log.debug("resolveMyKeyInfo - userId: [{}], myKeyInfoUrl: [{}]"
+//                    , userId, myKeyInfoUrl
+//            );
+//            throw new RuntimeException(
+//                    "User with userId: [%s] cannot be resolved because of the empty my-user-info"
+//                            .formatted(userId));
+//        }
+//        return myKeyDto;
+////        return this.authService.resolveMyKeyInfo(userId);
+//    }
 
     public boolean isEncryptedApiController(MethodParameter methodParameter) {
         boolean resultFromAnnotation = false;

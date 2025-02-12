@@ -49,7 +49,7 @@ public class DatabaseAuthorizationDataProvider implements AuthorizationDataProvi
         this.userViewRepository = userViewRepository;
     }
 
-    @Override
+//    @Override
     public UserDto findUserByUserIdAndTokenValue(String targetUserId, String tokenValue) {
         log.debug("findByUserIdAndTokenValue - start");
 //        UserDto userDto = userService.findByUserId(targetUserId);
@@ -61,7 +61,7 @@ public class DatabaseAuthorizationDataProvider implements AuthorizationDataProvi
         return userDto;
     }
 
-    @Override
+//    @Override
     public List<UserPermissionDto> findPermissionsByUserIdAndTokenValue(String targetUserId, String tokenValue) {
         log.debug("findPermissionsByUserIdAndTokenValue - start");
 //        List<UserPermissionDto> userPermissionDtoList = userService
@@ -78,6 +78,7 @@ public class DatabaseAuthorizationDataProvider implements AuthorizationDataProvi
 
     @Override
     public UserDossierDto findDossierByUserIdAndTokenValue(String targetUserId, String tokenValue) {
+        log.debug("findDossierByUserIdAndTokenValue - start");
         UserEntity userEntity = this.userRepository.findByUserId(targetUserId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found [%s]".formatted(targetUserId)));
         UserDto userDto = this.modelMapper.map(userEntity, UserDto.class);
@@ -89,7 +90,8 @@ public class DatabaseAuthorizationDataProvider implements AuthorizationDataProvi
                         .map(userPermissionEntity, UserPermissionDto.class))
                 .toList();
         UserDossierDto userDossierDto = new UserDossierDto(userDto, myKeyDto, userPermissionDtoList);
-        return null;
+        log.debug("findDossierByUserIdAndTokenValue - end");
+        return userDossierDto;
     }
 
 }

@@ -7,8 +7,9 @@ import com.siukatech.poc.react.backend.core.business.dto.UserPermissionDto;
 import java.util.List;
 
 public interface AuthorizationDataProvider {
-    UserDto findUserByUserIdAndTokenValue(String userId, String tokenValue);
-    List<UserPermissionDto> findPermissionsByUserIdAndTokenValue(String userId, String tokenValue);
+
+//    UserDto findUserByUserIdAndTokenValue(String userId, String tokenValue);
+//    List<UserPermissionDto> findPermissionsByUserIdAndTokenValue(String userId, String tokenValue);
 
     UserDossierDto findDossierByUserIdAndTokenValue(String userId, String tokenValue);
 

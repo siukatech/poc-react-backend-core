@@ -1,9 +1,9 @@
 package com.siukatech.poc.react.backend.core.security.provider;
 
 import com.siukatech.poc.react.backend.core.business.dto.MyPermissionDto;
+import com.siukatech.poc.react.backend.core.business.dto.UserDossierDto;
 import com.siukatech.poc.react.backend.core.business.dto.UserDto;
 import com.siukatech.poc.react.backend.core.business.dto.UserPermissionDto;
-import com.siukatech.poc.react.backend.core.business.dto.UserDossierDto;
 import com.siukatech.poc.react.backend.core.global.config.AppCoreProp;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +17,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 public class RemoteAuthorizationDataProvider implements AuthorizationDataProvider {
@@ -24,6 +25,8 @@ public class RemoteAuthorizationDataProvider implements AuthorizationDataProvide
     private final RestTemplate oauth2ClientRestTemplate;
 
     private final AppCoreProp appCoreProp;
+
+    private static final String PARAM_APPLICATION_ID = "applicationId";
 
     public RemoteAuthorizationDataProvider(
             AppCoreProp appCoreProp
@@ -40,11 +43,11 @@ public class RemoteAuthorizationDataProvider implements AuthorizationDataProvide
         httpHeaders.add(HttpHeaders.AUTHORIZATION, "Bearer " + tokenValue);
     }
 
-    @Override
+//    @Override
     public UserDto findUserByUserIdAndTokenValue(String userId, String tokenValue) {
         log.debug("findUserByUserIdAndTokenValue - start");
-        String myUserInfoUrl = this.appCoreProp.getMyUserInfoUrl();
         UserDto userDto = null;
+        String myUserInfoUrl = this.appCoreProp.getMyUserInfoUrl();
         if (StringUtils.isNotEmpty(myUserInfoUrl)) {
             HttpHeaders httpHeaders = new HttpHeaders();
             prepareHttpHeaders(httpHeaders, tokenValue);
@@ -63,7 +66,7 @@ public class RemoteAuthorizationDataProvider implements AuthorizationDataProvide
                         , (userDto == null ? "NULL" : userDto.getUserId())
 //                        , responseEntity.getBody().toString()
                 );
-                if (!userId.equals(userDto.getUserId())) {
+                if (userDto == null || !userId.equals(userDto.getUserId())) {
                     throw new EntityNotFoundException(
                             "User does not match userId: [%s], userDto.getUserId: [%s]"
                                     .formatted(userId, userDto.getUserId()));
@@ -85,58 +88,100 @@ public class RemoteAuthorizationDataProvider implements AuthorizationDataProvide
         return userDto;
     }
 
-    @Override
+//    @Override
     public List<UserPermissionDto> findPermissionsByUserIdAndTokenValue(String userId, String tokenValue) {
-        log.debug("findPermissionsByUserId - start");
+        log.debug("findPermissionsByUserIdAndTokenValue - start");
         List<UserPermissionDto> userPermissionDtoList = new ArrayList<>();
         //
         String myPermissionInfoUrl = this.appCoreProp.getMyPermissionInfoUrl();
-        MyPermissionDto myPermissionDto = null;
         if (StringUtils.isNotEmpty(myPermissionInfoUrl)) {
-            UriComponentsBuilder myPermissionInfoUriBuilder = UriComponentsBuilder.fromUriString(myPermissionInfoUrl)
-                    .queryParam("applicationId", this.appCoreProp.getApplicationId());
-            String myPermissionInfoUriTemplate = myPermissionInfoUriBuilder.encode().toUriString();
+            UriComponentsBuilder myPermissionInfoUriBuilder = UriComponentsBuilder
+                    .fromUriString(myPermissionInfoUrl)
+                    .queryParam(PARAM_APPLICATION_ID, this.appCoreProp.getApplicationId());
+            String myPermissionInfoUri = myPermissionInfoUriBuilder.encode().toUriString();
             HttpHeaders httpHeaders = new HttpHeaders();
             prepareHttpHeaders(httpHeaders, tokenValue);
             HttpEntity<String> httpEntity = new HttpEntity<>(httpHeaders);
             ResponseEntity<MyPermissionDto> responseEntity = this.oauth2ClientRestTemplate.exchange(
-                    myPermissionInfoUriTemplate, HttpMethod.GET
+                    myPermissionInfoUri, HttpMethod.GET
                     , httpEntity
 //                    , new ParameterizedTypeReference<UserPermissionInfoDto>() {
 //                    }
                     , MyPermissionDto.class
                     );
-            myPermissionDto = responseEntity.getBody();
-            log.debug("findPermissionsByUserId - userId: [{}], myPermissionInfoUriTemplate: [{}], userPermissionInfoDto.getUserId: [{}], userPermissionDtoList.size: [{}]"
+            MyPermissionDto myPermissionDto = responseEntity.getBody();
+            log.debug("findPermissionsByUserIdAndTokenValue - userId: [{}]"
+                            + ", myPermissionInfoUri: [{}]"
+                            + ", userPermissionInfoDto.getUserId: [{}]"
+                            + ", userPermissionDtoList.size: [{}]"
 //                + ", responseEntity.getBody.toString: [{}]"
-                    , userId, myPermissionInfoUriTemplate, myPermissionDto.getUserId()
-                    , myPermissionDto.getUserPermissionList().size()
+                    , userId, myPermissionInfoUri
+                    , (Objects.isNull(myPermissionDto) ? "NULL" : myPermissionDto.getUserId())
+                    , (Objects.isNull(myPermissionDto) ? "NULL" : myPermissionDto.getUserPermissionList().size())
 //                , responseEntity.getBody().toString()
             );
-            userPermissionDtoList.addAll(myPermissionDto.getUserPermissionList());
-            log.debug("findPermissionsByUserId - userId: [{}], userPermissionDtoList: [{}]"
-                    , userId, userPermissionDtoList.size()
-            );
-            if (!userId.equals(myPermissionDto.getUserId())) {
+            if (Objects.isNull(myPermissionDto) || !userId.equals(myPermissionDto.getUserId())) {
                 throw new EntityNotFoundException(
                         "User does not match userId: [%s], userPermissionInfoDto.getUserId: [%s]"
-                                .formatted(userId, myPermissionDto.getUserId()));
+                                .formatted(userId
+                                        , (Objects.isNull(myPermissionDto) ? null : myPermissionDto.getUserId())
+                                ));
+            }
+            else {
+                userPermissionDtoList.addAll(myPermissionDto.getUserPermissionList());
+                log.debug("findPermissionsByUserIdAndTokenValue - userId: [{}], userPermissionDtoList: [{}]"
+                        , userId, userPermissionDtoList.size()
+                );
             }
         } else {
-            log.debug("findPermissionsByUserId - userId: [{}], myUserPermissionInfoUrl: [{}]"
+            log.debug("findPermissionsByUserIdAndTokenValue - userId: [{}], myUserPermissionInfoUrl: [{}]"
                     , userId, myPermissionInfoUrl
             );
             throw new RuntimeException(
                     "User with userId: [%s] cannot be resolved because of the empty my-user-info"
                             .formatted(userId));
         }
-        log.debug("findPermissionsByUserId - end");
+        log.debug("findPermissionsByUserIdAndTokenValue - end");
         return userPermissionDtoList;
     }
 
     @Override
     public UserDossierDto findDossierByUserIdAndTokenValue(String userId, String tokenValue) {
-        return null;
+        log.debug("findDossierByUserIdAndTokenValue - start");
+        UserDossierDto userDossierDto = null;
+        //
+        String myUserDossierUrl = this.appCoreProp.getMyUserDossierUrl();
+        if (StringUtils.isNotEmpty(myUserDossierUrl)) {
+            UriComponentsBuilder myUserDossierUriBuilder = UriComponentsBuilder.fromUriString(myUserDossierUrl)
+                    .queryParam(PARAM_APPLICATION_ID, this.appCoreProp.getApplicationId());
+            String myUserDossierUri = myUserDossierUriBuilder.encode().toUriString();
+            HttpHeaders httpHeaders = new HttpHeaders();
+            prepareHttpHeaders(httpHeaders, tokenValue);
+            HttpEntity<String> httpEntity = new HttpEntity<>(httpHeaders);
+            ResponseEntity<UserDossierDto> responseEntity = this.oauth2ClientRestTemplate.exchange(
+                    myUserDossierUri, HttpMethod.GET
+                    , httpEntity
+                    , UserDossierDto.class
+            );
+            userDossierDto = responseEntity.getBody();
+            log.debug("findDossierByUserIdAndTokenValue - userId: [{}], myUserDossierUri: [{}]"
+                            + ", userDossierDto.getUserDto: [{}]"
+                            + ", userDossierDto.getUserPermissionList.size: [{}]"
+                    , userId, myUserDossierUri
+                    , (Objects.isNull(userDossierDto) ? "NULL" : userDossierDto.getUserDto())
+                    , (Objects.isNull(userDossierDto) ? "NULL" : userDossierDto.getUserPermissionList().size())
+            );
+        } else {
+            log.debug("findDossierByUserIdAndTokenValue - userId: [{}], myUserPermissionInfoUrl: [{}]"
+                    , userId, myUserDossierUrl
+            );
+            throw new RuntimeException(
+                    "User with userId: [%s] cannot be resolved because of the empty my-user-info"
+                            .formatted(userId));
+        }
+        log.debug("findDossierByUserIdAndTokenValue - end");
+        return userDossierDto;
+
     }
 
 }

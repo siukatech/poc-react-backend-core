@@ -1,8 +1,10 @@
-package com.siukatech.poc.react.backend.core.user.helper;
+package com.siukatech.poc.react.backend.core.global.helper;
 
 import com.siukatech.poc.react.backend.core.business.dto.*;
-import com.siukatech.poc.react.backend.core.global.helper.AbstractTestDataHelper;
 import com.siukatech.poc.react.backend.core.user.entity.UserEntity;
+import com.siukatech.poc.react.backend.core.user.entity.UserPermissionEntity;
+import com.siukatech.poc.react.backend.core.user.mapper.UserMapper;
+import com.siukatech.poc.react.backend.core.user.mapper.UserPermissionMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -60,29 +62,42 @@ public class UserTestDataHelper extends AbstractTestDataHelper {
         return myKeyDto;
     }
 
-    public List<UserPermissionDto> prepareUserPermissions_basic() {
+    public List<UserPermissionEntity> prepareUserPermissionEntityList_basic(boolean withId) {
         String[][] userPermissionTempsArr = new String[][]{
                 new String[]{"app-user-01", "1", "role-users-01", "frontend-app", "menu.home", "view"}
                 , new String[]{"app-user-01", "1", "role-users-01", "frontend-app", "menu.items", "*"}
 //                , new String[]{"app-user-01", "1", "role-users-01", "frontend-app", "menu.shops", "view"}
                 , new String[]{"app-user-01", "1", "role-users-01", "frontend-app", "menu.merchants", "view"}
         };
-        List<UserPermissionDto> userPermissionDtoList = new ArrayList<>();
+        List<UserPermissionEntity> userPermissionEntityList = new ArrayList<>();
         for (String[] userPermissionTemps : userPermissionTempsArr) {
-            userPermissionDtoList.add(new UserPermissionDto());
-            userPermissionDtoList.get(userPermissionDtoList.size() - 1).setUserId(userPermissionTemps[0]);
-            userPermissionDtoList.get(userPermissionDtoList.size() - 1).setUserId(userPermissionTemps[1]);
-            userPermissionDtoList.get(userPermissionDtoList.size() - 1).setUserRoleId(userPermissionTemps[2]);
-            userPermissionDtoList.get(userPermissionDtoList.size() - 1).setApplicationId(userPermissionTemps[3]);
-            userPermissionDtoList.get(userPermissionDtoList.size() - 1).setAppResourceId(userPermissionTemps[4]);
-            userPermissionDtoList.get(userPermissionDtoList.size() - 1).setAccessRight(userPermissionTemps[5]);
+            UserPermissionEntity userPermissionEntity = new UserPermissionEntity();
+            if (withId) {
+                userPermissionEntity.setId(UUID.randomUUID().toString());
+            }
+            userPermissionEntity.setUserId(userPermissionTemps[0]);
+            userPermissionEntity.setUserId(userPermissionTemps[1]);
+            userPermissionEntity.setUserRoleId(userPermissionTemps[2]);
+            userPermissionEntity.setApplicationId(userPermissionTemps[3]);
+            userPermissionEntity.setAppResourceId(userPermissionTemps[4]);
+            userPermissionEntity.setAccessRight(userPermissionTemps[5]);
+            userPermissionEntityList.add(userPermissionEntity);
         }
+        return userPermissionEntityList;
+    }
+
+    public List<UserPermissionDto> prepareUserPermissionDtoList_basic() {
+        List<UserPermissionEntity> userPermissionEntityList = this.prepareUserPermissionEntityList_basic(true);
+        List<UserPermissionDto> userPermissionDtoList = new ArrayList<>();
+        userPermissionEntityList.forEach(userPermissionEntity -> {
+            userPermissionDtoList.add(UserPermissionMapper.INSTANCE.convertEntityToDto(userPermissionEntity));
+        });
         return userPermissionDtoList;
     }
 
     public MyPermissionDto prepareMyPermissionDto_basic() {
         UserDto userDto = this.prepareUserDto_basic();
-        List<UserPermissionDto> userPermissionDtoList = this.prepareUserPermissions_basic();
+        List<UserPermissionDto> userPermissionDtoList = this.prepareUserPermissionDtoList_basic();
         MyPermissionDto myPermissionDto = new MyPermissionDto(userDto.getUserId(), userPermissionDtoList);
         return myPermissionDto;
     }
@@ -90,7 +105,7 @@ public class UserTestDataHelper extends AbstractTestDataHelper {
     public UserDossierDto prepareUserDossierDto_basic() {
         UserDto userDto = this.prepareUserDto_basic();
         MyKeyDto myKeyDto = this.prepareMyKeyDto_basic();
-        List<UserPermissionDto> userPermissionDtoList = this.prepareUserPermissions_basic();
+        List<UserPermissionDto> userPermissionDtoList = this.prepareUserPermissionDtoList_basic();
         UserDossierDto userDossierDto = new UserDossierDto(userDto, myKeyDto, userPermissionDtoList);
         return userDossierDto;
     }

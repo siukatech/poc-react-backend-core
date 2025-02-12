@@ -2,7 +2,7 @@ package com.siukatech.poc.react.backend.core.user.controller;
 
 import com.siukatech.poc.react.backend.core.AbstractWebTests;
 import com.siukatech.poc.react.backend.core.business.dto.*;
-import com.siukatech.poc.react.backend.core.user.helper.UserTestDataHelper;
+import com.siukatech.poc.react.backend.core.global.helper.UserTestDataHelper;
 import com.siukatech.poc.react.backend.core.user.service.UserService;
 import com.siukatech.poc.react.backend.core.security.model.MyAuthenticationToken;
 import com.siukatech.poc.react.backend.core.web.annotation.v1.ProtectedApiV1Controller;
@@ -70,8 +70,8 @@ public class MyControllerTests extends AbstractWebTests {
     @MockBean
     private OAuth2ClientProperties oAuth2ClientProperties;
 
-    @SpyBean
-    private UserTestDataHelper userTestDataHelper;
+//    @SpyBean
+//    private UserTestDataHelper userTestDataHelper;
 
 //    @MockBean
 //    private AppCoreProp appCoreProp;
@@ -80,13 +80,17 @@ public class MyControllerTests extends AbstractWebTests {
 //    @MockBean
 //    private RestTemplate oauth2ClientRestTemplate;
 
+    @SpyBean
+    private UserTestDataHelper userTestDataHelper;
 
-    private UsernamePasswordAuthenticationToken prepareUsernamePasswordAuthenticationToken_basic() {
-        return prepareUsernamePasswordAuthenticationToken("app-user-01");
-    }
+
+//    private UsernamePasswordAuthenticationToken prepareUsernamePasswordAuthenticationToken_basic() {
+//        return prepareUsernamePasswordAuthenticationToken("app-user-01");
+//    }
 
     private MyAuthenticationToken prepareMyAuthenticationToken_basic() {
-        return prepareMyAuthenticationToken("app-user-01", UUID.randomUUID().toString());
+        return prepareMyAuthenticationToken("app-user-01"
+                , UUID.randomUUID().toString(), this.userTestDataHelper);
     }
 
 //    @BeforeAll
@@ -136,8 +140,8 @@ public class MyControllerTests extends AbstractWebTests {
 //                        + "/my/public-key")
                 .get(ProtectedApiV1Controller.REQUEST_MAPPING_URI_PREFIX
                         + "/my/public-key")
-//                .with(authentication(prepareUsernamePasswordAuthenticationToken_basic()))
-                .with(authentication(prepareMyAuthenticationToken_basic()))
+//                .with(authentication(this.prepareUsernamePasswordAuthenticationToken_basic()))
+                .with(authentication(this.prepareMyAuthenticationToken_basic()))
                 .with(csrf())
                 //.with(SecurityMockMvcRequestPostProcessors.users((UserDetails) authentication.getPrincipal()))
                 .accept(MediaType.APPLICATION_JSON);
@@ -168,7 +172,8 @@ public class MyControllerTests extends AbstractWebTests {
 //                        + "/my/key-info")
                 .get(ProtectedApiV1Controller.REQUEST_MAPPING_URI_PREFIX
                         + "/my/key-info")
-                .with(authentication(prepareUsernamePasswordAuthenticationToken_basic()))
+//                .with(authentication(this.prepareUsernamePasswordAuthenticationToken_basic()))
+                .with(authentication(this.prepareMyAuthenticationToken_basic()))
                 .with(csrf())
                 .accept(MediaType.APPLICATION_JSON);
 
@@ -197,7 +202,8 @@ public class MyControllerTests extends AbstractWebTests {
 //                        + "/my/user-info")
                 .get(ProtectedApiV1Controller.REQUEST_MAPPING_URI_PREFIX
                         + "/my/user-info")
-                .with(authentication(prepareUsernamePasswordAuthenticationToken_basic()))
+//                .with(authentication(this.prepareUsernamePasswordAuthenticationToken_basic()))
+                .with(authentication(this.prepareMyAuthenticationToken_basic()))
                 .with(csrf())
                 .accept(MediaType.APPLICATION_JSON);
 
@@ -225,7 +231,8 @@ public class MyControllerTests extends AbstractWebTests {
         // when
         RequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get(ProtectedApiV1Controller.REQUEST_MAPPING_URI_PREFIX + "/my/permission-info?applicationId={applicationId}", "frontend-app")
-                .with(authentication(prepareUsernamePasswordAuthenticationToken_basic()))
+//                .with(authentication(this.prepareUsernamePasswordAuthenticationToken_basic()))
+                .with(authentication(this.prepareMyAuthenticationToken_basic()))
                 .with(csrf())
                 .accept(MediaType.APPLICATION_JSON);
 
@@ -251,7 +258,8 @@ public class MyControllerTests extends AbstractWebTests {
         // when
         RequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get(ProtectedApiV1Controller.REQUEST_MAPPING_URI_PREFIX + "/my/user-dossier?applicationId={applicationId}", "frontend-app")
-                .with(authentication(prepareUsernamePasswordAuthenticationToken_basic()))
+//                .with(authentication(this.prepareUsernamePasswordAuthenticationToken_basic()))
+                .with(authentication(this.prepareMyAuthenticationToken_basic()))
                 .with(csrf())
                 .accept(MediaType.APPLICATION_JSON);
 
@@ -270,7 +278,7 @@ public class MyControllerTests extends AbstractWebTests {
     }
 
     @Test
-    public void getUserView_basic() throws Exception {
+    public void test_getUserView_basic() throws Exception {
         // given
         UserViewDto userViewDto = this.userTestDataHelper.prepareUserViewDto_basic();
         when(userService.findViewByUserId(anyString())).thenReturn(userViewDto);
@@ -279,7 +287,8 @@ public class MyControllerTests extends AbstractWebTests {
         RequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get(ProtectedApiV1Controller.REQUEST_MAPPING_URI_PREFIX
                         + "/my/user-view")
-                .with(authentication(prepareUsernamePasswordAuthenticationToken_basic()))
+//                .with(authentication(this.prepareUsernamePasswordAuthenticationToken_basic()))
+                .with(authentication(this.prepareMyAuthenticationToken_basic()))
                 .with(csrf())
                 .accept(MediaType.APPLICATION_JSON);
 

@@ -1,11 +1,14 @@
 package com.siukatech.poc.react.backend.core.user.controller;
 
+import com.siukatech.poc.react.backend.core.business.dto.UserDossierDto;
 import com.siukatech.poc.react.backend.core.business.dto.UserDto;
 import com.siukatech.poc.react.backend.core.security.annotation.PermissionControl;
+import com.siukatech.poc.react.backend.core.security.model.MyAuthenticationToken;
 import com.siukatech.poc.react.backend.core.user.service.UserService;
 import com.siukatech.poc.react.backend.core.web.annotation.v1.ProtectedApiV1Controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -27,8 +30,16 @@ public class UserController {
 //                                                 // https://stackoverflow.com/a/77691302
 //                                                 // https://github.com/spring-projects/spring-framework/wiki/Upgrading-to-Spring-Framework-6.x#parameter-name-retention
 //                                                 (name = "targetUserId")
-                                         String targetUserId) {
-        UserDto userDto = this.userService.findUserByUserId(targetUserId);
+                                         String targetUserId
+                                      , Authentication authentication
+    ) {
+        UserDossierDto userDossierDto = null;
+        UserDto userDto = null;
+//        userDto = this.userService.findUserByUserId(targetUserId);
+        if (authentication instanceof MyAuthenticationToken myAuthenticationToken) {
+            userDossierDto = myAuthenticationToken.getUserDossierDto();
+            userDto = userDossierDto.getUserDto();
+        }
 
         return ResponseEntity.ok(userDto);
     }

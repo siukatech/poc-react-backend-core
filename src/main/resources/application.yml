@@ -91,6 +91,8 @@ app:
   api:
     my-user-info: /v1/protected/my/user-info
     my-key-info: /v1/protected/my/key-info
+    my-permission-info: /v1/protected/my/permission-info
+    my-user-dossier: /v1/protected/my/user-dossier
 
 
 logging:

@@ -1,12 +1,14 @@
 package com.siukatech.poc.react.backend.core;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.siukatech.poc.react.backend.core.business.dto.UserDossierDto;
 import com.siukatech.poc.react.backend.core.global.config.AppCoreProp;
-import com.siukatech.poc.react.backend.core.security.model.MyAuthenticationToken;
+import com.siukatech.poc.react.backend.core.global.helper.UserTestDataHelper;
 import com.siukatech.poc.react.backend.core.security.evaluator.PermissionControlEvaluator;
+import com.siukatech.poc.react.backend.core.security.model.MyAuthenticationToken;
 import com.siukatech.poc.react.backend.core.security.provider.AuthorizationDataProvider;
-import com.siukatech.poc.react.backend.core.web.context.EncryptedBodyContext;
 import com.siukatech.poc.react.backend.core.web.advice.helper.EncryptedBodyAdviceHelper;
+import com.siukatech.poc.react.backend.core.web.context.EncryptedBodyContext;
 import com.siukatech.poc.react.backend.core.web.micrometer.CorrelationIdHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -57,6 +59,7 @@ public abstract class AbstractWebTests extends AbstractUnitTests {
 //    @MockBean
 //    protected ProblemDetailExtMapper problemDetailExtMapper;
 
+
     protected MockMvc prepareMockMvc() {
         return MockMvcBuilders
                 .webAppContextSetup(webApplicationContext)
@@ -65,18 +68,21 @@ public abstract class AbstractWebTests extends AbstractUnitTests {
     }
 
     protected UsernamePasswordAuthenticationToken prepareUsernamePasswordAuthenticationToken(String username) {
-        List<GrantedAuthority> convertedAuthorities = new ArrayList<GrantedAuthority>();
+        List<GrantedAuthority> convertedAuthorities = new ArrayList<>();
         UserDetails userDetails = new User(username, "", convertedAuthorities);
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         return authenticationToken;
     }
 
-    protected MyAuthenticationToken prepareMyAuthenticationToken(String userId, String randomId) {
-        List<GrantedAuthority> convertedAuthorities = new ArrayList<GrantedAuthority>();
+    protected MyAuthenticationToken prepareMyAuthenticationToken(
+            String userId, String randomId, UserTestDataHelper userTestDataHelper) {
+        UserDossierDto userDossierDto = userTestDataHelper.prepareUserDossierDto_basic();
+        List<GrantedAuthority> convertedAuthorities = new ArrayList<>();
         Map<String, Object> attributeMap = new HashMap<>();
         attributeMap.put(StandardClaimNames.PREFERRED_USERNAME, userId);
         attributeMap.put(MyAuthenticationToken.ATTR_TOKEN_VALUE, "TOKEN");
         attributeMap.put(MyAuthenticationToken.ATTR_USER_ID, userId);
+        attributeMap.put(MyAuthenticationToken.ATTR_USER_DOSSIER_DTO, userDossierDto);
         OAuth2User oAuth2User = new DefaultOAuth2User(convertedAuthorities, attributeMap, StandardClaimNames.PREFERRED_USERNAME);
         MyAuthenticationToken authenticationToken = new MyAuthenticationToken(oAuth2User, convertedAuthorities, "keycloak");
         return authenticationToken;

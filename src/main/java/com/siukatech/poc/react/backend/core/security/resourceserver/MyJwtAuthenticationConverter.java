@@ -1,5 +1,6 @@
 package com.siukatech.poc.react.backend.core.security.resourceserver;
 
+import com.siukatech.poc.react.backend.core.business.dto.UserDossierDto;
 import com.siukatech.poc.react.backend.core.business.dto.UserDto;
 import com.siukatech.poc.react.backend.core.business.dto.UserPermissionDto;
 import com.siukatech.poc.react.backend.core.security.model.MyAuthenticationToken;
@@ -79,12 +80,16 @@ public class MyJwtAuthenticationConverter implements Converter<Jwt, AbstractAuth
 //                = new UsernamePasswordAuthenticationToken(userDetails
 //                , source.getTokenValue(), userDetails.getAuthorities());
 
+        UserDossierDto userDossierDto = null;
         UserDto userDto = null;
-//        if (SecurityContextHolder.getContext().getAuthentication() != null) {
-//        userDto = userService.findByUserId(userId);
-            userDto = authorizationDataProvider.findUserByUserIdAndTokenValue(userId, tokenValue);
+        List<UserPermissionDto> userPermissionDtoList = null;
 
-        List<UserPermissionDto> userPermissionDtoList = authorizationDataProvider.findPermissionsByUserIdAndTokenValue(userId, tokenValue);
+//        userDto = this.authorizationDataProvider.findUserByUserIdAndTokenValue(userId, tokenValue);
+//        userPermissionDtoList = this.authorizationDataProvider.findPermissionsByUserIdAndTokenValue(userId, tokenValue);
+        userDossierDto = this.authorizationDataProvider.findDossierByUserIdAndTokenValue(userId, tokenValue);
+        userDto = userDossierDto.getUserDto();
+        userPermissionDtoList = userDossierDto.getUserPermissionList();
+
         log.debug("convert - userId: [{}], userPermissionDtoList: [{}]", userId, userPermissionDtoList);
         userPermissionDtoList.forEach(userPermissionDto -> {
             convertedAuthorities.add(MyGrantedAuthority.builder()
@@ -101,8 +106,9 @@ public class MyJwtAuthenticationConverter implements Converter<Jwt, AbstractAuth
         //
         attributeMap.put(StandardClaimNames.PREFERRED_USERNAME, userId);
         attributeMap.put(MyAuthenticationToken.ATTR_TOKEN_VALUE, tokenValue);
-        attributeMap.put(MyAuthenticationToken.ATTR_USER_ID, userDto.getId());
-        attributeMap.put(MyAuthenticationToken.ATTR_PUBLIC_KEY, userDto.getPublicKey());
+//        attributeMap.put(MyAuthenticationToken.ATTR_USER_ID, userDto.getId());
+//        attributeMap.put(MyAuthenticationToken.ATTR_PUBLIC_KEY, userDto.getPublicKey());
+        attributeMap.put(MyAuthenticationToken.ATTR_USER_DOSSIER_DTO, userDossierDto);
 //        }
         log.debug("convert - userId: [{}], convertedAuthorities: [{}], attributeMap: [{}]", userId, convertedAuthorities, attributeMap);
 

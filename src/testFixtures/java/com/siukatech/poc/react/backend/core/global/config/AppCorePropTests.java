@@ -55,9 +55,13 @@ public class AppCorePropTests extends AbstractUnitTests {
         log.debug("test_appCoreProp_basic - hostName: [{}]"
                         + ", myUserInfo: [{}]"
                         + ", myKeyInfo: [{}]"
+                        + ", myPermissionInfo: [{}]"
+                        + ", myUserDossier: [{}]"
                 , appCoreProp.getHostName()
                 , appCoreProp.getApi().getMyUserInfo()
                 , appCoreProp.getApi().getMyKeyInfo()
+                , appCoreProp.getApi().getMyPermissionInfo()
+                , appCoreProp.getApi().getMyUserDossier()
         );
         assertThat(appCoreProp.getHostName()).isEqualTo("http://localhost:28080");
         assertThat(appCoreProp.getApi().getMyUserInfo()).contains(ProtectedApiV1Controller.REQUEST_MAPPING_URI_PREFIX);
@@ -67,6 +71,58 @@ public class AppCorePropTests extends AbstractUnitTests {
 //        assertThat(appCoreProp.getApi().getMyUserInfo()).contains("/my/user-info");
         assertThat(appCoreProp.getApi().getMyKeyInfo()).contains(ProtectedApiV1Controller.REQUEST_MAPPING_URI_PREFIX);
         assertThat(appCoreProp.getApi().getMyKeyInfo()).contains("/my/key-info");
+        assertThat(appCoreProp.getApi().getMyPermissionInfo()).contains(ProtectedApiV1Controller.REQUEST_MAPPING_URI_PREFIX);
+        assertThat(appCoreProp.getApi().getMyPermissionInfo()).contains("/my/permission-info");
+        assertThat(appCoreProp.getApi().getMyUserDossier()).contains(ProtectedApiV1Controller.REQUEST_MAPPING_URI_PREFIX);
+        assertThat(appCoreProp.getApi().getMyUserDossier()).contains("/my/user-dossier");
+    }
+
+    @Test
+    public void test_getMyUserInfoUrl_basic() {
+        // given
+
+        // when
+        String url = this.appCoreProp.getMyUserInfoUrl();
+        log.debug("test_getMyUserInfoUrl_basic - url: [{}]", url);
+
+        // then
+        assertThat(url).contains("/my/user-info");
+    }
+
+    @Test
+    public void test_getMyKeyInfoUrl_basic() {
+        // given
+
+        // when
+        String url = this.appCoreProp.getMyKeyInfoUrl();
+        log.debug("test_getMyKeyInfoUrl_basic - url: [{}]", url);
+
+        // then
+        assertThat(url).contains("/my/key-info");
+    }
+
+    @Test
+    public void test_getMyPermissionInfoUrl_basic() {
+        // given
+
+        // when
+        String url = this.appCoreProp.getMyPermissionInfoUrl();
+        log.debug("test_getMyPermissionInfoUrl_basic - url: [{}]", url);
+
+        // then
+        assertThat(url).contains("/my/permission-info");
+    }
+
+    @Test
+    public void test_getMyUserDossierUrl_basic() {
+        // given
+
+        // when
+        String url = this.appCoreProp.getMyUserDossierUrl();
+        log.debug("test_getMyUserDossierUrl_basic - url: [{}]", url);
+
+        // then
+        assertThat(url).contains("/my/user-dossier");
     }
 
 }

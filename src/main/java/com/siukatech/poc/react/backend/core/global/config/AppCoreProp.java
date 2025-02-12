@@ -66,6 +66,20 @@ public class AppCoreProp {
         return myPermissionInfoUrl;
     }
 
+    public String getMyUserDossierUrl() {
+        String myUserDossierUrl = null;
+        if ( StringUtils.isNotEmpty(this.getHostName())
+                && (this.getApi() != null && StringUtils.isNotEmpty(this.getApi().getMyUserDossier())) ) {
+            myUserDossierUrl = this.getHostName() + this.getApi().getMyUserDossier();
+        }
+        log.debug("getMyUserDossierUrl - getHostName: [{}], getMyUserDossier: [{}], myUserDossierUrl: [{}]"
+                , this.getHostName()
+                , (this.getApi() == null ? "NULL" : this.getApi().getMyUserDossier())
+                , myUserDossierUrl
+        );
+        return myUserDossierUrl;
+    }
+
 //    @Data
 //    public static class App {
 //        private String hostName;
@@ -77,5 +91,6 @@ public class AppCoreProp {
         private String myUserInfo;
         private String myKeyInfo;
         private String myPermissionInfo;
+        private String myUserDossier;
     }
 }

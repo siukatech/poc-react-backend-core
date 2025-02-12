@@ -202,45 +202,45 @@ public class EncryptedBodyAdviceHelperTests extends AbstractUnitTests {
         assertThat(new String(encryptedDetail.decryptedData())).isEqualTo(userDtoStr);
     }
 
-    @Test
-    public void test_resolveMyKeyInfo_basic() throws NoSuchAlgorithmException {
-        log.debug("test_resolveMyKeyInfo_basic - appCorePropForTests.myUserInfoUrl: [{}]"
-                        + ", appCoreProp.myUserInfoUrl: [{}]"
-                        + ", appCoreProp.getMyKeyInfoUrl: [{}]"
-                        + ", appCoreProp.getMyKeyInfoUrl: [{}]"
-                , this.appCorePropForTests.getMyUserInfoUrl()
-                , this.appCoreProp.getMyUserInfoUrl()
-                , this.appCorePropForTests.getMyKeyInfoUrl()
-                , this.appCoreProp.getMyKeyInfoUrl()
-        );
-
-        // given
-        MyKeyDto myKeyDto = prepareMyKeyDto_basic();
-        String userId = myKeyDto.getUserId();
-        when(this.appCoreProp.getMyKeyInfoUrl())
-                .thenReturn(this.appCorePropForTests.getMyKeyInfoUrl());
-//        when(oauth2ClientRestTemplate.exchange(anyString()
-//                , eq(HttpMethod.GET), eq(HttpEntity.EMPTY), eq(MyKeyDto.class)))
-//                .thenReturn(ResponseEntity.ok(prepareMyKeyDto_basic()));
-        doReturn(ResponseEntity.ok(myKeyDto))
-                .when(this.oauth2ClientRestTemplate).exchange(anyString(), eq(HttpMethod.GET)
-                        , ArgumentMatchers.any(HttpEntity.class), eq(MyKeyDto.class))
-        ;
-
-////        doReturn(myKeyDto).when(authService).resolveMyKeyInfo(userId);
-//        when(authService.resolveMyKeyInfo(anyString())).thenReturn(myKeyDto);
-
-        // when
-        MyKeyDto myKeyRet = this.encryptedBodyAdviceHelper.resolveMyKeyInfo(userId);
-
-        // then
-        log.debug("test_resolveMyKeyInfo_basic - myKeyRet: [{}]", myKeyRet);
-        assertThat(myKeyRet).hasFieldOrProperty("privateKey")
-                .has(new Condition<>(u -> u.getPrivateKey().contains(myKeyDto.getPrivateKey())
-                        , "Has %s", "private-key"))
-        ;
-
-    }
+//    @Test
+//    public void test_resolveMyKeyInfo_basic() throws NoSuchAlgorithmException {
+//        log.debug("test_resolveMyKeyInfo_basic - appCorePropForTests.myUserInfoUrl: [{}]"
+//                        + ", appCoreProp.myUserInfoUrl: [{}]"
+//                        + ", appCoreProp.getMyKeyInfoUrl: [{}]"
+//                        + ", appCoreProp.getMyKeyInfoUrl: [{}]"
+//                , this.appCorePropForTests.getMyUserInfoUrl()
+//                , this.appCoreProp.getMyUserInfoUrl()
+//                , this.appCorePropForTests.getMyKeyInfoUrl()
+//                , this.appCoreProp.getMyKeyInfoUrl()
+//        );
+//
+//        // given
+//        MyKeyDto myKeyDto = prepareMyKeyDto_basic();
+//        String userId = myKeyDto.getUserId();
+//        when(this.appCoreProp.getMyKeyInfoUrl())
+//                .thenReturn(this.appCorePropForTests.getMyKeyInfoUrl());
+////        when(oauth2ClientRestTemplate.exchange(anyString()
+////                , eq(HttpMethod.GET), eq(HttpEntity.EMPTY), eq(MyKeyDto.class)))
+////                .thenReturn(ResponseEntity.ok(prepareMyKeyDto_basic()));
+//        doReturn(ResponseEntity.ok(myKeyDto))
+//                .when(this.oauth2ClientRestTemplate).exchange(anyString(), eq(HttpMethod.GET)
+//                        , ArgumentMatchers.any(HttpEntity.class), eq(MyKeyDto.class))
+//        ;
+//
+//////        doReturn(myKeyDto).when(authService).resolveMyKeyInfo(userId);
+////        when(authService.resolveMyKeyInfo(anyString())).thenReturn(myKeyDto);
+//
+//        // when
+//        MyKeyDto myKeyRet = this.encryptedBodyAdviceHelper.resolveMyKeyInfo(userId);
+//
+//        // then
+//        log.debug("test_resolveMyKeyInfo_basic - myKeyRet: [{}]", myKeyRet);
+//        assertThat(myKeyRet).hasFieldOrProperty("privateKey")
+//                .has(new Condition<>(u -> u.getPrivateKey().contains(myKeyDto.getPrivateKey())
+//                        , "Has %s", "private-key"))
+//        ;
+//
+//    }
 
     @Test
     public void test_isEncryptedApiController_basic() {
