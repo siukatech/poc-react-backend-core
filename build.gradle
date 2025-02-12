@@ -118,7 +118,7 @@ dependencies {
     api 'commons-io:commons-io:2.15.1'
 
     api 'org.modelmapper:modelmapper:3.1.1'
-    api 'org.hibernate:hibernate-validator:6.0.13.Final'
+    api 'org.hibernate:hibernate-validator:6.1.7.Final'
 //	api 'com.google.code.gson:gson:2.10.1'
 
     api 'io.swagger.core.v3:swagger-core:2.2.20'
