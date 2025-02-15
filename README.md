@@ -8,6 +8,12 @@ End-to-End-Encryption (E2EE) is also introduced in this project.
 
 # Setup
 ## Gradle
+### Upgrade Gradle in intellij if necessary
+```shell
+#./gradlew.bat wrapper --gradle-version [target version]
+./gradlew.bat wrapper --gradle-version 8.10
+```
+
 ### java-library
 Gradle is the dependency manager for these poc projects.  
 The `java-library` is the plugins in build.gradle file, NOT the `java-platform`.
