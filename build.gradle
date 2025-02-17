@@ -53,6 +53,7 @@ repositories {
 
 ext {
     mapstructVersion = '1.6.0.RC1'
+    embeddedRedisVersion = '1.4.3'
 //    springBootVersion = '3.2.1'
 //    springSecurityVersion = '6.2.1'
 //    springBootVersion = "${ReactBackendPlugin.SPRING_BOOT_VERSION}"
@@ -169,6 +170,8 @@ dependencies {
     testFixturesApi "org.springframework.boot:spring-boot-starter-test:${springBootVersion}"
     testFixturesApi "org.springframework.security:spring-security-test:${springSecurityVersion}"
     testFixturesApi 'com.h2database:h2:2.2.220'
+
+    testFixturesApi "com.github.codemonstur:embedded-redis:${embeddedRedisVersion}"
 
 //	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 //	testImplementation 'org.springframework.security:spring-security-test'

@@ -4,10 +4,12 @@ import com.siukatech.poc.react.backend.core.business.dto.MyPermissionDto;
 import com.siukatech.poc.react.backend.core.business.dto.UserDossierDto;
 import com.siukatech.poc.react.backend.core.business.dto.UserDto;
 import com.siukatech.poc.react.backend.core.business.dto.UserPermissionDto;
+import com.siukatech.poc.react.backend.core.caching.config.CachingConfig;
 import com.siukatech.poc.react.backend.core.global.config.AppCoreProp;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -44,6 +46,7 @@ public class RemoteAuthorizationDataProvider implements AuthorizationDataProvide
     }
 
 //    @Override
+    @Cacheable(value = {CachingConfig.CACHE_NAME_DEFAULT}, key = "'" + CACHE_KEY_USER_DTO + "' + #userId")
     public UserDto findUserByUserIdAndTokenValue(String userId, String tokenValue) {
         log.debug("findUserByUserIdAndTokenValue - start");
         UserDto userDto = null;
@@ -89,6 +92,7 @@ public class RemoteAuthorizationDataProvider implements AuthorizationDataProvide
     }
 
 //    @Override
+    @Cacheable(value = {CachingConfig.CACHE_NAME_DEFAULT}, key = "'" + CACHE_KEY_USER_PERMISSION_DTO + "' + #userId")
     public List<UserPermissionDto> findPermissionsByUserIdAndTokenValue(String userId, String tokenValue) {
         log.debug("findPermissionsByUserIdAndTokenValue - start");
         List<UserPermissionDto> userPermissionDtoList = new ArrayList<>();
@@ -146,6 +150,7 @@ public class RemoteAuthorizationDataProvider implements AuthorizationDataProvide
     }
 
     @Override
+    @Cacheable(value = {CachingConfig.CACHE_NAME_DEFAULT}, key = "'" + CACHE_KEY_USER_DOSSIER_DTO + "' + #userId")
     public UserDossierDto findDossierByUserIdAndTokenValue(String userId, String tokenValue) {
         log.debug("findDossierByUserIdAndTokenValue - start");
         UserDossierDto userDossierDto = null;

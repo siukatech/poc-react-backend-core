@@ -17,7 +17,8 @@ import java.util.List;
     }
     , properties = {
         "spring.cache.type=simple"
-        , "spring.cache.redis.time-to-live=1s"
+//        , "spring.cache.redis.time-to-live=1s"
+        , "logging.level.root=INFO"
         , "logging.level.com.siukatech.poc.react.backend.core.caching=DEBUG"
     }
 )

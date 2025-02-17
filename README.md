@@ -890,3 +890,33 @@ Http status 415 returned when:
 
 
 
+# Caching
+By using `@ConditionalOnProperty` with checking `prefix = "spring.cache.type"` to determine which caching configuration to load.
+- spring.cache.type=simple - Simple
+- spring.cache.type=ehcache - Ehcache
+- spring.cache.type=redis - Redis
+- No `spring.cache.type` - No caching
+
+The embedded redis server is used for redis cache unit test.  
+`RedisProperties` from `org.springframework.boot.autoconfigure.data.redis` is also used as the redis properties class.  
+Configuration in yaml would be:  
+```yaml
+...
+spring:
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      username: xxx
+      password: xxx
+      client-type: LETTUCE or JEDIS
+...
+```
+
+**Reference:**  
+https://jdriven.com/blog/2024/10/Spring-Boot-Sweets-Using-Duration-Type-With-Configuration-Properties    
+https://docs.spring.io/spring-boot/reference/io/caching.html#io.caching.provider.redis  
+
+
+
+

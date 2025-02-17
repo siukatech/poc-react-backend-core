@@ -56,15 +56,18 @@ public abstract class AbstractCachingManagerTests extends AbstractUnitTests {
                 , "street-01"
                 , "district-01"
         );
+        log.debug("test_getAddressModelById - saveAddressModel - before");
         this.addressService.saveAddressModel(addressModel01);
+        log.debug("test_getAddressModelById - saveAddressModel - after, addressModel01: [{}]", addressModel01);
 
         // when
+        log.debug("test_getAddressModelById - getAddressModelById - before");
         AddressModel addressCache01 = this.addressService.getAddressModelById(addressId);
-        log.debug("test_getAddressModelById - addressCache01: [{}]", addressCache01);
+        log.debug("test_getAddressModelById - getAddressModelById - after, addressCache01: [{}]", addressCache01);
         //
         Cache cacheDefault = this.cacheManager.getCache("default");
-        Object object01 = cacheDefault == null ? null : cacheDefault.get(addressId);
-        log.debug("test_getAddressModelById - object01: [{}]", object01);
+        Object cachedObject01 = cacheDefault == null ? null : cacheDefault.get(addressId);
+        log.debug("test_getAddressModelById - cachedObject01: [{}]", cachedObject01);
         //
         AddressModel addressModel02 = new AddressModel(
                 addressId
@@ -72,28 +75,41 @@ public abstract class AbstractCachingManagerTests extends AbstractUnitTests {
                 , "street-02"
                 , "district-02"
         );
+        log.debug("test_getAddressModelById - saveAddressModel - before");
         this.addressService.saveAddressModel(addressModel02);
-        AddressModel addressCache02 = this.addressService.getAddressModelById(addressId);
-        log.debug("test_getAddressModelById - addressCache02: [{}]", addressCache02);
+        log.debug("test_getAddressModelById - saveAddressModel - after, addressModel02: [{}]", addressModel02);
         //
+        log.debug("test_getAddressModelById - getAddressModelById - before");
+        AddressModel addressCache02 = this.addressService.getAddressModelById(addressId);
+        log.debug("test_getAddressModelById - getAddressModelById - after, addressCache02: [{}]", addressCache02);
+        //
+        log.debug("test_getAddressModelById - printAddressModelMap - before");
         this.addressService.printAddressModelMap();
+        log.debug("test_getAddressModelById - printAddressModelMap - after");
         //
         if (!isTtlExceeded) {
+            log.debug("test_getAddressModelById - evictAllCacheValues - before");
             this.addressService.evictAllCacheValues();
+            log.debug("test_getAddressModelById - evictAllCacheValues - after");
         }
         else {
             try {
+                log.debug("test_getAddressModelById - Thread.sleep - before - definedTtl: [{}]", definedTtl);
                 Thread.sleep(definedTtl + 500);
+                log.debug("test_getAddressModelById - Thread.sleep - after");
             }
             catch (InterruptedException e) {
                 log.error(e.getMessage(), e);
             }
         }
         //
+        log.info("test_getAddressModelById - getAddressModelById - before");
         AddressModel addressCache02b = this.addressService.getAddressModelById(addressId);
-        log.debug("test_getAddressModelById - addressCache02b: [{}]", addressCache02b);
+        log.info("test_getAddressModelById - getAddressModelById - after, addressCache02b: [{}]", addressCache02b);
         //
+        log.info("test_getAddressModelById - printAddressModelMap - before");
         this.addressService.printAddressModelMap();
+        log.debug("test_getAddressModelById - printAddressModelMap - after");
 
         // then
         // assertThat(actual).isEqualTo(expected)

@@ -1,6 +1,7 @@
 package com.siukatech.poc.react.backend.core.caching.config;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
@@ -20,6 +21,13 @@ import java.util.concurrent.TimeUnit;
 @EnableCaching
 @ConditionalOnProperty(prefix = "spring.cache", name = "type", havingValue = "ehcache")
 public class EhcacheCachingConfig extends AbstractCachingConfig {
+
+    /**
+     * Reference:
+     * https://jdriven.com/blog/2024/10/Spring-Boot-Sweets-Using-Duration-Type-With-Configuration-Properties
+     */
+    @Value("${spring.cache.ehcache.time-to-live:10m}")
+    private java.time.Duration timeToLive;
 
     @Bean(name = "cacheManager")
     public CacheManager ehcacheCacheManager() {

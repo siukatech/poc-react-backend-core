@@ -4,6 +4,7 @@ import com.siukatech.poc.react.backend.core.business.dto.MyKeyDto;
 import com.siukatech.poc.react.backend.core.business.dto.UserDossierDto;
 import com.siukatech.poc.react.backend.core.business.dto.UserDto;
 import com.siukatech.poc.react.backend.core.business.dto.UserPermissionDto;
+import com.siukatech.poc.react.backend.core.caching.config.CachingConfig;
 import com.siukatech.poc.react.backend.core.security.provider.AuthorizationDataProvider;
 import com.siukatech.poc.react.backend.core.user.entity.UserEntity;
 import com.siukatech.poc.react.backend.core.user.entity.UserPermissionEntity;
@@ -15,6 +16,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import java.util.List;
@@ -50,6 +52,7 @@ public class DatabaseAuthorizationDataProvider implements AuthorizationDataProvi
     }
 
 //    @Override
+    @Cacheable(value = {CachingConfig.CACHE_NAME_DEFAULT}, key = "'" + CACHE_KEY_USER_DTO + "' + #userId")
     public UserDto findUserByUserIdAndTokenValue(String targetUserId, String tokenValue) {
         log.debug("findByUserIdAndTokenValue - start");
 //        UserDto userDto = userService.findByUserId(targetUserId);
@@ -62,6 +65,7 @@ public class DatabaseAuthorizationDataProvider implements AuthorizationDataProvi
     }
 
 //    @Override
+    @Cacheable(value = {CachingConfig.CACHE_NAME_DEFAULT}, key = "'" + CACHE_KEY_USER_PERMISSION_DTO + "' + #userId")
     public List<UserPermissionDto> findPermissionsByUserIdAndTokenValue(String targetUserId, String tokenValue) {
         log.debug("findPermissionsByUserIdAndTokenValue - start");
 //        List<UserPermissionDto> userPermissionDtoList = userService
@@ -77,6 +81,7 @@ public class DatabaseAuthorizationDataProvider implements AuthorizationDataProvi
     }
 
     @Override
+    @Cacheable(value = {CachingConfig.CACHE_NAME_DEFAULT}, key = "'" + CACHE_KEY_USER_DOSSIER_DTO + "' + #userId")
     public UserDossierDto findDossierByUserIdAndTokenValue(String targetUserId, String tokenValue) {
         log.debug("findDossierByUserIdAndTokenValue - start");
         UserEntity userEntity = this.userRepository.findByUserId(targetUserId)
