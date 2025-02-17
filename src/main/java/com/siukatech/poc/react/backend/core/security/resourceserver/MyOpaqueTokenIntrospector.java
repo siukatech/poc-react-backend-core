@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 @Slf4j
 @Component
@@ -32,19 +33,43 @@ public class MyOpaqueTokenIntrospector implements OpaqueTokenIntrospector {
     public OAuth2AuthenticatedPrincipal introspect(String token) {
         try {
             String issuerUri = ResourceServerUtil.getIssuerUri(token);
-            String clientName = oAuth2ClientProperties.getProvider().entrySet().stream()
-                    .filter(entry -> entry.getValue().getIssuerUri().equals(issuerUri))
+            String clientName = oAuth2ClientProperties.getProvider()
+                    .entrySet().stream()
+                    .filter(entry -> {
+                        boolean result = entry.getValue().getIssuerUri().equals(issuerUri);
+                        log.debug("introspect - clientName.filter - "
+                                + "result: [{}], issuerUri: [{}], entry.getValue.getIssuerUri: [{}]"
+                                , result, issuerUri, entry.getValue().getIssuerUri());
+                        return result;
+                    })
                     .map(Map.Entry::getKey)
                     .findFirst()
                     .orElse(null)
                     ;
+            if (clientName == null) {
+                String errorMessage = "clientName is not found with issuerUri: [%s] in spring.security.oauth2.client.provider"
+                        .formatted(issuerUri);
+                throw new NoSuchElementException(errorMessage);
+            }
             OAuth2ClientProperties.Registration registration = oAuth2ClientProperties.getRegistration().get(clientName);
-            OAuth2ResourceServerProperties.Opaquetoken opaqueToken = oAuth2ResourceServerExtProp.getOpaquetoken().entrySet().stream()
-                    .filter(entry -> entry.getKey().equals(clientName))
+            OAuth2ResourceServerProperties.Opaquetoken opaqueToken = oAuth2ResourceServerExtProp.getOpaquetoken()
+                    .entrySet().stream()
+                    .filter(entry -> {
+                        boolean result = entry.getKey().equals(clientName);
+                        log.debug("introspect - opaqueToken.filter - "
+                                        + "result: [{}], clientName: [{}], entry.getKey: [{}]"
+                                , result, clientName, entry.getValue().getIssuerUri());
+                        return result;
+                    })
                     .map(Map.Entry::getValue)
                     .findFirst()
                     .orElse(null)
                     ;
+            if (opaqueToken == null) {
+                String errorMessage = "opaqueToken is not found with clientName: [%s] in spring.security.oauth2.resource-server.opaque-token"
+                        .formatted(clientName);
+                throw new NoSuchElementException(errorMessage);
+            }
             OpaqueTokenIntrospector opaqueTokenIntrospector = opaqueTokenIntrospectorMap.get(clientName);
             if ( opaqueTokenIntrospector == null ) {
                 opaqueTokenIntrospector = new SpringOpaqueTokenIntrospector(opaqueToken.getIntrospectionUri()
