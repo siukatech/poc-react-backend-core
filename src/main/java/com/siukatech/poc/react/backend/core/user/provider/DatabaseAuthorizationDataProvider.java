@@ -52,50 +52,50 @@ public class DatabaseAuthorizationDataProvider implements AuthorizationDataProvi
     }
 
 //    @Override
-    @Cacheable(value = {CachingConfig.CACHE_NAME_DEFAULT}, key = "'" + CACHE_KEY_USER_DTO + "' + #userId")
-    public UserDto findUserByUserIdAndTokenValue(String targetUserId, String tokenValue) {
-        log.debug("findByUserIdAndTokenValue - start");
-//        UserDto userDto = userService.findByUserId(targetUserId);
-        UserEntity userEntity = this.userRepository.findByUserId(targetUserId)
-                .orElseThrow(() -> new EntityNotFoundException("User not found [%s]".formatted(targetUserId)));
-        log.debug("findByUserIdAndTokenValue - modelMapper: [" + this.modelMapper + "]");
+    @Cacheable(value = {CachingConfig.CACHE_NAME_DEFAULT}, key = "'" + CACHE_KEY_findUserByUserIdAndTokenValue + "' + #userId")
+    public UserDto findUserByUserIdAndTokenValue(String userId, String tokenValue) {
+        log.debug("findByUserIdAndTokenValue - start, userId: [{}]", userId);
+//        UserDto userDto = userService.findByUserId(userId);
+        UserEntity userEntity = this.userRepository.findByUserId(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found [%s]".formatted(userId)));
+        log.debug("findByUserIdAndTokenValue - modelMapper: [" + this.modelMapper + "], userId: [{}]", userId);
         UserDto userDto = this.modelMapper.map(userEntity, UserDto.class);
-        log.debug("findByUserIdAndTokenValue - end");
+        log.debug("findByUserIdAndTokenValue - end, userId: [{}]", userId);
         return userDto;
     }
 
 //    @Override
-    @Cacheable(value = {CachingConfig.CACHE_NAME_DEFAULT}, key = "'" + CACHE_KEY_USER_PERMISSION_DTO + "' + #userId")
-    public List<UserPermissionDto> findPermissionsByUserIdAndTokenValue(String targetUserId, String tokenValue) {
-        log.debug("findPermissionsByUserIdAndTokenValue - start");
+    @Cacheable(value = {CachingConfig.CACHE_NAME_DEFAULT}, key = "'" + CACHE_KEY_findPermissionsByUserIdAndTokenValue + "' + #userId")
+    public List<UserPermissionDto> findPermissionsByUserIdAndTokenValue(String userId, String tokenValue) {
+        log.debug("findPermissionsByUserIdAndTokenValue - start, userId: [{}]", userId);
 //        List<UserPermissionDto> userPermissionDtoList = userService
 //                .findPermissionsByUserIdAndApplicationId(userId, appCoreProp.getApplicationId());
         List<UserPermissionEntity> userPermissionEntityList = this.userPermissionRepository
-                .findByUserIdAndApplicationId(targetUserId, appCoreProp.getApplicationId());
+                .findByUserIdAndApplicationId(userId, appCoreProp.getApplicationId());
         List<UserPermissionDto> userPermissionDtoList = userPermissionEntityList.stream()
                 .map(userPermissionEntity -> this.modelMapper
                         .map(userPermissionEntity, UserPermissionDto.class))
                 .toList();
-        log.debug("findPermissionsByUserIdAndTokenValue - end");
+        log.debug("findPermissionsByUserIdAndTokenValue - end, userId: [{}]", userId);
         return userPermissionDtoList;
     }
 
     @Override
-    @Cacheable(value = {CachingConfig.CACHE_NAME_DEFAULT}, key = "'" + CACHE_KEY_USER_DOSSIER_DTO + "' + #userId")
-    public UserDossierDto findDossierByUserIdAndTokenValue(String targetUserId, String tokenValue) {
-        log.debug("findDossierByUserIdAndTokenValue - start");
-        UserEntity userEntity = this.userRepository.findByUserId(targetUserId)
-                .orElseThrow(() -> new EntityNotFoundException("User not found [%s]".formatted(targetUserId)));
+    @Cacheable(value = {CachingConfig.CACHE_NAME_DEFAULT}, key = "'" + CACHE_KEY_findDossierByUserIdAndTokenValue + "' + #userId")
+    public UserDossierDto findDossierByUserIdAndTokenValue(String userId, String tokenValue) {
+        log.debug("findDossierByUserIdAndTokenValue - start, userId: [{}]", userId);
+        UserEntity userEntity = this.userRepository.findByUserId(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found [%s]".formatted(userId)));
         UserDto userDto = this.modelMapper.map(userEntity, UserDto.class);
         MyKeyDto myKeyDto = this.modelMapper.map(userEntity, MyKeyDto.class);
         List<UserPermissionEntity> userPermissionEntityList = this.userPermissionRepository
-                .findByUserIdAndApplicationId(targetUserId, appCoreProp.getApplicationId());
+                .findByUserIdAndApplicationId(userId, appCoreProp.getApplicationId());
         List<UserPermissionDto> userPermissionDtoList = userPermissionEntityList.stream()
                 .map(userPermissionEntity -> this.modelMapper
                         .map(userPermissionEntity, UserPermissionDto.class))
                 .toList();
         UserDossierDto userDossierDto = new UserDossierDto(userDto, myKeyDto, userPermissionDtoList);
-        log.debug("findDossierByUserIdAndTokenValue - end");
+        log.debug("findDossierByUserIdAndTokenValue - end, userId: [{}]", userId);
         return userDossierDto;
     }
 

@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.List;
+
 @Slf4j
 @ProtectedApiV1Controller
 public class MyController {
@@ -80,13 +82,13 @@ public class MyController {
         String userId = authentication.getName();
         UserDossierDto userDossierDto = null;
         MyPermissionDto myPermissionDto = null;
-//        List<UserPermissionDto> userPermissionDtoList = this.userService
-//                .findPermissionsByUserIdAndApplicationId(userId, applicationId);
-//        myPermissionDto = new MyPermissionDto(userId, userPermissionDtoList);
-        if (authentication instanceof MyAuthenticationToken myAuthenticationToken) {
-            userDossierDto = myAuthenticationToken.getUserDossierDto();
-            myPermissionDto = new MyPermissionDto(userId, userDossierDto.getUserPermissionList());
-        }
+        List<UserPermissionDto> userPermissionDtoList = this.userService
+                .findPermissionsByUserIdAndApplicationId(userId, applicationId);
+        myPermissionDto = new MyPermissionDto(userId, userPermissionDtoList);
+//        if (authentication instanceof MyAuthenticationToken myAuthenticationToken) {
+//            userDossierDto = myAuthenticationToken.getUserDossierDto();
+//            myPermissionDto = new MyPermissionDto(userId, userDossierDto.getUserPermissionList());
+//        }
 
         return ResponseEntity.ok(myPermissionDto);
     }

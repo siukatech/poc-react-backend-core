@@ -1,6 +1,7 @@
 package com.siukatech.poc.react.backend.core.user.service;
 
 import com.siukatech.poc.react.backend.core.business.dto.*;
+import com.siukatech.poc.react.backend.core.caching.config.CachingConfig;
 import com.siukatech.poc.react.backend.core.user.entity.UserEntity;
 import com.siukatech.poc.react.backend.core.user.entity.UserPermissionEntity;
 import com.siukatech.poc.react.backend.core.user.entity.UserViewEntity;
@@ -10,6 +11,7 @@ import com.siukatech.poc.react.backend.core.user.repository.UserViewRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -20,12 +22,15 @@ import java.util.TimeZone;
 @Service
 public class UserService {
 
+    public static final String CACHE_KEY_findPermissionsByUserIdAndApplicationId
+            = "UserService.findPermissionsByUserIdAndApplicationId_";
+
     private final ModelMapper modelMapper;
     private final UserRepository userRepository;
     private final UserPermissionRepository userPermissionRepository;
     private final UserViewRepository userViewRepository;
 
-    private UserService(ModelMapper modelMapper
+    public UserService(ModelMapper modelMapper
             , UserRepository userRepository
             , UserPermissionRepository userPermissionRepository, UserViewRepository userViewRepository) {
         this.modelMapper = modelMapper;
@@ -59,6 +64,10 @@ public class UserService {
         return myKeyDto;
     }
 
+    @Cacheable(value = {CachingConfig.CACHE_NAME_DEFAULT}
+            , key = "'" + CACHE_KEY_findPermissionsByUserIdAndApplicationId
+            + "' + #targetUserId + '_' + #applicationId"
+    )
     public List<UserPermissionDto> findPermissionsByUserIdAndApplicationId(String targetUserId, String applicationId) {
 //        List<UserPermissionDto> userPermissionDtoList = this.userRepository.findUserPermissionByUserId(targetUserId);
         List<UserPermissionEntity> userPermissionEntityList = this.userPermissionRepository.findByUserIdAndApplicationId(targetUserId, applicationId);

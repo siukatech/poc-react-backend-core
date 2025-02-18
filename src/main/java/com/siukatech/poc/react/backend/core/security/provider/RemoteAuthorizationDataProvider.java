@@ -46,7 +46,8 @@ public class RemoteAuthorizationDataProvider implements AuthorizationDataProvide
     }
 
 //    @Override
-    @Cacheable(value = {CachingConfig.CACHE_NAME_DEFAULT}, key = "'" + CACHE_KEY_USER_DTO + "' + #userId")
+    @Cacheable(value = {CachingConfig.CACHE_NAME_DEFAULT}
+            , key = "'" + CACHE_KEY_findUserByUserIdAndTokenValue + "' + #userId")
     public UserDto findUserByUserIdAndTokenValue(String userId, String tokenValue) {
         log.debug("findUserByUserIdAndTokenValue - start");
         UserDto userDto = null;
@@ -92,7 +93,8 @@ public class RemoteAuthorizationDataProvider implements AuthorizationDataProvide
     }
 
 //    @Override
-    @Cacheable(value = {CachingConfig.CACHE_NAME_DEFAULT}, key = "'" + CACHE_KEY_USER_PERMISSION_DTO + "' + #userId")
+    @Cacheable(value = {CachingConfig.CACHE_NAME_DEFAULT}
+            , key = "'" + CACHE_KEY_findPermissionsByUserIdAndTokenValue + "' + #userId")
     public List<UserPermissionDto> findPermissionsByUserIdAndTokenValue(String userId, String tokenValue) {
         log.debug("findPermissionsByUserIdAndTokenValue - start");
         List<UserPermissionDto> userPermissionDtoList = new ArrayList<>();
@@ -150,7 +152,8 @@ public class RemoteAuthorizationDataProvider implements AuthorizationDataProvide
     }
 
     @Override
-    @Cacheable(value = {CachingConfig.CACHE_NAME_DEFAULT}, key = "'" + CACHE_KEY_USER_DOSSIER_DTO + "' + #userId")
+    @Cacheable(value = {CachingConfig.CACHE_NAME_DEFAULT}
+            , key = "'" + CACHE_KEY_findDossierByUserIdAndTokenValue + "' + #userId")
     public UserDossierDto findDossierByUserIdAndTokenValue(String userId, String tokenValue) {
         log.debug("findDossierByUserIdAndTokenValue - start");
         UserDossierDto userDossierDto = null;
