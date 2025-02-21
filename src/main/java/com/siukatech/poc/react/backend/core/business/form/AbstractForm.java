@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.io.Serializable;
+
 
 @Getter
 @Setter
@@ -13,7 +15,7 @@ import lombok.ToString;
 @MappedSuperclass
 // https://stackoverflow.com/a/5455563
 //@JsonIgnoreProperties(ignoreUnknown = true)
-public abstract class AbstractForm<T> {
+public abstract class AbstractForm<T> implements Serializable {
 
     protected T id;
 

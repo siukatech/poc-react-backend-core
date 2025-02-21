@@ -15,6 +15,7 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
@@ -30,7 +31,7 @@ import java.time.LocalDateTime;
 //@Inheritance
 @MappedSuperclass
 @EntityListeners(value = {AuditingEntityListener.class, AbstractEntityToPersistListener.class})
-public abstract class AbstractEntity<T> {
+public abstract class AbstractEntity<T> implements Serializable {
 
 //    @Transient
 //    protected final Logger log = LoggerFactory.getLogger(this.getClass());

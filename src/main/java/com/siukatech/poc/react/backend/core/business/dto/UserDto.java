@@ -2,13 +2,12 @@ package com.siukatech.poc.react.backend.core.business.dto;
 
 import lombok.Data;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
 
 @Data
 //@EqualsAndHashCode(callSuper = true)
-public class UserDto implements Serializable {
+public class UserDto extends AbstractDto {
     private String id;
     private String userId;
     private String name;

@@ -90,7 +90,7 @@ public class MyJwtAuthenticationConverter implements Converter<Jwt, AbstractAuth
         userDto = userDossierDto.getUserDto();
         userPermissionDtoList = userDossierDto.getUserPermissionList();
 
-        log.debug("convert - userId: [{}], userPermissionDtoList: [{}]", userId, userPermissionDtoList);
+        log.debug("convert - userId: [{}], userPermissionDtoList.size: [{}]", userId, userPermissionDtoList.size());
         userPermissionDtoList.forEach(userPermissionDto -> {
             convertedAuthorities.add(MyGrantedAuthority.builder()
                             .userRoleId(userPermissionDto.getUserRoleId())
@@ -98,6 +98,7 @@ public class MyJwtAuthenticationConverter implements Converter<Jwt, AbstractAuth
                             .appResourceId(userPermissionDto.getAppResourceId())
                             .accessRight(userPermissionDto.getAccessRight())
                     .build());
+//            log.debug("convert - userId: [{}], userPermissionDto: [{}]", userId, userPermissionDto);
         });
 
         Map<String, Object> attributeMap = new HashMap<>();
@@ -110,7 +111,16 @@ public class MyJwtAuthenticationConverter implements Converter<Jwt, AbstractAuth
 //        attributeMap.put(MyAuthenticationToken.ATTR_PUBLIC_KEY, userDto.getPublicKey());
         attributeMap.put(MyAuthenticationToken.ATTR_USER_DOSSIER_DTO, userDossierDto);
 //        }
-        log.debug("convert - userId: [{}], convertedAuthorities: [{}], attributeMap: [{}]", userId, convertedAuthorities, attributeMap);
+        log.debug("convert - userId: [{}], convertedAuthorities: [{}]"
+                        + ", attributeMap.containsKey(PREFERRED_USERNAME): [{}]"
+                        + ", attributeMap.containsKey(ATTR_TOKEN_VALUE): [{}]"
+                        + ", attributeMap.containsKey(ATTR_USER_DOSSIER_DTO): [{}]"
+                , userId
+                , convertedAuthorities
+                , attributeMap.containsKey(StandardClaimNames.PREFERRED_USERNAME)
+                , attributeMap.containsKey(MyAuthenticationToken.ATTR_TOKEN_VALUE)
+                , attributeMap.containsKey(MyAuthenticationToken.ATTR_USER_DOSSIER_DTO)
+        );
 
         OAuth2User oAuth2User = new DefaultOAuth2User(convertedAuthorities, attributeMap, StandardClaimNames.PREFERRED_USERNAME);
 //        OAuth2AuthenticationToken authenticationToken = new OAuth2AuthenticationToken(oAuth2User, convertedAuthorities, "keycloak");

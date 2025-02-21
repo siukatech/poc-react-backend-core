@@ -1,5 +1,6 @@
 package com.siukatech.poc.react.backend.core.caching.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.cache.RedisCacheManagerBuilderCustomizer;
@@ -16,6 +17,10 @@ import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
+import org.springframework.data.redis.serializer.RedisSerializationContext;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.util.Objects;
 
@@ -55,15 +60,20 @@ public class RedisCachingConfig extends AbstractCachingConfig {
     }
 
     @Bean
-    public RedisTemplate<?, ?> redisTemplate(LettuceConnectionFactory connectionFactory) {
+    public RedisTemplate<?, ?> redisTemplate(
+            LettuceConnectionFactory connectionFactory, ObjectMapper objectMapper) {
         RedisTemplate<byte[], byte[]> template = new RedisTemplate<>();
         template.setConnectionFactory(connectionFactory);
+        template.setKeySerializer(new StringRedisSerializer());
+//        template.setValueSerializer(new GenericJackson2JsonRedisSerializer(objectMapper));
+        template.setValueSerializer(new JdkSerializationRedisSerializer());
         return template;
     }
 
     /**
      * Reference:
      * https://docs.spring.io/spring-boot/reference/io/caching.html#io.caching.provider.redis
+     * https://stackoverflow.com/a/52971347
      */
     @Bean
     public RedisCacheManagerBuilderCustomizer redisCacheManagerBuilderCustomizer() {
@@ -74,6 +84,8 @@ public class RedisCachingConfig extends AbstractCachingConfig {
                         , RedisCacheConfiguration
                                 .defaultCacheConfig()
                                 .entryTtl(timeToLive)
+//                                .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
+//                                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer(objectMapper)))
                 );
             });
         };
