@@ -1,6 +1,7 @@
 package com.siukatech.poc.react.backend.core.security.config;
 
 import com.siukatech.poc.react.backend.core.global.config.AppCoreProp;
+import com.siukatech.poc.react.backend.core.security.provider.AuthorizationDataCacheKeyGenerator;
 import com.siukatech.poc.react.backend.core.security.provider.AuthorizationDataProvider;
 import com.siukatech.poc.react.backend.core.security.provider.RemoteAuthorizationDataProvider;
 import lombok.extern.slf4j.Slf4j;
@@ -78,6 +79,11 @@ public class AuthorizationDataProviderConfig {
         log.debug("remoteAuthorizationDataProvider");
 //        return new DatabaseAuthorizationDataProvider(userService);
         return new RemoteAuthorizationDataProvider(appCoreProp, oauth2ClientRestTemplate);
+    }
+
+    @Bean
+    public AuthorizationDataCacheKeyGenerator authorizationDataCacheKeyGenerator() {
+        return new AuthorizationDataCacheKeyGenerator();
     }
 
 }

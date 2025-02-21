@@ -5,13 +5,13 @@ import com.siukatech.poc.react.backend.core.business.dto.UserDossierDto;
 import com.siukatech.poc.react.backend.core.business.dto.UserDto;
 import com.siukatech.poc.react.backend.core.business.dto.UserPermissionDto;
 import com.siukatech.poc.react.backend.core.caching.config.CachingConfig;
+import com.siukatech.poc.react.backend.core.global.config.AppCoreProp;
 import com.siukatech.poc.react.backend.core.security.provider.AuthorizationDataProvider;
 import com.siukatech.poc.react.backend.core.user.entity.UserEntity;
 import com.siukatech.poc.react.backend.core.user.entity.UserPermissionEntity;
 import com.siukatech.poc.react.backend.core.user.repository.UserPermissionRepository;
 import com.siukatech.poc.react.backend.core.user.repository.UserRepository;
 import com.siukatech.poc.react.backend.core.user.repository.UserViewRepository;
-import com.siukatech.poc.react.backend.core.global.config.AppCoreProp;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -20,6 +20,9 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import java.util.List;
+
+import static com.siukatech.poc.react.backend.core.security.provider.AuthorizationDataCacheKeyGenerator.CACHE_KEY_findPermissionsByUserIdAndTokenValue;
+import static com.siukatech.poc.react.backend.core.security.provider.AuthorizationDataCacheKeyGenerator.CACHE_KEY_findUserByUserIdAndTokenValue;
 
 @Slf4j
 @EntityScan(basePackages = {"com.siukatech.poc.react.backend.core.security.provider.database.entity"})  // "**" means all packages
@@ -52,7 +55,8 @@ public class DatabaseAuthorizationDataProvider implements AuthorizationDataProvi
     }
 
 //    @Override
-    @Cacheable(value = {CachingConfig.CACHE_NAME_DEFAULT}, key = "'" + CACHE_KEY_findUserByUserIdAndTokenValue + "' + #userId")
+    @Cacheable(value = {CachingConfig.CACHE_NAME_DEFAULT}
+            , key = "'" + CACHE_KEY_findUserByUserIdAndTokenValue + "' + #userId")
     public UserDto findUserByUserIdAndTokenValue(String userId, String tokenValue) {
         log.debug("findByUserIdAndTokenValue - start, userId: [{}]", userId);
 //        UserDto userDto = userService.findByUserId(userId);
@@ -65,7 +69,8 @@ public class DatabaseAuthorizationDataProvider implements AuthorizationDataProvi
     }
 
 //    @Override
-    @Cacheable(value = {CachingConfig.CACHE_NAME_DEFAULT}, key = "'" + CACHE_KEY_findPermissionsByUserIdAndTokenValue + "' + #userId")
+    @Cacheable(value = {CachingConfig.CACHE_NAME_DEFAULT}
+            , key = "'" + CACHE_KEY_findPermissionsByUserIdAndTokenValue + "' + #userId")
     public List<UserPermissionDto> findPermissionsByUserIdAndTokenValue(String userId, String tokenValue) {
         log.debug("findPermissionsByUserIdAndTokenValue - start, userId: [{}]", userId);
 //        List<UserPermissionDto> userPermissionDtoList = userService
@@ -81,7 +86,10 @@ public class DatabaseAuthorizationDataProvider implements AuthorizationDataProvi
     }
 
     @Override
-    @Cacheable(value = {CachingConfig.CACHE_NAME_DEFAULT}, key = "'" + CACHE_KEY_findDossierByUserIdAndTokenValue + "' + #userId")
+    @Cacheable(value = {CachingConfig.CACHE_NAME_DEFAULT}
+//            , key = "'" + CACHE_KEY_findDossierByUserIdAndTokenValue + "' + #userId"
+            , keyGenerator = "authorizationDataCacheKeyGenerator"
+    )
     public UserDossierDto findDossierByUserIdAndTokenValue(String userId, String tokenValue) {
         log.debug("findDossierByUserIdAndTokenValue - start, userId: [{}]", userId);
         UserEntity userEntity = this.userRepository.findByUserId(userId)

@@ -21,6 +21,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static com.siukatech.poc.react.backend.core.security.provider.AuthorizationDataCacheKeyGenerator.CACHE_KEY_findPermissionsByUserIdAndTokenValue;
+import static com.siukatech.poc.react.backend.core.security.provider.AuthorizationDataCacheKeyGenerator.CACHE_KEY_findUserByUserIdAndTokenValue;
+
 @Slf4j
 public class RemoteAuthorizationDataProvider implements AuthorizationDataProvider {
 
@@ -47,7 +50,9 @@ public class RemoteAuthorizationDataProvider implements AuthorizationDataProvide
 
 //    @Override
     @Cacheable(value = {CachingConfig.CACHE_NAME_DEFAULT}
-            , key = "'" + CACHE_KEY_findUserByUserIdAndTokenValue + "' + #userId")
+//            , key = "'" + CACHE_KEY_findUserByUserIdAndTokenValue + "' + #userId"
+            , key = "'" + CACHE_KEY_findUserByUserIdAndTokenValue + "' + #userId"
+    )
     public UserDto findUserByUserIdAndTokenValue(String userId, String tokenValue) {
         log.debug("findUserByUserIdAndTokenValue - start");
         UserDto userDto = null;
@@ -153,7 +158,9 @@ public class RemoteAuthorizationDataProvider implements AuthorizationDataProvide
 
     @Override
     @Cacheable(value = {CachingConfig.CACHE_NAME_DEFAULT}
-            , key = "'" + CACHE_KEY_findDossierByUserIdAndTokenValue + "' + #userId")
+//            , key = "'" + CACHE_KEY_findDossierByUserIdAndTokenValue + "' + #userId"
+            , keyGenerator = "authorizationDataCacheKeyGenerator"
+    )
     public UserDossierDto findDossierByUserIdAndTokenValue(String userId, String tokenValue) {
         log.debug("findDossierByUserIdAndTokenValue - start");
         UserDossierDto userDossierDto = null;
