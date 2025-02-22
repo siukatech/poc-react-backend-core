@@ -20,8 +20,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Slf4j
 public abstract class AbstractCachingManagerTests extends AbstractUnitTests {
 
-    @SpyBean
-    protected ObjectMapper objectMapper;
+//    @SpyBean
+//    protected ObjectMapper objectMapper;
 
     @Autowired
     protected CacheManager cacheManager;

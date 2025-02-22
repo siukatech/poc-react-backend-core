@@ -1,6 +1,5 @@
 package com.siukatech.poc.react.backend.core.caching.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.cache.RedisCacheManagerBuilderCustomizer;
@@ -17,12 +16,9 @@ import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
-import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
-import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
-import org.springframework.data.redis.serializer.RedisSerializationContext;
-import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.util.Objects;
+
 
 @Slf4j
 @Configuration
@@ -41,12 +37,17 @@ public class RedisCachingConfig extends AbstractCachingConfig {
 //        private int port;
 //    }
 
+    /**
+     * RedisProperties are the configuration mapped to "spring.data.redis"
+     * LettuceConnectionFactory can be set-up through this properties
+     */
     @Bean
     public LettuceConnectionFactory redisConnectionFactory(RedisProperties redisProperties) {
         RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
         redisStandaloneConfiguration.setHostName(redisProperties.getHost());
         redisStandaloneConfiguration.setPort(redisProperties.getPort());
-        if (Objects.nonNull(redisProperties.getPassword())) {
+        boolean hasPasswordProvided = Objects.nonNull(redisProperties.getPassword());
+        if (hasPasswordProvided) {
             redisStandaloneConfiguration.setPassword(redisProperties.getPassword());
         }
         redisStandaloneConfiguration.setDatabase(redisProperties.getDatabase());
@@ -55,18 +56,34 @@ public class RedisCachingConfig extends AbstractCachingConfig {
         }
         log.debug("redisConnectionFactory - redisStandaloneConfiguration: [${}]"
                         + ", redisProperties: [{}]"
-                , redisStandaloneConfiguration, redisProperties);
+                        + ", hasPasswordProvided: [{}]"
+                        + ", redisProperties.getHost: [{}]"
+                        + ", redisProperties.getPort: [{}]"
+                        + ", redisProperties.getDatabase: [{}]"
+                , redisStandaloneConfiguration
+                , redisProperties
+                , hasPasswordProvided
+                , redisProperties.getHost()
+                , redisProperties.getPort()
+                , redisProperties.getDatabase()
+        );
         return new LettuceConnectionFactory(redisStandaloneConfiguration);
     }
 
+    /**
+     * The injection of LettuceConnectionFactory (RedisConnectionFactory) here
+     * which requires the LettuceConnectionConfiguration to support
+     */
     @Bean
     public RedisTemplate<?, ?> redisTemplate(
-            LettuceConnectionFactory connectionFactory, ObjectMapper objectMapper) {
+            RedisConnectionFactory connectionFactory
+//            , ObjectMapper objectMapper
+    ) {
         RedisTemplate<byte[], byte[]> template = new RedisTemplate<>();
         template.setConnectionFactory(connectionFactory);
-        template.setKeySerializer(new StringRedisSerializer());
-//        template.setValueSerializer(new GenericJackson2JsonRedisSerializer(objectMapper));
-        template.setValueSerializer(new JdkSerializationRedisSerializer());
+//        template.setKeySerializer(new StringRedisSerializer());
+////        template.setValueSerializer(new GenericJackson2JsonRedisSerializer(objectMapper));
+//        template.setValueSerializer(new JdkSerializationRedisSerializer());
         return template;
     }
 
