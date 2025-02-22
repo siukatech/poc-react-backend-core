@@ -25,7 +25,7 @@ import java.util.Objects;
 @EnableCaching
 @EnableRedisRepositories
 @ConditionalOnProperty(prefix = "spring.cache", name = "type", havingValue = "redis")
-public class RedisCachingConfig extends AbstractCachingConfig {
+public class RedisCachingConfig extends DefaultCachingConfig {
 
     @Value("${spring.cache.redis.time-to-live:10m}")
     private java.time.Duration timeToLive;
@@ -95,7 +95,7 @@ public class RedisCachingConfig extends AbstractCachingConfig {
     @Bean
     public RedisCacheManagerBuilderCustomizer redisCacheManagerBuilderCustomizer() {
         return (builder) -> {
-            cacheNames.forEach(cacheName -> {
+            this.getCacheNameListWithDefaults().forEach(cacheName -> {
                 log.debug("redisCacheManagerBuilderCustomizer - cacheName: [{}]", cacheName);
                 builder.withCacheConfiguration(cacheName
                         , RedisCacheConfiguration
@@ -112,7 +112,7 @@ public class RedisCachingConfig extends AbstractCachingConfig {
     public CacheManager redisCacheManager(RedisConnectionFactory redisConnectionFactory) {
         RedisCacheManager.RedisCacheManagerBuilder builder = RedisCacheManager.RedisCacheManagerBuilder
                 .fromConnectionFactory(redisConnectionFactory);
-        this.cacheNames.forEach(cacheName -> {
+        this.getCacheNameListWithDefaults().forEach(cacheName -> {
             log.debug("redisCacheManager - cacheName: [{}]", cacheName);
             builder.withCacheConfiguration(cacheName
                     , RedisCacheConfiguration

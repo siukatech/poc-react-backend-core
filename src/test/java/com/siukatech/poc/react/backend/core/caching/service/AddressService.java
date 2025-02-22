@@ -1,6 +1,6 @@
 package com.siukatech.poc.react.backend.core.caching.service;
 
-import com.siukatech.poc.react.backend.core.caching.config.CachingConstant;
+import com.siukatech.poc.react.backend.core.caching.config.DefaultCachingConfig;
 import com.siukatech.poc.react.backend.core.caching.model.AddressModel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
@@ -27,14 +27,14 @@ public class AddressService {
         log.debug("printAddressModelMap - addressModelMap: [{}]", this.addressModelMap);
     }
 
-    @Cacheable(value = {CachingConstant.CACHE_NAME_DEFAULT}, key = "#addressId")
+    @Cacheable(value = {DefaultCachingConfig.CACHE_NAME_DEFAULT}, key = "#addressId")
     public AddressModel getAddressModelById(String addressId) {
         log.debug("getAddressModelById - addressId: [{}]", addressId);
         AddressModel addressModel = this.addressModelMap.get(addressId);
         return addressModel;
     }
 
-    @CacheEvict(value = {CachingConstant.CACHE_NAME_DEFAULT}, allEntries = true)
+    @CacheEvict(value = {DefaultCachingConfig.CACHE_NAME_DEFAULT}, allEntries = true)
     public void evictAllCacheValues() {}
 
 }

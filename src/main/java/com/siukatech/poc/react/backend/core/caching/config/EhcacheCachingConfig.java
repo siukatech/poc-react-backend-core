@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 @Configuration
 @EnableCaching
 @ConditionalOnProperty(prefix = "spring.cache", name = "type", havingValue = "ehcache")
-public class EhcacheCachingConfig extends AbstractCachingConfig {
+public class EhcacheCachingConfig extends DefaultCachingConfig {
 
     /**
      * Reference:
@@ -47,7 +47,8 @@ public class EhcacheCachingConfig extends AbstractCachingConfig {
                 .setExpiryPolicyFactory(CreatedExpiryPolicy.factoryOf(new Duration(TimeUnit.SECONDS, timeToLive.getSeconds())))
                 ;
         //
-        this.cacheNames.forEach(cacheName -> {
+        this.getCacheNameListWithDefaults().forEach(cacheName -> {
+            log.debug("ehcacheCacheManager - cacheName: [{}]", cacheName);
             ehcacheCacheManager.createCache(cacheName, configuration);
         });
         //

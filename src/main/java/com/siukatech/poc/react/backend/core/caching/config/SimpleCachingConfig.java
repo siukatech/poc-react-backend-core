@@ -17,7 +17,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @EnableCaching
 @ConditionalOnProperty(prefix = "spring.cache", name = "type", havingValue = "simple")
-public class SimpleCachingConfig extends AbstractCachingConfig {
+public class SimpleCachingConfig extends DefaultCachingConfig {
 
     @Bean
     public CacheManagerCustomizer<ConcurrentMapCacheManager> cacheManagerCustomizer() {
@@ -26,8 +26,10 @@ public class SimpleCachingConfig extends AbstractCachingConfig {
 
     @Bean(name = "cacheManager")
     public CacheManager simpleCacheManager() {
-        log.debug("simpleCacheManager - cacheNames: [{}]", cacheNames);
-        ConcurrentMapCacheManager concurrentMapCacheManager = new ConcurrentMapCacheManager(this.cacheNames.toArray(String[]::new));
+        log.debug("simpleCacheManager - this.getCacheNameListWithDefaults: [{}]"
+                , this.getCacheNameListWithDefaults());
+        ConcurrentMapCacheManager concurrentMapCacheManager = new ConcurrentMapCacheManager(
+                this.getCacheNameListWithDefaults().toArray(String[]::new));
         return concurrentMapCacheManager;
     }
 

@@ -18,6 +18,7 @@ import java.util.List;
     }
     , properties = {
         "spring.cache.type=ehcache"
+        , "spring.cache.cache-names=test1,test2"
         , "spring.cache.ehcache.time-to-live=1s"
         , "logging.level.root=INFO"
         , "logging.level.com.siukatech.poc.react.backend.core.caching=DEBUG"

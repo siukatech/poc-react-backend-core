@@ -30,6 +30,7 @@ import java.util.Map;
     }
     , properties = {
         "spring.cache.type=redis"
+//        , "spring.cache.cache-names=test1,test2"
         , "spring.cache.redis.time-to-live=1s"
         , "spring.cache.redis.cache-null-value=false"
         , "spring.data.redis.host=localhost"
