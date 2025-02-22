@@ -9,7 +9,13 @@ import java.util.List;
 //@EnableCaching  // This is not working.
 public class AbstractCachingConfig {
 
-    @Value("${spring.cache.cache-names:" + CachingConfig.CACHE_NAME_DEFAULT + "}")
+    @Value("${spring.cache.cache-names:"
+            + CachingConstant.CACHE_NAME_DEFAULT
+            + ","
+            + CachingConstant.CACHE_NAME_AUTH
+            + ","
+            + CachingConstant.CACHE_NAME_IDEMPOTENCY
+            + "}")
     protected List<String> cacheNames;
 
 }

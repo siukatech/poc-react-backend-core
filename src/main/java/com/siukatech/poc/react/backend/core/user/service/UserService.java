@@ -1,7 +1,7 @@
 package com.siukatech.poc.react.backend.core.user.service;
 
 import com.siukatech.poc.react.backend.core.business.dto.*;
-import com.siukatech.poc.react.backend.core.caching.config.CachingConfig;
+import com.siukatech.poc.react.backend.core.user.caching.UserCachingConfig;
 import com.siukatech.poc.react.backend.core.user.entity.UserEntity;
 import com.siukatech.poc.react.backend.core.user.entity.UserPermissionEntity;
 import com.siukatech.poc.react.backend.core.user.entity.UserViewEntity;
@@ -64,9 +64,10 @@ public class UserService {
         return myKeyDto;
     }
 
-    @Cacheable(value = {CachingConfig.CACHE_NAME_DEFAULT}
-            , key = "'" + CACHE_KEY_findPermissionsByUserIdAndApplicationId
-            + "' + #targetUserId + '_' + #applicationId"
+    @Cacheable(value = {UserCachingConfig.CACHE_NAME_USER}
+//            , key = "'" + CACHE_KEY_findPermissionsByUserIdAndApplicationId
+//            + "' + #targetUserId + '_' + #applicationId"
+            , keyGenerator = "userPermissionCacheKeyGenerator"
     )
     public List<UserPermissionDto> findPermissionsByUserIdAndApplicationId(String targetUserId, String applicationId) {
 //        List<UserPermissionDto> userPermissionDtoList = this.userRepository.findUserPermissionByUserId(targetUserId);

@@ -4,7 +4,7 @@ import com.siukatech.poc.react.backend.core.business.dto.MyKeyDto;
 import com.siukatech.poc.react.backend.core.business.dto.UserDossierDto;
 import com.siukatech.poc.react.backend.core.business.dto.UserDto;
 import com.siukatech.poc.react.backend.core.business.dto.UserPermissionDto;
-import com.siukatech.poc.react.backend.core.caching.config.CachingConfig;
+import com.siukatech.poc.react.backend.core.caching.config.CachingConstant;
 import com.siukatech.poc.react.backend.core.global.config.AppCoreProp;
 import com.siukatech.poc.react.backend.core.security.provider.AuthorizationDataProvider;
 import com.siukatech.poc.react.backend.core.user.entity.UserEntity;
@@ -55,7 +55,7 @@ public class DatabaseAuthorizationDataProvider implements AuthorizationDataProvi
     }
 
 //    @Override
-    @Cacheable(value = {CachingConfig.CACHE_NAME_DEFAULT}
+    @Cacheable(value = {CachingConstant.CACHE_NAME_DEFAULT}
             , key = "'" + CACHE_KEY_findUserByUserIdAndTokenValue + "' + #userId")
     public UserDto findUserByUserIdAndTokenValue(String userId, String tokenValue) {
         log.debug("findByUserIdAndTokenValue - start, userId: [{}]", userId);
@@ -69,7 +69,7 @@ public class DatabaseAuthorizationDataProvider implements AuthorizationDataProvi
     }
 
 //    @Override
-    @Cacheable(value = {CachingConfig.CACHE_NAME_DEFAULT}
+    @Cacheable(value = {CachingConstant.CACHE_NAME_DEFAULT}
             , key = "'" + CACHE_KEY_findPermissionsByUserIdAndTokenValue + "' + #userId")
     public List<UserPermissionDto> findPermissionsByUserIdAndTokenValue(String userId, String tokenValue) {
         log.debug("findPermissionsByUserIdAndTokenValue - start, userId: [{}]", userId);
@@ -86,7 +86,7 @@ public class DatabaseAuthorizationDataProvider implements AuthorizationDataProvi
     }
 
     @Override
-    @Cacheable(value = {CachingConfig.CACHE_NAME_DEFAULT}
+    @Cacheable(value = {CachingConstant.CACHE_NAME_AUTH}
 //            , key = "'" + CACHE_KEY_findDossierByUserIdAndTokenValue + "' + #userId"
             , keyGenerator = "authorizationDataCacheKeyGenerator"
     )

@@ -2,14 +2,12 @@ package com.siukatech.poc.react.backend.core.caching;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.spi.ILoggingEvent;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.siukatech.poc.react.backend.core.AbstractUnitTests;
 import com.siukatech.poc.react.backend.core.caching.model.AddressModel;
 import com.siukatech.poc.react.backend.core.caching.service.AddressService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 

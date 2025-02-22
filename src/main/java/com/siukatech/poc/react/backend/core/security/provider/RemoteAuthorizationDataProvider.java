@@ -4,7 +4,7 @@ import com.siukatech.poc.react.backend.core.business.dto.MyPermissionDto;
 import com.siukatech.poc.react.backend.core.business.dto.UserDossierDto;
 import com.siukatech.poc.react.backend.core.business.dto.UserDto;
 import com.siukatech.poc.react.backend.core.business.dto.UserPermissionDto;
-import com.siukatech.poc.react.backend.core.caching.config.CachingConfig;
+import com.siukatech.poc.react.backend.core.caching.config.CachingConstant;
 import com.siukatech.poc.react.backend.core.global.config.AppCoreProp;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
@@ -49,7 +49,7 @@ public class RemoteAuthorizationDataProvider implements AuthorizationDataProvide
     }
 
 //    @Override
-    @Cacheable(value = {CachingConfig.CACHE_NAME_DEFAULT}
+    @Cacheable(value = {CachingConstant.CACHE_NAME_DEFAULT}
 //            , key = "'" + CACHE_KEY_findUserByUserIdAndTokenValue + "' + #userId"
             , key = "'" + CACHE_KEY_findUserByUserIdAndTokenValue + "' + #userId"
     )
@@ -98,7 +98,7 @@ public class RemoteAuthorizationDataProvider implements AuthorizationDataProvide
     }
 
 //    @Override
-    @Cacheable(value = {CachingConfig.CACHE_NAME_DEFAULT}
+    @Cacheable(value = {CachingConstant.CACHE_NAME_DEFAULT}
             , key = "'" + CACHE_KEY_findPermissionsByUserIdAndTokenValue + "' + #userId")
     public List<UserPermissionDto> findPermissionsByUserIdAndTokenValue(String userId, String tokenValue) {
         log.debug("findPermissionsByUserIdAndTokenValue - start");
@@ -157,7 +157,7 @@ public class RemoteAuthorizationDataProvider implements AuthorizationDataProvide
     }
 
     @Override
-    @Cacheable(value = {CachingConfig.CACHE_NAME_DEFAULT}
+    @Cacheable(value = {CachingConstant.CACHE_NAME_AUTH}
 //            , key = "'" + CACHE_KEY_findDossierByUserIdAndTokenValue + "' + #userId"
             , keyGenerator = "authorizationDataCacheKeyGenerator"
     )
