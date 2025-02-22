@@ -11,12 +11,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @ProtectedApiV1Controller
@@ -62,12 +65,33 @@ public class MyController {
             , Authentication authentication) {
         Authentication authenticationInSc = SecurityContextHolder.getContext().getAuthentication();
         HttpHeaderUtils.logHttpHeaders(httpHeaders);
-        log.debug("getUserInfo - authentication: [{}], authenticationInSc: [{}]"
-                , authentication, authenticationInSc);
+//        log.debug("getUserInfo - authentication: [{}], authenticationInSc: [{}]"
+//                , authentication, authenticationInSc);
+        this.logAuthentication("authentication", authentication);
+        this.logAuthentication("authenticationInSc", authenticationInSc);
         String userId = authentication.getName();
         UserDto userDto = this.userService.findUserByUserId(userId);
 
         return ResponseEntity.ok(userDto);
+    }
+    private void logAuthentication(String logAuthenticationName, Authentication authenticationToken) {
+        boolean isAuthenticationTokenNull = Objects.isNull(authenticationToken);
+        List<GrantedAuthority> grantedAuthorityList = new ArrayList<>();
+        if (!isAuthenticationTokenNull) {
+            grantedAuthorityList.addAll(authenticationToken.getAuthorities());
+        }
+        //
+        log.debug("logAuthentication - logAuthenticationName: [{}]"
+                        + ", isAuthenticationTokenNull: [{}]"
+                        + ", authenticationToken.getName: [{}]"
+                        + ", authenticationToken.isAuthenticated: [{}]"
+                        + ", grantedAuthorityList.size: [{}]"
+                , logAuthenticationName
+                , isAuthenticationTokenNull
+                , (isAuthenticationTokenNull ? "NULL" : authenticationToken.getName())
+                , (isAuthenticationTokenNull ? "NULL" : authenticationToken.isAuthenticated())
+                , grantedAuthorityList.size()
+        );
     }
 
     @GetMapping("/my/permission-info")
