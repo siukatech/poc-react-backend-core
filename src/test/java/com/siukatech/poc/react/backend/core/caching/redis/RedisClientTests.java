@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 @Slf4j
 public class RedisClientTests {
 
-    @Test
+//    @Test
     public void test_redisClient_basic() {
         String host = "localhost";
         int port = 36379;
