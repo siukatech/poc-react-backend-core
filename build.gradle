@@ -52,7 +52,9 @@ repositories {
 }
 
 ext {
+    lombokVersion = '1.18.30'
     mapstructVersion = '1.6.0.RC1'
+    lombokMapstructBindingVersion = '0.2.0'
     embeddedRedisVersion = '1.4.3'
 //    springBootVersion = '3.2.1'
 //    springSecurityVersion = '6.2.1'
@@ -119,8 +121,12 @@ dependencies {
     api 'commons-io:commons-io:2.15.1'
 
     api 'org.modelmapper:modelmapper:3.1.1'
-    api 'org.hibernate:hibernate-validator:6.2.0.cr1'
-//	api 'com.google.code.gson:gson:2.10.1'
+
+    api 'com.google.code.gson:gson:2.10.1'
+
+//    api 'org.hibernate.validator:hibernate-validator:6.2.0.CR1'
+    api 'org.hibernate.validator:hibernate-validator:9.0.0.CR1'
+    api 'org.jboss.logging:jboss-logging:3.6.1.Final'
 
     api 'io.swagger.core.v3:swagger-core:2.2.20'
     api 'io.swagger.core.v3:swagger-annotations:2.2.20'
@@ -158,9 +164,9 @@ dependencies {
 
 //	api 'org.projectlombok:lombok:1.18.24'
 //	annotationProcessor 'org.projectlombok:lombok:1.18.24'
-    api 'org.projectlombok:lombok:1.18.30'
-    annotationProcessor 'org.projectlombok:lombok:1.18.30'
-    annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
+    api "org.projectlombok:lombok:${lombokVersion}"
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+    annotationProcessor "org.projectlombok:lombok-mapstruct-binding:${lombokMapstructBindingVersion}"
 
     api "org.mapstruct:mapstruct:${mapstructVersion}"
     annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
@@ -178,13 +184,14 @@ dependencies {
 //	testImplementation 'com.h2database:h2:2.1.214'
 ////	testImplementation 'org.simplify4u:slf4j2-mock:2.3.0'
 
-    testImplementation 'org.projectlombok:lombok:1.18.30'
-    testAnnotationProcessor 'org.projectlombok:lombok:1.18.30'
+    testImplementation "org.projectlombok:lombok:${lombokVersion}"
+    testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+    testAnnotationProcessor "org.projectlombok:lombok-mapstruct-binding:${lombokMapstructBindingVersion}"
 
-    testFixturesApi 'org.projectlombok:lombok:1.18.30'
-    testFixturesAnnotationProcessor 'org.projectlombok:lombok:1.18.30'
+    testFixturesApi "org.projectlombok:lombok:${lombokVersion}"
+    testFixturesAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 
-    testFixturesAnnotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
+    testFixturesAnnotationProcessor "org.projectlombok:lombok-mapstruct-binding:${lombokMapstructBindingVersion}"
     testFixturesAnnotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
 
 }
