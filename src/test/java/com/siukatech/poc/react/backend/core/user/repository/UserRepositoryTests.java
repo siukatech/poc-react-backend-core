@@ -197,6 +197,7 @@ public class UserRepositoryTests extends AbstractJpaTests {
                 + "], userEntityClone.getId: [" + userEntityClone.getId()
                 + "], userEntityClone.getName: [" + userEntityClone.getName()
                 + "], userEntityClone.getVersionNo: [" + userEntityClone.getVersionNo()
+                + "], objectOptimisticLockingFailureException.getClass.getName: [" + (objectOptimisticLockingFailureException == null ? "NULL" : objectOptimisticLockingFailureException.getClass().getName())
                 + "], objectOptimisticLockingFailureException.getMessage: [" + (objectOptimisticLockingFailureException == null ? "NULL" : objectOptimisticLockingFailureException.getMessage())
                 + "]");
         log.error(objectOptimisticLockingFailureException.getMessage(), objectOptimisticLockingFailureException);
@@ -259,6 +260,7 @@ public class UserRepositoryTests extends AbstractJpaTests {
 //                + "], userEntityClone.getId: [" + userEntityClone.getId()
 //                + "], userEntityClone.getName: [" + userEntityClone.getName()
 //                + "], userEntityClone.getVersionNo: [" + userEntityClone.getVersionNo()
+                + "], objectOptimisticLockingFailureException.getClass.getName: [" + (objectOptimisticLockingFailureException == null ? "NULL" : objectOptimisticLockingFailureException.getClass().getName())
                 + "], objectOptimisticLockingFailureException.getMessage: [" + (objectOptimisticLockingFailureException == null ? "NULL" : objectOptimisticLockingFailureException.getMessage())
                 + "]");
 
